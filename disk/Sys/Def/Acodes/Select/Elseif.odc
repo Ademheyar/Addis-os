@@ -1,0 +1,5 @@
+DEFINE Elseif
+  GET
+  GET
+  READ NEXT DO
+END DEFINE

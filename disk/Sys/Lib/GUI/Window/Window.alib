@@ -1,0 +1,27 @@
+
+
+FANTCION Setimage EXPACTE dir EQUAL ""
+    RETURN Titlbar EQUAL Frame WITH on shap x y width hight
+
+FANTCION Titlbar EXPACTE on EQUAL FOCESD shap EQUAL 'rectangel' x EQUAL 0 y EQUAL 0 width EQUAL 100 hight EQUAL 100 
+    RETURN Titlbar EQUAL Frame WITH on shap x y width hight
+    
+FANTCION Exitbutton EXPACTE shap EQUAL 'rectangel' x EQUAL 0 y EQUAL 0 width EQUAL 100 hight EQUAL 100 Titlbar EQUAL TRUE isExitbut EQUAL TRUE isMinbut EQUAL TRUE  
+    Exitbut EQUAL Button WITH Titlbar 'rectangel' x y width hight 
+    
+FANTCION Maximaizbutton EXPACTE shap EQUAL 'rectangel' x EQUAL 0 y EQUAL 0 width EQUAL 100 hight EQUAL 100 Titlbar EQUAL TRUE isExitbut EQUAL TRUE isMinbut EQUAL TRUE  
+    Minbut EQUAL Button WITH Titlbar 'rectangel' x y width hight 
+    
+FANTCION Minmaizbutton EXPACTE shap EQUAL 'rectangel' x EQUAL 0 y EQUAL 0 width EQUAL 100 hight EQUAL 100 Titlbar EQUAL TRUE isExitbut EQUAL TRUE isMinbut EQUAL TRUE  
+    Minbut EQUAL Button WITH Titlbar 'rectangel' x y width hight 
+    
+FANTCION MAIN EXPACTE shap EQUAL 'rectangel' x EQUAL 0 y EQUAL 0 width EQUAL 100 hight EQUAL 100 Titlbar EQUAL TRUE isExitbut EQUAL TRUE isMinbut EQUAL TRUE  
+    win EQUAL Draw WITH Shap x y width hight SCREEN
+    IF isTitlbar  EQUAL  TRUE 
+       Titlbar WITH win shap x y width hight
+    
+    IF isExitbut EQUAL TRUE 
+         
+    IF isMinbut EQUAL TRUE 
+        
+    RETURN win

@@ -1,0 +1,9 @@
+# Setup all source directories $(wildcard src/arch/*.c) 
+c_source_files := \
+$(wildcard src/*.c) \
+$(wildcard src/kernel/*.c)\
+$(wildcard src/Addis/*.c) $(wildcard src/Addis/*/*.c) $(wildcard src/Addis/*/*/*.c) $(wildcard src/Addis/*/*/*/*.c) \
+$(wildcard src/Drivers/*/*.c) $(wildcard src/Drivers/*/*/*.c) \
+$(wildcard src/Filse_system/*/*.c) \
+$(wildcard src/Libs/*.c) $(wildcard src/Libs/*/*.c) $(wildcard src/Libs/*/*/*.c) $(wildcard src/Libs/*/*/*/*.c) \
+$(wildcard src/syscalls/*.c) 

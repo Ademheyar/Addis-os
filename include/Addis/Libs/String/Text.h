@@ -1,0 +1,16 @@
+#include <Addis/Libs/String/String.h>
+
+int charToint(char c);
+void newvoidadd(char dest[], char src[], char con);
+char* replace(const char* s, const char* oldW, const char* newW);
+char** str_split(char* a_str, const char a_delim);
+void freest();
+void get_pervtext();
+void split_text(char *str, char split_by);
+_Bool thisvar(char *istype, char *var);
+void convert(char *text);
+_Bool issame(char *first1, char *second2);
+_Bool iscsame(char first1, char second2);
+char* read_text(char* filepath);
+char *typetext(char *text);
+_Bool contains(char *in, char c, char *str);

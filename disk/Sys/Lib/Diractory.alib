@@ -1,0 +1,8 @@
+FANCTION Mainpath
+    RETURN ""
+
+FANCTION Thispath
+    RETURN RCD
+
+FANCTION MAIN
+    PASS

@@ -1,0 +1,3 @@
+# Setup all source directories
+assembly_source_files := $(wildcard nasms/Addis/*.asm) $(wildcard nasms/Addis/*/*.asm) \
+$(wildcard nasms/32bits/*.asm) $(wildcard nasms/*.asm) $(wildcard nasms/scheduler/*.asm) $(wildcard nasms/common/*.asm) 

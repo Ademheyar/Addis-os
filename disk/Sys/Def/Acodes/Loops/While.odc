@@ -1,0 +1,8 @@
+DEFINE While
+  DEFINE c1
+    chiled def 1
+  END DEFINE
+  DEFINE c2
+    chiled def 2
+  END DEFINE
+END DEFINE

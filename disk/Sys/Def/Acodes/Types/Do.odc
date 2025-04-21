@@ -1,0 +1,5 @@
+DEFINE Do
+  GET
+  COPY WORDS TO END Do
+  Get the copy from 0.0.0.last
+END DEFINE

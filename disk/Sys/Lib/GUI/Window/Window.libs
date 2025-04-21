@@ -1,0 +1,26 @@
+Window(Shap='rectangel', x=0, y=0, width=100, hight=100, Titlbar=True, isExitbut=True, isMinbut=True):
+    win = NULL
+    Exitbut = NULL
+    Minbut = NULL
+    Titlbar = NULL
+    Tbar(isTitlbar=True):
+        Exit(isExitbut=True)
+            if isExitbut=True:
+                Exitbut = Button(Titlbar, 'rectangel', x, y, width, hight)
+                return True
+            return False
+        Min(isMinbut=True):
+            if isMinbut=True:
+                Minbut = Button(Titlbar, 'rectangel', x, y, width, hight)
+                return True
+            return False
+        if isTitlbar == True:
+            Titlbar = Frame(win, 'rectangel', x, y, width, hight)
+            jump Min
+            jump Exit
+            return True
+        return False
+    Create(Shap='rectangel', x=0, y=0, width=100, hight=100):
+        win = Draw(Shap, x, y, width, hight, Screen)
+        jump Tbar
+    return win

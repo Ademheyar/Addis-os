@@ -1,0 +1,2 @@
+VESA=/Sys/Driv/Screen/Vesa.odc
+keyboard=/Sys/Driv/Keybord/Keybord.odc

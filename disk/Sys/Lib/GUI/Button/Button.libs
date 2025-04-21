@@ -1,0 +1,16 @@
+Button(On=Focesd, Shap='rectangel', x=0, y=0, width=100, hight=100, isEnabeld=True, islabel=True):
+    but = NULL
+    nutlabel = NULL
+    showlabel(islabel=True):
+        if islabel=True:
+            nutlabel = Label(but, 'rectangel', x, y, width, hight)
+            return True
+        return False
+    Enabeld(isEnabeld=True):
+        if isEnabeld == True:
+            pass
+        return False
+    Create(Shap='rectangel', x=0, y=0, width=100, hight=100):
+        but = Draw(Shap, x, y, width, hight, On)
+        jump showlabel
+    return but

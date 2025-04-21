@@ -1,0 +1,4 @@
+
+    
+FANTCION MAIN EXPACTE shap  EQUAL 'rectangel' x  EQUAL 0 y  EQUAL 0 width  EQUAL 100 hight  EQUAL 100 on  EQUAL SCREEN
+    RETURN DRAW shap x y width hight on

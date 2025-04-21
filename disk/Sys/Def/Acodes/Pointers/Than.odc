@@ -1,0 +1,3 @@
+DEFINE Than
+  TAKE Than  END TAKE
+END DEFINE

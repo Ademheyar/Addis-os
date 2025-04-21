@@ -1,0 +1,17 @@
+#include <Libs/Unistd/Unistd.h>
+#include <Libs/Errno/Errno.h>
+#include <Libs/Sys/ioctl.h>
+
+//static char _tty_name[30]; // only needs to hold /dev/pty/ttyXXXXXXX
+/*
+char * ttyname(int fd) {
+
+	if (!isatty(fd)) {
+		errno = ENOTTY;
+		return NULL;
+	}
+
+	ioctl(fd, IOCTLTTYNAME, _tty_name);
+
+	return _tty_name;
+}*/

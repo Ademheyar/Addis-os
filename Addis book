@@ -1,0 +1,172 @@
+The Official Guide to Addis OS
+Chapter 1: Introduction to Addis OS
+
+Addis OS is a unique and powerful operating system designed to be controlled through script files written in a simplified, assembly-like language with custom keywords. These script files use the .oac extension (which stands for Operating Assembly Command). Addis OS will interpret and execute these scripts to perform various tasks.
+Key Features:
+
+    Works on all drives
+
+    Supports execution of high-level commands using custom keywords
+
+    Reads and executes .oac scripts
+
+    Expandable and customizable for developers
+
+Chapter 2: Syntax Basics
+
+All keywords in Addis OS are written in ALL CAPITAL LETTERS to distinguish them from regular text or parameters. Parameters such as strings, numbers, or paths are written in lowercase or inside quotes depending on their type.
+
+Example of a basic .oac script:
+
+INCLUDE "boot/startup.oac"
+SHOWMSG "Welcome to Addis OS"
+
+Chapter 3: Addis OS Keywords
+
+Here are the main keywords Addis OS supports:
+1. INCLUDE
+
+Usage: INCLUDE "path/to/file.oac"
+
+Includes another script file into the current script. Useful for modular design or calling standard procedures.
+2. SHOWMSG
+
+Usage: SHOWMSG "Text to display"
+
+Displays a message on the screen, like a simple echo or print command.
+3. SETVAR
+
+Usage: SETVAR varname = value
+
+Defines or updates a variable.
+4. IF
+
+Usage: IF varname == value THEN ...
+
+Performs a conditional operation.
+5. GOTO
+
+Usage: GOTO labelname
+
+Jumps to a labeled part of the code.
+6. LABEL
+
+Usage: LABEL labelname
+
+Marks a location in code to be used with GOTO.
+7. WAIT
+
+Usage: WAIT seconds
+
+Pauses execution for a number of seconds.
+8. EXECUTE
+
+Usage: EXECUTE "program.exe"
+
+Runs a system program or another executable.
+
+Let me know:
+
+    Do you want to include more advanced commands (like file manipulation, screen control, or system settings)?
+
+    Would you like this in a downloadable PDF or editable document format?
+
+    Should we go deeper into how the OS reads the file line-by-line and interprets commands?
+
+I'll keep expanding the chapters as you guide me.
+You said:
+yes include more advanced commands (like file manipulation, screen control, or system settings) and go deeper into how the OS reads the file line-by-line and interprets commands
+ChatGPT said:
+
+Perfect — let’s expand the book with more advanced functionality and dive into the inner workings of how Addis OS interprets commands. Here’s the next part of the guide:
+Chapter 4: Advanced Keywords and Functions
+
+Addis OS goes beyond simple scripting by offering powerful control over files, the screen, and system settings.
+9. CREATEFILE
+
+Usage: CREATEFILE "path/to/newfile.txt"
+
+Creates a new file at the given path. If the file already exists, it does nothing or may overwrite based on a flag.
+10. WRITEFILE
+
+Usage: WRITEFILE "path/to/file.txt" "text to write"
+
+Writes text into a file. Can be used multiple times to append or overwrite content.
+11. READFILE
+
+Usage: READFILE "path/to/file.txt" VAR varname
+
+Reads the contents of a file and stores it into a variable for later use.
+12. DELETEFILE
+
+Usage: DELETEFILE "path/to/file.txt"
+
+Deletes the specified file.
+13. SETSCREEN
+
+Usage: SETSCREEN WIDTH=800 HEIGHT=600 COLOR=black
+
+Configures the screen size and background color. Useful for fullscreen modes or custom UI experiences.
+14. PRINTAT
+
+Usage: PRINTAT X=100 Y=200 "Text at coordinates"
+
+Prints a string at specific screen coordinates. This allows for more controlled UI display.
+15. SETCOLOR
+
+Usage: SETCOLOR FOREGROUND=white BACKGROUND=blue
+
+Sets the text and background colors for future output.
+16. SETSYSVAR
+
+Usage: SETSYSVAR NAME=VARNAME VALUE=VALUE
+
+Changes a system-level setting or environment variable.
+Chapter 5: Understanding the Execution Engine
+
+Let’s look under the hood at how Addis OS processes .oac files.
+How it works:
+
+    File Load
+    The .oac file is read as plain text. Each line is stored in memory as a command string.
+
+    Line-by-Line Parsing
+    The OS parses each line:
+
+        It trims whitespace.
+
+        It ignores empty lines or lines starting with # (comments).
+
+        It splits the line into a keyword and arguments.
+
+    Keyword Matching
+    The first word (all caps) is matched against the OS’s internal command list. If it matches:
+
+        The OS checks the syntax.
+
+        Executes the associated function in the kernel.
+
+    Variable Handling
+    If the script uses variables, the OS uses a simple dictionary to store and fetch values.
+
+    Error Handling
+    If a keyword is unknown or syntax is invalid, an error is shown with the line number.
+
+    Stacked Includes
+    When INCLUDE is used, the current file is paused, and the included file is processed. Once it finishes, the OS returns to the original script.
+
+Example .oac Script with Advanced Functions
+
+SETSCREEN WIDTH=1024 HEIGHT=768 COLOR=black
+SETCOLOR FOREGROUND=white BACKGROUND=black
+SHOWMSG "Booting Addis OS..."
+
+CREATEFILE "logs/startup.log"
+WRITEFILE "logs/startup.log" "Addis OS boot started."
+
+READFILE "config/welcome.txt" VAR welcomeText
+SHOWMSG $welcomeText
+
+WAIT 2
+EXECUTE "programs/main.app"
+

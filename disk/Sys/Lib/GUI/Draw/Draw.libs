@@ -1,0 +1,10 @@
+Draw(shap='rectangel', x=0, y=0, width=100, hight=100, on=Screen):
+    if on == Screen:
+        pass
+    else:
+        swich(Shap):
+            case 'rectangel':
+                pass
+            break
+    
+    

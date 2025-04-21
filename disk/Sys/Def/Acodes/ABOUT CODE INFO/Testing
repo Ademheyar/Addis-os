@@ -1,0 +1,103 @@
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DRIVER 3 CLEAR
+Set TAKE NAME shap END TAKE To TABLE 1 NEW AS TAKE NAME hold END TAKE
+Set TAKE X 10 END TAKE AND TAKE Y 10 END TAKE AND TAKE WIDTH DRIVER 3 WIDTH - 10 END TAKE AND TAKE HEIGHT DRIVER 3 HEIGHT - 10 END TAKE AND TAKE SHAPE ROUNDED RECTANGLE END TAKE To shap
+DRIVER 3 hold
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DRIVER 3 CLEAR
+Add TAKE NAME Screen END TAKE To TABLE 1 NEW
+Set TAKE WIDTH DRIVER 3 WIDTH END TAKE OR TAKE HEIGHT DRIVER 3 HEIGHT END TAKE To Screen
+
+TABLE 1 NEW LOCALE AS TAKE NAME hold END TAKE
+Set TAKE X 10 END TAKE OR TAKE Y 10 END TAKE AND TAKE WIDTH DRIVER 3 WIDTH - 10 END TAKE AND TAKE HEIGHT DRIVER 3 HEIGHT - 10 END TAKE To hold
+Set TAKE SHAPE ROUNDED RECTANGLE END TAKE To hold
+Add TAKE NAME shap END TAKE To hold
+Add shap To Screen
+DRIVER 3 Screen
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DRIVER 3 CLEAR
+DRIVER 5 OPEN TAKE PATH /boot/words.txt END TAKE TAKE NAME test END TAKE
+READ TEXT TAKE NAME test END TAKE TAKE NAME txt END TAKE
+Set TAKE X 1 END TAKE AND TAKE Y 1 END TAKE AND TAKE FRONT_COLOR WIHTE END TAKE To txt
+DRIVER 3 txt
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DRIVER 3 CLEAR
+DRIVER 5 OPEN TAKE PATH /Sys/Wallp/wallp.bmp END TAKE TAKE NAME test END TAKE
+READ IMAGE TAKE NAME test END TAKE TAKE NAME img END TAKE
+Set TAKE X 0 END TAKE AND TAKE Y 0 END TAKE AND TAKE WIDTH DRIVER 3 WIDTH END TAKE AND TAKE HEIGHT DRIVER 3 HEIGHT END TAKE To img
+Add TAKE NAME win END TAKE To TABLE 1 NEW
+Set TAKE X 100 END TAKE AND TAKE Y 100 END TAKE AND TAKE WIDTH 600 END TAKE AND TAKE HEIGHT 600 END TAKE To win
+Set TAKE FRONT_COLOR WIHTE END TAKE To win
+Add win To img
+DRIVER 3 img
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DRIVER 3 CLEAR
+Add TAKE NAME Screen END TAKE To TABLE 1 NEW
+Set TAKE WIDTH DRIVER 3 WIDTH END TAKE OR TAKE HEIGHT DRIVER 3 HEIGHT END TAKE To Screen
+
+Add TAKE NAME Titel END TAKE To TABLE 1 NEW
+Set TAKE X DRIVER 3 WIDTH / 2 - 100 END TAKE AND TAKE Y 10 END TAKE AND TAKE VALUE WELCOME TO ADDIS OS TO SELECT END TAKE To Titel
+Add Titel To Screen
+
+Add TAKE NAME list END TAKE To TABLE 1 NEW
+Set TAKE X 10 END TAKE AND TAKE Y Screen Titel Y + 10 END TAKE AND TAKE WIDTH Screen WIDTH - 20 END TAKE AND TAKE HEIGHT Screen HEIGHT - 50 END TAKE To list
+Set TAKE SHAPE RECTANGLE END TAKE To list
+Add list To Screen
+
+Add TAKE NAME help END TAKE To TABLE 1 NEW
+Set TAKE X 10 END TAKE AND TAKE Y Screen list HEIGHT + 10 END TAKE AND TAKE VALUE TO SELECT USE UP/DOWN KEY AND PRESS ENTER TO SELECT END TAKE To help
+Add help To Screen
+
+DRIVER 3 Screen
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DRIVER 3 CLEAR
+Add TAKE NAME Screen END TAKE To TABLE 1 NEW
+Set TAKE WIDTH DRIVER 3 WIDTH END TAKE AND TAKE HEIGHT DRIVER 3 HEIGHT END TAKE To Screen
+
+List new Screen TAKE NAME list END TAKE
+Set TAKE X 10 END TAKE AND TAKE Y 10 END TAKE To list
+Set TAKE WIDTH DRIVER 3 WIDTH - 20 END TAKE AND TAKE HEIGHT DRIVER 3 HEIGHT - 10 END TAKE To list
+
+List text TAKE VALUE Testing text listing 1 END TAKE list
+List text TAKE VALUE Testing text listing 2 END TAKE list
+
+DRIVER 3 Screen
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DRIVER 3 CLEAR
+Add TAKE NAME Screen END TAKE To TABLE 1 NEW
+Set TAKE WIDTH DRIVER 3 WIDTH END TAKE OR TAKE HEIGHT DRIVER 3 HEIGHT END TAKE To Screen
+
+Add TAKE NAME Titel END TAKE To TABLE 1 NEW
+Add Titel To Screen
+Set TAKE X DRIVER 3 WIDTH / 2 - 100 END TAKE AND TAKE Y 10 END TAKE AND TAKE VALUE WELCOME TO ADDIS OS TO SELECT END TAKE To Screen Titel
+
+List new Screen TAKE NAME list END TAKE
+Set TAKE X 10 END TAKE AND TAKE Y P0C Screen Titel Y + 20 END TAKE To Screen list
+Set TAKE WIDTH DRIVER 3 WIDTH - 20 END TAKE AND TAKE HEIGHT DRIVER 3 HEIGHT - 50 END TAKE To Screen list
+
+List text TAKE VALUE COMMAND PROMPT MODE END TAKE Screen list
+List text TAKE VALUE SAFE MODE END TAKE Screen list
+List text TAKE VALUE START NORMALLY END TAKE Screen list
+
+Add TAKE NAME help END TAKE To TABLE 1 NEW
+Set TAKE X 10 END TAKE AND TAKE Y P0C Screen list H + 10 END TAKE AND TAKE VALUE TO SELECT USE UP/DOWN KEY AND PRESS ENTER TO SELECT END TAKE To help
+Add help To Screen
+
+DRIVER 3 Screen
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+WHEN keyboard VALUE TAKE STRING SETTED END TAKE 
+TAKE OPREATER EQUAL END TAKE TAKE HEX 97 END TAKE 
+TAKE DO WWWWWWWWWWWW END TAKE
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+--------------------------------------------------------------------------------------------------------------------
+
+

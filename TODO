@@ -1,0 +1,8 @@
+Whan Reading File the Filename is valued only if it is  < 12 make it flaxable if it is possible
+//TODO: ON COMPILER TO CHECK IF NEW OBJ EXIST befor adding the new
+//TODO: MAKE LANGTH CODE CHOSEN BY USER LOG
+//TODO: CREATE FILE FINDER
+//TODO: on FIND_DB chack if local and states name is given if it is chack main and parent name is same
+// TODO: on fix_var opreat() chack what kind of var is
+
+//TODO: 

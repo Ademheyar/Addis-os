@@ -1,0 +1,3 @@
+DEFINE String
+  TAKE Type String END TAKE
+END DEFINE
