@@ -307,6 +307,9 @@ void get_bootinfo()
     // reload_current_task();
 }
 
+// we will staring coding in c starting from this function 
+// it is called by main in kernel.asm
+
 // Kernel main function to initialize the system
 void kernel_main(unsigned long magic __UNUSED__, multiboot_info_t* mbi_phys) {
     // Receive BIOS information
