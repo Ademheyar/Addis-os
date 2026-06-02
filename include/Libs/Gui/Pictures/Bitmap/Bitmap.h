@@ -6,7 +6,6 @@
 // #include <Libs/Stdio/Stdio.h> // hd_driver // ata, Stddef, stdbool, Stdarg // fat // dosfs 
 //#include <Addis/Drivers/Filse_system/dosfs/dosfs.h> // mmu_frames // mmu_heap //  mmu_pafing 
 //#include <Libs/Malloc/Mmu_paging.h> // #include <Kernel.h> // x86.h // Multiboot.h> 
-// #include <Addis/Drivers/BIOSINFO/Multiboot.h> // stdint
 
 
 //#include <Libs/Gui/windows/window.h>
@@ -16,8 +15,9 @@
 //#include <Libs/Gui/windows/window.h>
 
 
-/*#include <System.h>
 #include <Libs/Stdint/Stdint.h>
+
+/*#include <System.h>
 #include <Libs/Stddef/Stddef.h>
 #include <Libs/Stdarg/Stdarg.h>
 #include <Addis/Drivers/Filse_system/Dosfs/Dosfs.h>

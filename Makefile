@@ -18,14 +18,13 @@ newbin := build/iso/boot/Addis.bin
 EMULATOR_FLAGS = -kernel
 
 linker_script := linkers/kernel.ld
-#ldflags :=  -m elf_i386 -T
-ldflags :=  -nostdlib -n -T 
+ldflags :=  -m elf_x86_64 -nostdlib -n -T $(linker_script) --no-warn-rwx-segment
 
 #nasm_source_files := $(shell find nasms/ -name *.asm)
 -include ./assembly_source_files.list
 #assembly_object_files := $(patsubst nasms/%.asm, build/%.o, $(assembly_source_files))
 nasm_object_files := $(patsubst nasms/%.asm, build/%.o, $(assembly_source_files))
-nasm_flags := -w-number-overflow -felf64
+nasm_flags := -w-number-overflow -f elf64
 #-f elf32
 
 #c_source_files := $(shell find src/ -name *.c)
@@ -77,10 +76,10 @@ $(iso): $(kernel) $(grub_cfg)
 	@mkdir -p disk/boot/grub
 	@cp $(kernel) disk/boot/Addis.bin
 	@cp $(grub_cfg) disk/boot/grub
-	@grub-mkrescue -o $(iso) disk/ 2> /dev/null
+	@grub-mkrescue -o $(iso) disk/
 
 $(kernel): $(nasm_object_files) $(c_object_files) $(linker_script)
-		$(ld) $(ldflags) $(linker_script) -o $(kernel) $(nasm_object_files) $(c_object_files)
+		$(ld) $(ldflags) -o $(kernel) $(nasm_object_files) $(c_object_files)
 		#$(objdump) -D $(kernel) > build/Addis.dump.asm
 		#$(objdump) -x $(kernel) >> build/Addis.headers.txt
 

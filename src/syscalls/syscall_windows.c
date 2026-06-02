@@ -1,11 +1,16 @@
-#include <Libs/Gui/windows/window.h>
+/*#include <Libs/Gui/windows/window.h>
 #include <Libs/Malloc/Mmu_heap.h>
 #include <Addis/Process.h>
 #include <Kernel.h>
  #include <Addis/Libs/String/String.h>
 #include <Addis/Drivers/Screen/Vesa/Vesa.h>
 #include <Addis/Drivers/Screen/Vesa/Vesa.h>
+*/
+
 #include <Addis/Interrupt/Isr.h>
+
+
+#include <Libs/Stdint/Stdint.h>
 
 // syscall_windows_create(int x, int y, int width, int height, char* title)
 uint64_t syscall_windows_create(isr_ctx_t *regs) {

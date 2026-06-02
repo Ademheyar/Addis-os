@@ -1,6 +1,6 @@
-#include <Libs/Assert/Assert.h>
-//#include <Addis/Libs/String/Text.h>
-
+//#include <Libs/Assert/Assert.h>
+#include <Addis/Libs/String/Text.h>
+#include <Addis/Process.h> // for defining task_list_current and other process-related functions
 
 _Bool thisvar(char *istype, char *var){
   if (issame(istype, "HEXA")) {
@@ -22,7 +22,20 @@ _Bool thisvar(char *istype, char *var){
   return false;
 }
 
+
+
 void convert(char *text){
+
+  typedef struct {
+    char array[10000];
+    int integer;
+    uint8_t hexa_8;
+    uint16_t hexa_16;
+    uint32_t hexa_32;
+    char list[10000][100], *prevtex[10];
+    int listline, linstcount, prevon;
+  }to;
+  to convertto;
   int i = 0, hasletter = 0, hasnum = 0;
   for (int c = 0; *(text + c) != '\0'; c++){
     convertto.array[i] = *(text + c);

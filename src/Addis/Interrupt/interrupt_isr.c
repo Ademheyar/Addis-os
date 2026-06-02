@@ -1,9 +1,9 @@
 #include <Addis/Interrupt/Isr.h>
+#include <Addis/Interrupt/Idt.h>
 #include <System.h>
 #include <Addis/Interrupt/Pic.h>
 #include <Libs/Printf.h>
 #include <Drivers/Serial/Serial.h>
-#include <Addis/Interrupt/Isr.h>
 #include <Kernel.h>
 #include <x86.h>
 #include <Addis/Libs/String/String.h>
@@ -16,6 +16,9 @@
 //#include <string.h>
 //#include <process.h>
 //#include <mmu_heap.h>
+
+idt_gate_t idt[IDT_ENTRIES];
+idt_register_t idt_reg;
 
 #define NB_REGISTERS_PUSHED_BEFORE_CALL 15
 

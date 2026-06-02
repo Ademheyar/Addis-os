@@ -1,7 +1,9 @@
-#ifndef SCREEN_H
-#define SCREEN_H
+#ifndef _VGA_H
+#define _VGA_H
 
-#include <Drivers/Serial/Serial.h>
+#pragma once
+
+#include <Libs/Stdint/Stdint.h>
 
 /*
  * Some constans defined for vga 80 * 25 mode
@@ -38,6 +40,15 @@
 // Get pixel
 #define PIXEL(x, y) SCREEN[y * 80 + x]
 
+extern unsigned char inportb(unsigned short _port);
+extern unsigned short inports(unsigned short _port);
+extern unsigned int inportl(unsigned short _port);
+extern void outportl(unsigned short _port, unsigned int _data);
+extern void outportsm(unsigned short port, unsigned char * data, unsigned long size);
+extern void inportsm(unsigned short port, unsigned char * data, unsigned long size);
+extern void outports(unsigned short _port, unsigned short _data);
+extern void outportb(unsigned short _port, unsigned char _data);
+
 enum {
   PRINT_COLOR_BLACK = 0,
 	PRINT_COLOR_BLUE = 1,
@@ -70,7 +81,7 @@ void print_char(char c);
 
 void scroll();
 
-void update_cursor();
+void update_cursor(int x, int y);
 
 void set_curr_color(uint8_t color);
 
@@ -78,8 +89,8 @@ uint8_t get_curr_color();
 
 void clear();
 
-int cursorX , cursorY;
-const uint8 sw ,sh ,sd ; 
+extern int cursorX , cursorY;
+extern const uint8 sw ,sh ,sd ; 
                                                     //We define the screen width, height, and depth.
 void clearLine(uint8 from,uint8 to);
 

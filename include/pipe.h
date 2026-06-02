@@ -4,7 +4,7 @@
  */
 
 
-
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
 #include <Libs/Stdint/Stdint.h>
 
 typedef struct _pipe_device {

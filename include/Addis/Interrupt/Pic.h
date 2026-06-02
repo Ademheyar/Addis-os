@@ -1,7 +1,8 @@
 #ifndef __PIC_H_
 #define __PIC_H_
 
-#include <Addis/Drivers/Screen/Vesa/Vesa.h>
+
+#include <Libs/Stdint/Stdint.h> // for defining uint64_t and other types
 
 #define PIC_MASTER_CTRL 0x20
 #define PIC_MASTER_DATA 0x21

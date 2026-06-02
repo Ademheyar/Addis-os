@@ -1,5 +1,3 @@
-#include <Addis/Libs/String/String.h>
-
 int charToint(char c);
 void newvoidadd(char dest[], char src[], char con);
 char* replace(const char* s, const char* oldW, const char* newW);

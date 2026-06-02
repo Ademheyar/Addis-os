@@ -1,15 +1,11 @@
-#include <Addis/Process.h>
-#include <Libs/Errno/Errno.h>
-//#include <Libs/Stdlib/Stdlib.h>
-
 #ifndef __KEYBOARD_H
 #define __KEYBOARD_H
 
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
+
 // this will be used if keymap not given on given_list
 extern int keymap[105][2];
-char *given_list;
-// tabel that Enabeled Keybord will be pointed
-struct USER_WDB *Keyboard_Enebler_tabel;
+extern char *given_list;
 
 #define KEYBOARD_DATA_PORT 0x60
 

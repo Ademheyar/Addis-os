@@ -1,6 +1,5 @@
 #ifndef SHELL_H
 #define SHELL_H
-#include <Addis/Read_Do.h>
 
 void launch_shell(int n);
 void sum();

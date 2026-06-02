@@ -1,7 +1,17 @@
-#include <Addis/Tables/Tables.h>
 
 #ifndef __PROCESS_H
 #define __PROCESS_H
+
+#pragma once
+
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
+#include <Addis/Libs/List/Tree.h>
+
+#include <Libs/Stdbool/Stdbool.h>
+
+#include <Libs/Malloc/Mmu_frames.h>
+#include <Libs/Malloc/Mmu_heap.h>
+#include <Libs/Malloc/Mmu_paging.h>
 
 #include <Fs.h>
 #include <Signal.h>
@@ -14,9 +24,31 @@
 #define PROCESS_STATE_READ_ONE_FANCTION		4
 #define PROCESS_STATE_READ_ONE_LINE 			5
 
-
 /* vim: tabstop=4 shiftwidth=4 noexpandtab
  */
+
+ typedef struct task_struct {
+  	uint64_t rsp;
+  	uint32_t id;
+  	uint16_t attribute;
+  	uint16_t state;
+	uint16_t isreloaded;
+  	uint8_t *kstack;
+  	// uint8_t kstack[KERNEL_STACK_SIZE];
+  	// For now we are supporting only 2MB programs :) 
+  	// We keep track of one entry in PDE that will be mapped to 0x0000000 (user program space)
+  	pde_t *pde;
+  	// pde_t pde[512]; 
+  	// Win manager reference if any
+  	void* window;
+	void* fac;
+	struct READINGINFO *holded_info;
+
+  struct task_struct* next;
+  struct task_struct* prev;
+  struct task_struct* parent;
+}  __attribute__((packed)) task_t;
+
 
 extern task_t *task_list_head;
 extern task_t *task_list_last;
@@ -189,6 +221,7 @@ typedef struct {
 	process_t * process;
 	int is_fswait;
 } sleeper_t;
+
 
 extern void initialize_process_tree(void);
 extern process_t * spawn_process(volatile process_t * parent, int reuse_fds);

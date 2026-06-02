@@ -1,5 +1,18 @@
+#include <Addis/Tables/WorkingT.h>
+#include <Addis/Libs/String/String.h>
+#include <Addis/Read_Resivers.h>
+#include <Addis/Read_Do.h>
 #include <Addis/Process.h>
+#include <Addis/Drivers/Screen/Vesa/Vesa.h>
+#include <Addis/Libs/type/type.h>
+#include <Kernel.h>
 
+#include <Addis/Libs/String/Text.h>
+
+
+
+Loged_user *loged_user[5];
+SYSVARS sysvars[5];
 
 struct READINGINFO *get_reading_table(char c)
 { // this will get where geted var will be saved and sand back rusoult

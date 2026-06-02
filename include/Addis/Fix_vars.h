@@ -1,8 +1,5 @@
-#include <Addis/Readcode.h>
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
 
-
-
-_Bool fix_varprop(struct USER_WDB *var, char *dowhat, struct ROW *value);
 
 _Bool get_locale(char *name, char *with);
 void marge_vars(int num1, int num2, char *text1, char *text2, char *dowhat);

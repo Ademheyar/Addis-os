@@ -7,6 +7,6 @@
 * (at your option) any later version.
 */
 
-#include <Addis/Libs/String/Text.h>
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
 
 struct ROW *READ_INCLUDE(list_t *read);

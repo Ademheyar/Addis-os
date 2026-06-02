@@ -660,20 +660,25 @@ static void * __attribute__ ((malloc)) klmalloc(uintptr_t size) {
 			 */
 			uintptr_t adj = SMALLEST_BIN_LOG + bucket_id;
 			uintptr_t i, available = ((PAGE_SIZE - sizeof(klmalloc_bin_header)) >> adj) - 1;
-
+			#pragma GCC diagnostic push
+			#pragma GCC diagnostic ignored "-Warray-bounds"
 			uintptr_t **base = bin_header->head;
-			for (i = 0; i < available; ++i) {
-				/*
-				 * Our available memory is made into a stack, with each
-				 * piece of memory turned into a pointer to the next
-				 * available piece. When we want to get a new piece
-				 * of memory from this block, we just pop off a free
-				 * spot and give its address.
-				 */
-				base[i << bucket_id] = (uintptr_t *)&base[(i + 1) << bucket_id];
+			if (base != NULL && available > 0) {
+				for (i = 0; i < available; ++i) {
+					/*
+					* Our available memory is made into a stack, with each
+					* piece of memory turned into a pointer to the next
+					* available piece. When we want to get a new piece
+					* of memory from this block, we just pop off a free
+					* spot and give its address.
+					*/  
+					int nextindex = i << bucket_id;
+					if (base == NULL) return NULL;
+					*(base + nextindex) = (uintptr_t *)(base + ((i + 1) << bucket_id));
+				}
+				if (base != NULL && (available << bucket_id)) *(base + (available << bucket_id)) = 0;
+				bin_header->size = bucket_id;
 			}
-			base[available << bucket_id] = NULL;
-			bin_header->size = bucket_id;
 		}
 		uintptr_t ** item = klmalloc_stack_pop(bin_header);
 		if (klmalloc_stack_empty(bin_header)) {

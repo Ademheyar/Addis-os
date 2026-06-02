@@ -1,5 +1,6 @@
 #include <Libs/Gui/windows/window.h>
 #include <Drivers/mouse/mouse.h>
+#include <Libs/Gui/messags/messaging.h>
  #include <Addis/Libs/String/String.h>
 #include <Kernel.h>
 #include <x86.h>

@@ -1,7 +1,12 @@
 #ifndef __ISR_H
 #define __ISR_H
 
-#include <Addis/Interrupt/Idt.h>
+#include <Libs/Stdint/Stdint.h> // for defining uint64_t and other types
+
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
+#include <Addis/Libs/String/String.h> // for defining string-related functions
+#include <Addis/Interrupt/Pic.h>
+
 
 // exceptions, cf. http://wiki.osdev.org/Exceptions
 #define EXCEPTION_DE 0

@@ -1,4 +1,3 @@
-#include <Libs/Stdio/Stdio.h>
 
 #ifndef LIST_H
 #define LIST_H
@@ -6,12 +5,15 @@
  * 
  * General-purpose list implementations.
  */
-#ifdef _KERNEL_
+
+#pragma once
+
+ #ifdef _KERNEL_
 	#include <Libs/Kheap.h>
 #endif
 
+#include <Libs/Stdio/Stdio.h>
 
-#pragma once
 
 typedef struct listnode {
 	struct listnode * next;

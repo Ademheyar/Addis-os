@@ -1,29 +1,13 @@
-//#include <Addis/Fix_vars.h>
-#include <Addis/Drivers/Screen/Vesa/Vesa.h>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#include <Addis/Fix_vars.h>
+#include <Addis/Readcode.h>
+#include <Addis/Process.h>
+#include <Addis/Libs/String/String.h>
+#include <Addis/Drivers/Keyboard/Keyboard.h>
+#include <Libs/Stdbool/Stdbool.h>
+#include <Addis/Libs/type/type.h>
+#include <Kernel.h>
+#include <Addis/Libs/String/Text.h>
+#include <Addis/Tables/WorkingT.h>
 
 
 
@@ -258,7 +242,7 @@ void read_fanctions(list_t *read) { // working on this
 							calledfancwith = task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->word;
 							break;
 							}
-							if (&task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->value) wr++;
+							if (task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->value.istype) wr++;
 							else wr = 1;
 						}
 					}

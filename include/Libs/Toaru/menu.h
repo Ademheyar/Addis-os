@@ -1,8 +1,7 @@
 
-
-#include <Libs/Toaru/graphics.h>
-#include <Libs/Toaru/hashmap.h>
-#include <Addis/Libs/List/List.h>
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
+#include <Addis/Libs/Math/Math.h>
+#include <Addis/Libs/String/String.h>
 
 enum MenuEntry_Type {
 	MenuEntry_Unknown,

@@ -1,8 +1,13 @@
-#include <Addis/Libs/type/type.h>
 #ifndef STRING_H
 #define STRING_H
 
 #pragma once
+
+
+//#include <Addis/Libs/type/type.h>
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
+
+
 uint16_t strtohex(char *str);
 char *stradd(char dest[], char src[], char con);
 extern char * strdup(char * src);

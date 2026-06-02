@@ -2,9 +2,12 @@
 // http://www.brokenthorn.com/Resources/OSDevPic.html or some other materials that explain PIC, otherwise the following code is impossible to uderstand....
  
 #include <Addis/Interrupt/Pic.h>
+#include <Kernel.h>
+
+#include <Addis/Drivers/Screen/Vesa/Vesa.h>
 
 //#include <pic.h>
-//#include <x86.h>
+#include <x86.h>
 
 void init_kernel_pic() {
     // ICW1

@@ -1,4 +1,18 @@
+#include <Addis/Drivers/BIOSINFO/Multiboot.h>
+#include <Kernel.h>
+#include <Addis/Tables/WorkingT.h>
+#include <Addis/Drivers/Screen/Vesa/Vesa.h>
+
+#include <Addis/Drivers/Filse_system/Fat/Fat.h>
+#include <Drivers/Serial/Serial.h>
+#include <Addis/Interrupt/Idt.h>
+#include <Addis/Read_Do.h>
+#include <Addis/Drivers/Screen/Vga/Vga.h>
+#include <Addis/Libs/String/Text.h>
+#include <Addis/Readcode.h>
 #include <Shell.h>
+#include <x86.h>
+
 
 // Entry point for the kernel
 void kmain()
@@ -34,7 +48,7 @@ void Read_focused()
     if (task_list_current->holded_info->read->fread) 
     {
         // Log debug information about the task being read
-        DEBUG("GOING %d TO READ TASK %d CODE\n", task_list_current->state, task_list_current->id);
+        DEBUG("GOING %d TO READ TASK %d CODE\n\n\n", task_list_current->state, task_list_current->id);
 
         do {
             // Log debug information about the reading process
@@ -47,13 +61,10 @@ void Read_focused()
 
             // If there is new code to read, process it
             if(task_list_current->holded_info->read->fread->read_new) {
-                DEBUG("to fix Code(%s)>>>>\n", task_list_current->holded_info->read->fread->read_new);
-
+                DEBUG("to fix Code(%s) Going to read Bodys\n", task_list_current->holded_info->read->fread->read_new);
                 // Read the body of the code
                 char *rbcode = read_bodys(task_list_current->holded_info->read->fread->read_new);
-
-                // Log debug information about the fixed code
-                DEBUG("to fixed Code(%s)....\n", rbcode);
+                DEBUG("Done Reading Bodys fixed Code(%s)....\n", rbcode);
 
                 // If the code is valid, process it further
                 if(rbcode && (!issame(rbcode, "") || !issame(rbcode, " ")))
@@ -72,22 +83,20 @@ void Read_focused()
                     Clear_worktables(-1);
 
                     // Log debug information about the completed code fixing
-                    DEBUG(" done fixing code r %d %d  l %d v %s\n", task_list_current->holded_info->read->fread->reading_on, task_list_current->holded_info->read->fread->reading_stoped, (int)task_list_current->holded_info->read->fread->reading_value->length, rbcode);
+                    DEBUG(" done Pripering Working Table r %d %d  l %d v %s\n", task_list_current->holded_info->read->fread->reading_on, task_list_current->holded_info->read->fread->reading_stoped, (int)task_list_current->holded_info->read->fread->reading_value->length, rbcode);
                 }
+                // If no valid code is found, mark the reading as stopped
                 else {
-                    // If no valid code is found, mark the reading as stopped
                     task_list_current->holded_info->read->fread->reading_stoped = (int)task_list_current->holded_info->read->fread->reading_value->length;
-
                     // Log debug information about the absence of code
                     DEBUG("There is no code to fix\n");
-
                     // Remove the reading task
                     Remove_READING();
                 }
             }
 
             // Log debug information about the reading process
-            DEBUG(" to read\n");
+            DEBUG(" Reading The Code\n\n\n");
 
             // Check if there is any code to read
             if(task_list_current->holded_info->read->fread->reading_value && task_list_current->holded_info->read->fread->reading_value->length > 0){
@@ -97,6 +106,7 @@ void Read_focused()
                     DEBUG("length(%d) stoped(%d) reading code {\n%s\n}\n", task_list_current->holded_info->read->fread->reading_value->length, task_list_current->holded_info->read->fread->reading_stoped, task_list_current->holded_info->read->fread->main_readcode);        
 
                     // Perform the reading operation
+                    // this will read the code and do what it says to do
                     ReadDo();
 
                     // Log debug information about the completed reading
@@ -111,13 +121,11 @@ void Read_focused()
                         // (Detailed handling logic is omitted for brevity)
                     }
                 }
+                // If no code is left to read, mark the reading as stopped
                 else {
-                    // If no code is left to read, mark the reading as stopped
                     task_list_current->holded_info->read->fread->reading_stoped = (int)task_list_current->holded_info->read->fread->reading_value->length;
-
                     // Log debug information about the absence of code
                     DEBUG("There is no code to read\n");
-
                     // Remove the reading task
                     Remove_READING();
                 }
@@ -125,7 +133,7 @@ void Read_focused()
         } while(task_list_current->state == 3 || task_list_current->state >= 6);
 
         // Log debug information about the completed reading task
-        DEBUG("DONE READING TASK %d CODE\n", task_list_current->id);
+        DEBUG("DONE READING TASK %d CODE\n\n\n", task_list_current->id);
     }
 
     // Log debug information about the completed reading process
@@ -139,26 +147,28 @@ void Read_focused()
 void get_bootinfo()
 {
     // Check if the current task has any information, if not, create a new one
-    if(!task_list_current->holded_info)
+    // this will check if there is any information for current task if not it will create new one
+    if(task_list_current->holded_info) 
     {
         DEBUG("Going to create new readinginfo\n");
-
         // Create a new reading task
+        // Create_readinfo('C'); --- IGNORE ---
         Create_readinfo('C'); 
+        
         DEBUG("Goint to start reading from kernel \n");
         //int i ;
         int state = PROCESS_STATE_READ_TO_ONE_END;
         sysinfo.sys_mode = stradd("", "START", 0);
-        DEBUG("Going to add first code from file boot start.oac /boot/start.oac\n");
+        
+        DEBUG("Going to add first code from file boot start.oac /boot/Start.oac\n");
         // Get the code from the specified path
-        char *code = get_code("/boot/start.oac");
-
+        char *code = get_code("/boot/Start.oac"); // the first code to read will be start.oac because it will prepare system to read other codes and it will be the main code for system
         // Log debug information about the code retrieval
         DEBUG(" done ");
 
         if (code != NULL) {
             // If the code is valid, create a new kernel process for it
-            DEBUG("gatting code\n");
+            DEBUG("gatting code\n\n\n");
             create_kernel_process_last((void*)Read_focused, state);
             Create_readinfo('L');
             Create_working_place();
@@ -186,11 +196,86 @@ void get_bootinfo()
                 DEBUG(" done deleting \n");
             }
         }
-        DEBUG("DONE Adding reading bootinfo\n");
+        DEBUG("DONE Adding reading bootinfo\n\n\n");
     }
-    
-    /*
+    else {
+        // If there is already information for the current task, log debug information
+        DEBUG("There is already readinginfo for current task\n");
+    }
+}
 
+// we will staring coding in c starting from this function 
+// it is called by main in kernel.asm
+// Kernel main function to initialize the system
+void kernel_main(unsigned long magic __UNUSED__, multiboot_info_t* mbi_phys) {
+    // Receive BIOS information
+    multiboot_info = TO_VMA_PTR(multiboot_info_t *, mbi_phys);
+
+    // Initialize kernel serial for debugging
+    init_kernel_serial();
+
+    // Initialize kernel paging for memory management
+    init_kernel_paging();
+
+    // Initialize the Programmable Interrupt Controller (PIC)
+    init_kernel_pic();
+
+    // Initialize the Interrupt Service Routines (ISR)
+    init_kernel_isr();
+
+    // Enable ATA hard drive driver
+    Ata_hd_Driver_Enable();
+
+    // Enable FAT file system driver
+    fat_hd_Driver_Enable();
+
+    // Clear system information
+    sysinfo.user_id = -1;
+    sysinfo.state_count = -1;
+    sysinfo.sys_mode = "";
+    sysinfo.sys_id = 0;
+    sysinfo.main_def = NULL;
+    sysinfo.last_def = NULL;
+
+    // Display a startup message on the screen
+    Draw_String(&screen_info, screen_info.width/2-100, screen_info.height/2, 32, 32, 32, 32, screen_info.width, screen_info.height, COLOR_WHITE, COLOR_BLACK, "Addis-Os");
+
+    /*
+    void testing_process(){
+        // Log debug information about the OS startup
+        DEBUG("\n\n\t\t\t|\t\t\t|\n\n\n");
+        DEBUG("\n\n\t\t\t| Starting Os |\n\n\n");
+        DEBUG("\n\n\t\t\t|\t\t\t|\n\n\n");
+        while (1) DEBUG("Process Calling Working Will")
+    }
+    // Create a kernel process for boot information retrieval
+    // create_kernel_process_last((void*)testing_process, 1); // process testing call
+    */
+    create_kernel_process_last((void*)get_bootinfo, 1);
+
+    // Jump to the first task
+    do_first_task_jump();
+
+    // Infinite loop to keep the kernel running
+    while(1) { }
+
+    // Log debug information about shutting down
+    DEBUG("shuting down ...............................................................100\% \n");
+    DEBUG("goodbay\n");
+}
+
+
+
+
+
+
+
+
+/// old code not longer used but may be useful in future
+
+   
+ /*
+void get_bootinfo() {
     // Function to check and handle different system modes
     void chack_(){
         if (issame(sysinfo.sys_mode, "~GUI")) {
@@ -301,64 +386,8 @@ void get_bootinfo()
         // If no more boot codes are left, check the system mode
         DEBUG(" done reading bootinfo\n");
         chack_();
-    }*/
+    }
 
     // Reload the current task to process it again
     // reload_current_task();
-}
-
-// we will staring coding in c starting from this function 
-// it is called by main in kernel.asm
-
-// Kernel main function to initialize the system
-void kernel_main(unsigned long magic __UNUSED__, multiboot_info_t* mbi_phys) {
-    // Receive BIOS information
-    multiboot_info = TO_VMA_PTR(multiboot_info_t *, mbi_phys);
-
-    // Initialize kernel serial for debugging
-    init_kernel_serial();
-
-    // Initialize kernel paging for memory management
-    init_kernel_paging();
-
-    // Initialize the Programmable Interrupt Controller (PIC)
-    init_kernel_pic();
-
-    // Initialize the Interrupt Service Routines (ISR)
-    init_kernel_isr();
-
-    // Enable ATA hard drive driver
-    Ata_hd_Driver_Enable();
-
-    // Enable FAT file system driver
-    fat_hd_Driver_Enable();
-
-    // Clear system information
-    sysinfo.user_id = -1;
-    sysinfo.state_count = -1;
-    sysinfo.sys_mode = "";
-    sysinfo.sys_id = 0;
-    sysinfo.main_def = NULL;
-    sysinfo.last_def = NULL;
-
-    // Display a startup message on the screen
-    Draw_String(&screen_info, screen_info.width/2-100, screen_info.height/2, 32, 32, 32, 32, screen_info.width, screen_info.height, COLOR_WHITE, COLOR_BLACK, "Addis-Os");
-
-    // Log debug information about the OS startup
-    DEBUG("\n\n\t\t\t|\t\t\t|\n\n\n");
-    DEBUG("\n\n\t\t\t| Starting Os |\n\n\n");
-    DEBUG("\n\n\t\t\t|\t\t\t|\n\n\n");
-
-    // Create a kernel process for boot information retrieval
-    create_kernel_process_last((void*)get_bootinfo, 1);
-
-    // Jump to the first task
-    do_first_task_jump();
-
-    // Infinite loop to keep the kernel running
-    while(1) { }
-
-    // Log debug information about shutting down
-    DEBUG("shuting down ...............................................................100\% \n");
-    DEBUG("goodbay\n");
-}
+}*/

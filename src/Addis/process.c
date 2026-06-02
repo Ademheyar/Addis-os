@@ -1,14 +1,16 @@
 #include <Addis/Process.h>
 #include <Libs/Assert/Assert.h>
 #include <elf.h>
+#include <x86.h>
+#include <Libs/Malloc/Mmu_paging.h>
+#include <Libs/Malloc/Mmu_frames.h>
+#include <Libs/Malloc/Mmu_heap.h>
 
-//#include <Kernel.h>
-//#include <x86.h>
-//#include <Addis/Libs/String/String.h>
-//#include <Libs/Stdbool/Stdbool.h>
-//#include <Libs/Malloc/Mmu_paging.h>
-//#include <Libs/Malloc/Mmu_frames.h>
-//#include <Libs/Malloc/Mmu_heap.h>
+#include <Addis/Tables/WorkingT.h> // for defining struct READINGINFO and other table-related functions
+#include <Kernel.h>
+#include <Addis/Libs/String/String.h>
+#include <Libs/Stdbool/Stdbool.h>
+
 #include <Libs/Gui/windows/window.h>
 
 task_t *task_list_head = NULL;
@@ -47,7 +49,7 @@ task_t* next_task() {
   do {
     task = task->next;
     if (task == NULL) task = task_list_head;
-    DEBUG("next task id %d state %d\n", task->id, task->state);
+    // DEBUG("next task id %d state %d\n", task->id, task->state);
   } while(task->state == PROCESS_STATE_WAIT);
   task_list_current = task;
   return task;
@@ -63,6 +65,8 @@ task_t* task_list_insert(task_t* new_task, char on) {
     task_list_last = new_task;
     task_list_head = new_task;
     task_list_current = task_list_last;
+    if (task_list_current == NULL) task_list_current = new_task;
+    //point new_task to new list node    task_list_new = new_task;
   }
   else {
     if(on == 'L')
@@ -108,7 +112,6 @@ task_t* create_task_struct(bool create_pde) {
 }
 
 // find task
-
 // find task by given id
 task_t* task_find_by_id(uint32_t id) {
   for(task_t* task = task_list_head; task != NULL; task = task->next){
@@ -244,6 +247,7 @@ task_t* Add_task_entery_pointer(task_t *task, void* entry_point, int state) {
   task->isreloaded = 1;
   task->fac = entry_point;
   DEBUG("PROC: Kernel task created : x%X) entry:0x%X rsp:0x%X\n", entry_point, task->rsp);
+  DEBUG("task id %d state %d next id %d  state %d\n", task->id, task->state, task->id, task->state);
   return task;
 }
 
@@ -262,7 +266,8 @@ task_t* create_kernel_process_last(void* entry_point, int state) {
 }
 
 void reload_task_point(task_t* task) 
-{ // this will make kernel read this founction again than jump to next task
+{ 
+  // this will make kernel read this founction again than jump to next task
   free(task->kstack);
   task->kstack = malloc(KERNEL_STACK_SIZE);
 
@@ -305,29 +310,30 @@ void reload_current_task()
 void __switch_to(task_t* next) {
   // Set TSS stack pointer for interrupt return
   tss64.rsp0 = (uint64_t)(next->kstack + KERNEL_STACK_SIZE - 8);
-  //if (next->holded_info != NULL) reload_task_point(next);
+  // if (next->holded_info != NULL) reload_task_point(next);
   // Change states. Is this best moment?
-  //task_list_current->state = PROCESS_STATE_READY;
-  //next->state = PROCESS_STATE_RUNNING;
-  DEBUG("current id %d state %d next id %d  state %d\n", task_list_current->id, task_list_current->state, next->id, next->state);
+  // task_list_current->state = PROCESS_STATE_READY;
+  // next->state = PROCESS_STATE_WAIT;
+  // DEBUG("current id %d state %d next id %d  state %d\n", task_list_current->id, task_list_current->state, next->id, next->state);
   if (next->attribute & PROCESS_ATTR_USER_SPACE) {
     // Copy user tables
     memcpy(pde_user, next->pde, sizeof(pde_t) * 512);
     x86_tlb_flush_all();
   }
-  //if (next->holded_info != NULL && next->holded_info->fread) DEBUG("here 4 name %s\n", next->holded_info->fread->name);
+  // if (next->holded_info != NULL && next->holded_info->fread) DEBUG("here 4 name %s\n", next->holded_info->fread->name);
 }
 
 void do_first_task_jump() {
   if (!task_list_current->isreloaded) // reload_task_point(task_list_current);
   {// for now this will be consider as erorr has to be fixed
-    DEBUG("isnotreloded\n");
+    // DEBUG("isnotreloded\n");
     //while(1);
   }
   task_list_current->isreloaded = 0;
-  DEBUG("jmp irq0_first_jump\n");
-  __asm__ __volatile__ ("jmp irq0_first_jump");
- // __asm__ __volatile__ ("jmp irq0_first_jump");
+  // DEBUG("jmp irq0_first_jump\n");
+  // this will make rady the prosess to call the _switch_to function
+  // it is inside switch.asm code
+  __asm__ __volatile__ ("jmp irq0_first_jump"); 
   /*
   call next_task
   call __switch_to ; call switch task in process.c reppdly

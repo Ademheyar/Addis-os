@@ -1,10 +1,10 @@
+
 #include <Libs/Gui/windows/window.h>
 #include <Libs/Gui/messags/messaging.h>
 #include <Addis/Process.h>
 #include <Kernel.h>
- #include <Addis/Libs/String/String.h>
+#include <Addis/Libs/String/String.h>
 #include <Addis/Interrupt/Isr.h>
-#include <x86.h>
 
 #define __UNUSED__ __attribute__((unused))
 

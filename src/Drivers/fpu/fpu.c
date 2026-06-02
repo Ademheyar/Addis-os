@@ -17,6 +17,7 @@
  */
 #include <System.h>
 #include <logging.h>
+#include <Addis/Process.h> // for defining process_t and other process-related functions
 
 #define NO_LAZY_FPU
 

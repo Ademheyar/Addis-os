@@ -1,5 +1,8 @@
+#include <Addis/Drivers/Filse_system/Fat/Fat.h>
 #include <Addis/Drivers/Filse_system/hd_Driver.h>
-
+#include <Addis/Libs/String/String.h>
+#include <Addis/Libs/type/type.h>
+#include <Kernel.h>
 VOLINFO dosfs_volume_info;
 
 // Implementation needed for 'dosfs'

@@ -1,10 +1,15 @@
 #ifndef __VESA_H
 #define __VESA_H
 
-#include <Addis/Drivers/Screen/Vga/Vga.h>
+#pragma once
 
-pdpe_t  pdpe_video[512] __attribute__((aligned(4096)));
-pde_t   pde_video[512] __attribute__((aligned(4096)));
+#include <Libs/Malloc/Mmu_frames.h>
+#include <Libs/Malloc/Mmu_heap.h>
+#include <Libs/Malloc/Mmu_paging.h>
+
+extern pdpe_t  pdpe_video[512] __attribute__((aligned(4096)));
+extern pde_t   pde_video[512] __attribute__((aligned(4096)));
+
 
 #define COLOR_WHITE 0x00ffffff
 #define COLOR_BLACK 0x00000000
@@ -19,7 +24,6 @@ pde_t   pde_video[512] __attribute__((aligned(4096)));
 
 #define VIDEO_INFO_MEM_SIZE(vi) (vi.width * vi.height * (vi.bits/8))
 
-
 typedef struct Screen_info_struct {
   uint64_t linear_addr;
   uint64_t addr;
@@ -33,12 +37,11 @@ typedef struct Screen_info_struct {
   uint8_t  type;
 } Screen_info_t;
 
-Screen_info_t screen_info;
+extern Screen_info_t screen_info;
 
 //void init_kernel_vesa(multiboot_info_t *mbi);
 void Set_VESA_DRIVER();
-struct ROW *Get_VESA_DRIVER(list_t *read, int isret);
-struct ROW *VESA_DRIVER(list_t *read, int isret);
+
 
 #define FRAMEBUFFER_32 ((uint32_t*)screen_info->addr)
 #define FIRST_PIXEL_v(x, y) ((x) + ((y) * (screen_info->width)))
@@ -55,8 +58,6 @@ struct ROW *VESA_DRIVER(list_t *read, int isret);
 #define CLIP_X_c(x) x = x < 0 ? 0 : x; x = x < context->width ? x : context->width-1
 #define CLIP_Y_c(y) y = y < 0 ? 0 : y; y = y < context->height ? y : context->height-1
 #define CLIP_XY_c(x, y) CLIP_X_c(x); CLIP_Y_c(y)
-
-int get_takeinfo(struct USER_WDB *var, char *text, char *name);
 
 void put_pixel(Screen_info_t* screen_info, int x, int y, uint32_t color);
 //void Draw_Character(Screen_info_t* screen_info, int x, int y, uint32_t fgcolor, uint32_t bgcolor, const char c);

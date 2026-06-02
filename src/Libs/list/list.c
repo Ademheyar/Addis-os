@@ -1,4 +1,8 @@
-#include <Addis/Libs/List/List.h>
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
+
+#include <Libs/Malloc/Mmu_frames.h>
+#include <Libs/Malloc/Mmu_heap.h>
+#include <Libs/Malloc/Mmu_paging.h>
 
 /*
  * An implementation for generic, doubly linked list, may be handy in the future when we do vfs, process manmagement, etc..

@@ -2,9 +2,8 @@
 
 #include <Libs/Stdint/Stdint.h>
 #include <Libs/Stdbool/Stdbool.h>
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
 
-#include <Libs/Toaru/hashmap.h>
-#include <Libs/Toaru/graphics.h>
 
 struct TR_Font {
 	int typeface; /* Should probably be more flexible than int, but tough luck for now. */

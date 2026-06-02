@@ -1,0 +1,22 @@
+CoMmAnD->Define INCLUDE
+CoMmAnD->About INCLUDE: if it is used full capitaled it use to add or to combine things
+CoMmAnD->DO
+
+	CoMmAnD->If CoMmAnD->Tasks->Read->word CoMmAnD->Equal CoMmAnD->To CoMmAnD->Variable->Path
+	CoMmAnD->DO
+		CoMmAnD->Get CoMmAnD->Variable->Path CoMmAnD->As incpath
+		CoMmAnD->Files->Load incpath
+		CoMmAnD->As IncBuff
+		CoMmAnD->Tasks->Caller->Wordes->Add->Before IncBuff
+	CoMmAnD->END DO
+	CoMmAnD->ElseIf
+	CoMmAnD->DO
+
+	
+	CoMmAnD->END DO
+	CoMmAnD->Else
+	CoMmAnD->DO
+
+	
+	CoMmAnD->END DO
+CoMmAnD->END DO

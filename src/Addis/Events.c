@@ -1,5 +1,9 @@
 #include <Addis/Read_Do.h>
-//#include <Addis/Events.h>
+#include <Addis/Events.h>
+#include <Addis/Process.h> // for defining task_list_current and other process-related functions
+#include <Kernel.h> // for defining Kernel related functions and variables
+#include <Addis/Libs/String/Text.h>
+#include <Addis/Tables/WorkingT.h> // for defining struct READINGINFO and other table-related functions
 
 void Create_event_onvar(struct USER_WDB *var)
 {

@@ -1,4 +1,5 @@
 #include <Addis/Drivers/Screen/Vga/Vga.h>
+#include <Addis/Libs/String/String.h>
 
 int cursorX = 0, cursorY = 0;
 const uint8 sw = 80,sh = 25,sd = 2; 

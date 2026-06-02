@@ -3,7 +3,6 @@
  * General-purpose tree implementation
  */
 
-#include <Addis/Libs/List/List.h>
 
 #ifndef TREE_H
 #define TREE_H

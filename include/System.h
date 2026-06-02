@@ -1,4 +1,3 @@
-#include <Addis/Drivers/Keyboard/Keyboard.h>
 
 /* vim: tabstop=4 shiftwidth=4 noexpandtab
  */
@@ -8,6 +7,8 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
+#include <Addis/Process.h> // for defining struct task_struct and other process-related functions
 /* Registers
  *
  * Note: if the order of these changes, sys/task.S must be changed to use
@@ -74,14 +75,6 @@ extern void return_to_userspace(void);
 /* Kernel Main */
 //extern unsigned short *memsetw(unsigned short *dest, unsigned short val, int count);
 
-extern unsigned char inportb(unsigned short _port);
-extern void outportb(unsigned short _port, unsigned char _data);
-extern unsigned short inports(unsigned short _port);
-extern void outports(unsigned short _port, unsigned short _data);
-extern unsigned int inportl(unsigned short _port);
-extern void outportl(unsigned short _port, unsigned int _data);
-extern void outportsm(unsigned short port, unsigned char * data, unsigned long size);
-extern void inportsm(unsigned short port, unsigned char * data, unsigned long size);
 
 
 extern size_t lfind(const char * str, const char accept);

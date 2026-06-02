@@ -1,5 +1,7 @@
-//#include <Libs/Assert/Assert.h>
+#include <Libs/Assert/Assert.h>
 #include <Drivers/Serial/Serial.h>
+#include <x86.h>
+#include <Kernel.h>
 
 void __assert_func(const char * file, int line, const char * func, const char * failedexpr) {
 file = file;line=line;func=func;failedexpr =failedexpr;

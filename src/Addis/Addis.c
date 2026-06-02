@@ -19,6 +19,21 @@
  */
 
 #include <Addis/Read_Do.h>
+#include <Addis/Readcode.h> // for defining read_bodys and other functions
+#include <Addis/Process.h> // for defining task_list_current and other process-related functions
+#include <Addis/Libs/String/String.h> // for defining issame and other string-related functions
+#include <Addis/Drivers/Screen/Vga/Vga.h> // for defining set_screen_color and other functions
+#include <Addis/Interrupt/Isr.h> // for defining isr_ctx_t and other interrupt-related functions
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
+#include <Addis/Tables/WorkingT.h> // for defining struct USER_WDB and other table-related functions
+#include <Addis/Read_Gets.h> // for defining get_value_type and other functions
+#include <Addis/Fix_vars.h> // for defining fix_varprop and other functions
+#include <Addis/Drivers/Screen/Vesa/Vesa.h> // for defining VESA_DRIVER and other functions
+#include <Addis/Tables/DefT.h> // for defining table types and other related
+#include <Kernel.h> // for defining Kernel related functions and variables
+#include <Addis/Libs/INCLUDE/INCLUDE.h>
+
+#include <Addis/Libs/String/Text.h>
 
 // Function to read and process the code.
 // This function is called when the reading process is initiated.
@@ -37,26 +52,84 @@ void ReadDo(){
   //DEBUG("reading on %d\n", task_list_current->holded_info->read->fread->reading_on);
 	listnode_t *readword = list_get_node_by_index(task_list_current->holded_info->read->fread->reading_value, task_list_current->holded_info->read->fread->reading_on); 
 	DEBUG("in ReadDo %d", task_list_current->holded_info->read->fread->reading_on);
-  // chack if there is any code to read or if it is empty else preant the keyword
-  if(readword && !readword->value || readword->value && issame(readword->value, "")) {
-		task_list_current->holded_info->read->fread->reading_on = task_list_current->holded_info->read->fread->reading_stoped+=1;
-	  DEBUG("|-|\n");
-		return;
-	}
-  else DEBUG("|%s|\n", readword->value);
+  
   // holde where it is reading 
   int hold_on = task_list_current->holded_info->read->fread->reading_on;
   
   // Starting from here We will read keywords the semple ones will be diffined in this code
   // and the rest will be in the there respective files
 
+  
+  // Check if it is CoMmAnD or NORMAL code
+  // chack if there is any code to read or if it is empty else preant the keyword
+  if(readword && readword->value && strstr(readword->value, "->") != NULL && strstr(readword->value, "CoMmAnD->") != NULL)
+  {
+    // this will be used to handle the command code
+    // and do what it says to do
+    char **split_list = str_split(readword->value, '-');
+    char *command = split_list[0];
+    for (int i = 1; split_list[i] != NULL; i++) {
+      DEBUG("pinting command(%s) value(%s)\n", command, split_list[i]);
+    }
+    // FILE HANDLING
+    // this will be used to handle the file command code
+    if (split_list[1] && split_list[1] != NULL && issame(split_list[1], ">Files")){
+      DEBUG("command(%s) value(File)\n", command);
+      
+      // FILE LOADING WILL BE HANDLED BY THIS
+      // this will be used to load the file that is found in path form or string
+      if (split_list[2] && split_list[2] != NULL && issame(split_list[2], ">Load")){
+        listnode_t *nextreadword = list_get_node_by_index(task_list_current->holded_info->read->fread->reading_value, task_list_current->holded_info->read->fread->reading_on+1); 
+        char *path = nextreadword->value;
+        DEBUG("command(%s) value(Load) Path(%s)\n", command, path);
+        if (strchr(path, '\\') || strchr(path, '/')) {
+          // Here we will Load a File that is found in path form and read it
+          // TODO: this will be used the file that are found in path form and Holde it 
+          // TODO: It has to Read and File from here and holde the buffer and the info of the file in the reading info to be used in the
+          char *Buffer = get_code(path);
+          if (Buffer) {
+            task_list_current->holded_info->fread->worktables.worktable->column[0].row[0].value.Buffer = Buffer;
+
+            /*task_list_current->holded_info->fread->state = 'L';
+            char *incode = read_bodys(inctext);
+            task_list_current->holded_info->read->fread->reading_value = str_splitL(incode, " ", 0);
+            task_list_current->holded_info->read->fread->read_new = incode;
+            //*/
+            DEBUG("Successfully Done Reading File \n");
+          }
+          else {
+            DEBUG("Failed To Read File \n");
+          }
+        }
+        else {
+          // this will be used to include the file that are found in string form
+          // and read it
+          DEBUG(" include string c code(%s)\n", path);
+        }
+      }
+
+
+    }
+    else {
+      DEBUG("command(%s) value(NONE)\n", command);
+    }
+  } 
+
+
+
   // If Keyword is "INCLUDE"
   // this will be used to include the file that are found in path form or string and read it
   if(issame(readword->value, "INCLUDE")) {
-    // Going to include the file To Read that is found Src/Addis/Libs/INCLUDE
+    // Mark this INCLUDE keyword as readen and move to the next word that is the path or string of the file to include
+    task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
+
+    // this command will be handeld by code found in Src/Addis/Libs/INCLUDE
+    // Going to include the file To Read that is found in path form or string and read it
+    // this will be used to include the file that are found in path form or string and
     // and read it
-	  task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
     struct ROW *isInclude_readed = READ_INCLUDE(task_list_current->holded_info->read->fread->reading_value);
+    
+    // If the INCLUDE keyword is successfully read and processed, we can proceed with the reading process
     if (isInclude_readed){}
     return;
   }

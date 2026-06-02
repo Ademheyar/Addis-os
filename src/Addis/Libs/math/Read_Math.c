@@ -1,4 +1,6 @@
-#include <Addis/Read_Do.h>
+#include <Addis/Tables/WorkingT.h> // for defining struct READINGINFO and other table-related functions
+#include <Kernel.h>
+#include <Addis/Libs/String/Text.h>
 
 struct ROW *Read_Math(list_t *read, struct ROW *frow, int isret)
 {

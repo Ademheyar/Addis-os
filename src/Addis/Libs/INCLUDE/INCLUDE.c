@@ -28,7 +28,15 @@
   *          Use at your own risk. The authors are not responsible for any damages
   *          caused by the use of this code.
 */
+
 #include <Addis/Read_Do.h>
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
+#include <Addis/Libs/String/String.h> // for defining string-related functions
+#include <Addis/Tables/WorkingT.h> // for defining struct READINGINFO and other table-related functions
+#include <Addis/Readcode.h>
+#include <Addis/Process.h>
+#include <Addis/Libs/String/Text.h>
+#include <Kernel.h>
 
 // Function to read and process the INCLUDE keyword
 // This function is responsible for including files and reading their content.
@@ -41,15 +49,19 @@
 // It is recommended to follow best practices for coding and documentation
 struct ROW *READ_INCLUDE(list_t *read)
 {
-  DEBUG(" In Addis Code File Reading INCLUED Key Word Starting\n");
-  // and get the next word After the INCLUED Key Word
+  DEBUG(" In Addis Code To ADDIS/Libs/INCLUDE File Reading Key Word Starting ... INCLUED [PATHE]\n");
+
+  // Get the next word After the INCLUED Key Word
   listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
-  // chack if the next word is given
+  
+  // chack if the next word is given and is not empty
   if(!readword || !readword->value || !issame(readword->value, "")) {
     // chack if the next word is a string or path
     char *path = readword->value;
+
     // Let see if the path is a string or path By Printing it
     DEBUG(" Next Key Word In reading INCLUED KEY WORD IS (%s)\n", path);
+    
     // chack if the path has path '\' in the meddle
     // or if it is a string
     if (strchr(path, '\\') || strchr(path, '/')) {

@@ -10,6 +10,9 @@
 
 #include <toaru/list.h>
 
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
+
+
 _Begin_C_Header
 
 typedef unsigned int (*hashmap_hash_t) (void * key);

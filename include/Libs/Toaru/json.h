@@ -1,7 +1,6 @@
 
 
-#include <Libs/Toaru/hashmap.h>
-#include <Addis/Libs/List/List.h>
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
 
 #define JSON_TYPE_OBJECT 0
 #define JSON_TYPE_ARRAY  1

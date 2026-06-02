@@ -1,11 +1,12 @@
-#include <Libs/Gui/windows/window.h>
-#include <Libs/Malloc/Mmu_heap.h>
+//#include <Libs/Gui/windows/window.h>
+//#include <Libs/Malloc/Mmu_heap.h>
+
+#include <Addis/Libs/String/String.h>
 #include <Addis/Process.h>
 #include <Kernel.h>
- #include <Addis/Libs/String/String.h>
-#include <Addis/Drivers/Screen/Vesa/Vesa.h>
-#include <Addis/Drivers/Screen/Vesa/Vesa.h>
 #include <Addis/Interrupt/Isr.h>
+
+
 
 /************************************************************************************/
 /* this is can be called by user to commincation with kernel                       */

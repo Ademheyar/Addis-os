@@ -1,1 +1,3 @@
-INCLUDE /Sys/Def/Acodes/Loops/While.odc
+CoMmAnD->Files->Load /Sys/Def/DefMain.oac 
+CoMmAnD->As DefMainBuff
+CoMmAnD->Tasks->Process DefMainBuff

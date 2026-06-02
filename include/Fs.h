@@ -1,6 +1,10 @@
 /* vim: tabstop=4 shiftwidth=4 noexpandtab
  */
 
+#include <Addis/Process.h>
+#include <Addis/Libs/String/String.h>
+#include <Libs/Stdint/Stdint.h>
+
 #ifndef FS_H
 #define FS_H
 

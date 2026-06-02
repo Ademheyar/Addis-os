@@ -1,3 +1,15 @@
+Addis will start it code in Kernel.c main by lodaing the first kernel tasks
+the kernel allows will start by reading boot/start.oac file 
+the first task it will try to read the boot/start.oac file 
+the first code to read will be start.oac because it will prepare system to read other codes and it will be the main code for system
+
+.oac : standes for open addis cods it is open not scripted code andy one can see or edite this code file
+
+
+
+
+
+
 The Official Guide to Addis OS
 Chapter 1: Introduction to Addis OS
 
@@ -24,11 +36,14 @@ SHOWMSG "Welcome to Addis OS"
 Chapter 3: Addis OS Keywords
 
 Here are the main keywords Addis OS supports:
+
 1. INCLUDE
+    Usage: INCLUDE "path/to/file.oac"
+    The first word INCLUDE Will Inseate The command
+    Next Must Be path Or Path Pointer
+    Includes another script file into the current script. Useful for modular design or calling standard procedures.
+    
 
-Usage: INCLUDE "path/to/file.oac"
-
-Includes another script file into the current script. Useful for modular design or calling standard procedures.
 2. SHOWMSG
 
 Usage: SHOWMSG "Text to display"

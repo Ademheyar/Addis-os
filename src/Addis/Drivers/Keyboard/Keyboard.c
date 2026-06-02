@@ -1,11 +1,22 @@
-//#include <Addis/Drivers/Keyboard/Keyboard.h>
+#include <Addis/Drivers/Keyboard/Keyboard.h>
 #include <Libs/Gui/windows/window.h>
 
 #include <Addis/Interrupt/Isr.h>
-//#include <Addis/Interrupt/Pic.h>
+#include <Addis/Interrupt/Pic.h>
+#include <Addis/Fix_vars.h>
+#include <Kernel.h>
+#include <x86.h>
+
+#include <Addis/Libs/String/Text.h>
+#include <Addis/Tables/WorkingT.h>
 
 #define SCANCODE_MAX 57
 
+#include <Addis/Drivers/Screen/Vesa/Vesa.h>
+
+
+// tabel that Enabeled Keybord will be pointed
+struct USER_WDB *Keyboard_Enebler_tabel;
 
 int keymap[][2] = {
 /* 0 */		{0, 0},      {ESC, ESC},

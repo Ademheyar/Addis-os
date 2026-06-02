@@ -1,7 +1,12 @@
-#include <Addis/Drivers/Filse_system/hd_Driver.h>
-
 #ifndef __TIMER_H
 #define __TIMER_H
+
+#include <Addis/Process.h>
+#include <Addis/Libs/String/String.h>
+
+#include <Libs/Stdio/Stdio.h>
+
+#include <Libs/Stdint/Stdint.h>
 
 
 #define TIMER_HZ 50

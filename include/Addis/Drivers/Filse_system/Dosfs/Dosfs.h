@@ -1,8 +1,10 @@
+
+#include <Libs/Stdint/Stdint.h>
+
 /*
 	DOSFS Embedded FAT-Compatible Filesystem
 	(C) 2005 Lewin A.R.W. Edwards (sysadm@zws.com)
 */
-#include <Libs/Malloc/Mmu_frames.h>
 
 #ifndef _DOSFS_H
 #define _DOSFS_H

@@ -3,6 +3,8 @@
 
 #include <Kernel.h>
 
+#include <Libs/Stdint/Stdint.h>
+
 #define RTC_EPOCH_BASE_YEAR 1970
 #define RTC_EPOCH_JULIAN_DAY 2440588
 #define RTC_SECONDS_DAY 86400

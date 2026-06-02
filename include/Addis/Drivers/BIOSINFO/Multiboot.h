@@ -1,12 +1,13 @@
+#ifndef MULTIBOOT_H
+#define MULTIBOOT_H
+
+#pragma once
+
 #include <Libs/Stdint/Stdint.h>
 #include <Libs/Stddef/Stddef.h>
 #include <Libs/Stdarg/Stdarg.h>
 #include <Libs/Stdbool/Stdbool.h>
 #include <Libs/Stdlib/Stdlib.h>
-
-#ifndef MULTIBOOT_H
-#define MULTIBOOT_H
-
 
 // cf. https://www.uclibc.org/docs/elf-64-gen.pdf
 
@@ -95,7 +96,7 @@ typedef struct multiboot_info
 	// end tags
 } __attribute__((packed)) multiboot_info_t;
 
-multiboot_info_t *multiboot_info;
+extern multiboot_info_t *multiboot_info;
 
 typedef struct multiboot_tag_string {
     uint32_t type;

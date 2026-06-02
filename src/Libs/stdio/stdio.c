@@ -9,7 +9,9 @@
 #include <Libs/Unistd/Unistd.h>
 #include <Libs/Errno/Errno.h>
 #include <Libs/Stdint/Stdint.h>
-
+#include <Addis/Drivers/Filse_system/Dosfs/Dosfs.h>
+#include <Addis/Drivers/Filse_system/Fat/Fat.h>
+#include <Addis/Drivers/Filse_system/hd_Driver.h>
 
 #include <Libs/Fcntl.h>
 

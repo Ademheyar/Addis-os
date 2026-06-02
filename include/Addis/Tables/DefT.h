@@ -1,4 +1,5 @@
 #include <Addis/Events.h>
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
 
 #ifndef DEFT_H
 #define DEFT_H

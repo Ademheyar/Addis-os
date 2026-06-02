@@ -1,5 +1,7 @@
-#include <vesa.h>
+#include <Addis/Drivers/Screen/Vesa/Vesa.h>
 #include <Addis/Interrupt/Pic.h>
+
+#include <Libs/Stdint/Stdint.h>
 
 uint32_t curr_mode;
 

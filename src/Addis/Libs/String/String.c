@@ -1,4 +1,13 @@
+#include <Addis/Libs/String/String.h>
+#include <Libs/Stdio/Stdio.h>
+#include <Libs/Stdint/Stdint.h>
+#include <Libs/Stddef/Stddef.h>
+#include <Libs/Stdarg/Stdarg.h>
+#include <Libs/Stdbool/Stdbool.h>
+#include <Libs/Stdlib/Stdlib.h>
 #include <System.h>
+#include <Addis/Libs/type/type.h>
+
 
 #define MIN(A, B) ((A) < (B) ? (A) : (B))
 #define MAX(A, B) ((A) > (B) ? (A) : (B))
@@ -999,11 +1008,14 @@ uint32_t *memsetdw(uint32_t *dest, uint32_t val, uint32_t count)
     return 1;
 }
 */
+
 int strcmp(const char * l, const char * r) {
 	for (; *l == *r && *l; l++, r++);
 	return *(unsigned char *)l - *(unsigned char *)r;
 }
 
+
+// Return a pointer to the first occurrence of str in in, or a null pointer if str is not part of in.
 char * strstr(const char *in, const char *str) {
     char c;
     uint32_t len;

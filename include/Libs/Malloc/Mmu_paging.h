@@ -1,10 +1,13 @@
-#include <Kernel.h>
 
 #ifndef __MMU_PAGING_H
 #define __MMU_PAGING_H
 
 
 extern void* kernel_end;
+
+#include <Libs/Stdint/Stdint.h>
+
+
 
 // 2MB Pages
 //#define PAGE_SIZE 0x200000 (2*1024*1024)

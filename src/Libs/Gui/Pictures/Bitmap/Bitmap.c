@@ -1,9 +1,4 @@
 #include <Libs/Gui/Pictures/Bitmap/Bitmap.h>
-#include <Libs/Stdio/Stdio.h>
-#include <Libs/Malloc/Mmu_heap.h>
-#include <Libs/Addisos.h>
-#include <Libs/Stdlib/Stdlib.h>
-#include <Addis/Drivers/Screen/Vesa/Vesa.h>
 
 //#include <Libs/Malloc/Malloc.h>
 

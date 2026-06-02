@@ -1,5 +1,21 @@
-//#include <Addis/Read_Gets.h>
-#include <Addis/Drivers/Screen/Vesa/Vesa.h>
+#include <Addis/Read_Gets.h>
+#include <Addis/Tables/WorkingT.h> // for defining struct USER_WDB and other table-related functions
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
+#include <Addis/Libs/String/String.h> // for defining string-related functions
+#include <Addis/Process.h>
+
+#include <Addis/Readcode.h>
+#include <Addis/Libs/type/type.h>
+#include <Kernel.h>
+#include <Addis/Libs/String/Text.h>
+
+#define COLOR_WHITE 0x00ffffff
+#define COLOR_BLACK 0x00000000
+
+
+void *split_code(char str1[], char split_by);
+
+//#include <Addis/Drivers/Screen/Vesa/Vesa.h>
 
 char *get_value_type(char *value) {
   int len = 0, hasline = 0, hasspace = 0, hassymbol = 0, hasletter = 0, hasnum = 0, hassign = 0, hasdont = 0;

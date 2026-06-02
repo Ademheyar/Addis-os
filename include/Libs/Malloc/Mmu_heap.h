@@ -1,4 +1,3 @@
-#include <Libs/Malloc/Mmu_paging.h>
 
 #ifndef _MMU_HEAP_H
 #define _MMU_HEAP_H
@@ -8,6 +7,10 @@
 
 #define MBLOCK_MAGIC 0xDEAD 
 #define END_OF_INITIALISED_HEAP PAGE_SIZE
+
+#include <Libs/Stdint/Stdint.h>
+
+
 extern void* __user_app_end;
 
 struct mblock_struct {

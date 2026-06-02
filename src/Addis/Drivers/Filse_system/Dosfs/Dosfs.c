@@ -11,6 +11,7 @@
 #include <Kernel.h>
  #include <Addis/Libs/String/String.h>
 #include <Libs/Stdlib/Stdlib.h>
+#include <Libs/Stdint/Stdint.h>
 
 
 
@@ -758,7 +759,7 @@ uint32_t DFS_OpenFile(PVOLINFO volinfo, uint8_t *path, uint8_t mode, uint8_t *sc
 	if (*p == DIR_SEPARATOR || p == tmppath) // larwe 9/16/06 +"|| p == tmppath" bugfix
 		*p = 0;
 	//Draw_String(&screen_info, 200, 50, COLOR_WHITE, COLOR_BLACK, "DONE GETTING FILE NAME");
-	DEBUG("DONE GETTING FILE NAME = %s\n", filename);
+	// DEBUG("DONE GETTING FILE NAME = %s\n", filename);
 	// At this point, if our path was 
 	// MYDIR/MYDIR2/FILE.EXT, 
 	// filename = "FILE    EXT" and

@@ -1,4 +1,25 @@
 #include <Addis/Read_Resivers.h>
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
+#include <Addis/Tables/WorkingT.h> // for defining struct USER_WDB and other table-related functions
+#include <Addis/Read_Gets.h> // for defining get_value_type and other functions
+#include <Addis/Fix_vars.h> // for defining fix_varprop and other functions
+#include <Addis/Drivers/Screen/Vesa/Vesa.h> // for defining VESA_DRIVER and other functions
+#include <Addis/Process.h> // for defining task_list_current and other process-related functions
+#include <Addis/Readcode.h> // for defining convert and other readcode-related functions
+#include <Addis/Libs/String/String.h> // for defining string-related functions
+#include <Addis/Drivers/Screen/Vga/Vga.h> // for defining set_screen_color and other functions
+#include <Addis/Interrupt/Isr.h> // for defining isr_ctx_t and other interrupt-related functions
+#include <Addis/Drivers/Keyboard/Keyboard.h>
+#include <Addis/Tables/DefT.h>
+#include <Addis/Libs/type/type.h>
+#include <Kernel.h>
+
+#include <Addis/Libs/String/Text.h>
+#include <Addis/Drivers/Filse_system/Ata/Ata.h>
+#include <Addis/Drivers/Filse_system/Fat/Fat.h>
+#include <Addis/Drivers/Filse_system/hd_Driver.h>
+
+
 
 struct ROW *Resive_from_Keyword(list_t *read, int isret)
 {
@@ -73,7 +94,7 @@ struct ROW *Resive_from_Keyword(list_t *read, int isret)
 			readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
 			if (convertto.integer != -1) {
 				struct ROW *gotvalue = get_varinfo(convertto.integer, "", 'B', "");
-				if(gotvalue->type && &gotvalue->value){
+				if(gotvalue->type && gotvalue->value.istype){
 					DEBUG("Found Take[%d]<%s> Return is (%d) ", convertto.integer, gotvalue->type, isret);
 					// chack if ret is NULL or not and is gotvalue isret or not
 					if(isret == 1) {
@@ -423,11 +444,11 @@ struct ROW *ReadResivers(list_t *read, char *read_what, char *dowhat, char from,
 				readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
 				
 				char *dos = "";
-				for (int i = 0; &task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row; i++){
+				for (int i = 0; task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row; i++){
 					// DEBUG("c i = %d\n", i);
 					if(task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->type
 						&& issame(task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->type, "DO")){
-						for (int j = 1; &task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row; j++){
+						for (int j = 1; task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row; j++){
 							// DEBUG("r j = %d\n", j);
 							if(task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->word){
 								if(issame(dos, ""))
@@ -469,7 +490,7 @@ struct ROW *ReadResivers(list_t *read, char *read_what, char *dowhat, char from,
 				for (int i = 0; task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->word; i++){
 					//DEBUG("c i = %d\n", i);
 					if(issame(task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->word, "LOOP")){
-						for (int j = 1; &task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row || task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->word; j++){
+						for (int j = 1; task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row || task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->word; j++){
 						//DEBUG("r j = %d\n", j);
 						if(issame(loopcode, ""))
 						loopcode = strdup(task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->word);
@@ -585,7 +606,7 @@ struct ROW *ReadResivers(list_t *read, char *read_what, char *dowhat, char from,
 							{
 								int tc = 0;//++task_list_current->holded_info->read->read_prev->fread->worktables.worktable->countcolumn;
 								DEBUG("copying c %d to c %d\n", c, tc);
-								for(int r = 0; &task_list_current->holded_info->read->read_prev->fread->worktables.worktable->focused_column->row && task_list_current->holded_info->read->read_prev->fread->worktables.worktable->focused_column->row->type; r++){
+								for(int r = 0; task_list_current->holded_info->read->read_prev->fread->worktables.worktable->focused_column->row && task_list_current->holded_info->read->read_prev->fread->worktables.worktable->focused_column->row->type; r++){
 									
 									if(issame(task_list_current->holded_info->read->read_prev->fread->worktables.worktable->focused_column->row->word, "NAME")) isname = 1;
 									if(issame(task_list_current->holded_info->read->read_prev->fread->worktables.worktable->focused_column->row->word, "WITH")) iswith = 1;

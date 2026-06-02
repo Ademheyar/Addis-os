@@ -1,4 +1,10 @@
-#include <Addis/Process.h>
+#include <Addis/Tables/WorkingT.h>
+#include <Addis/Libs/String/Text.h>
+#include <Addis/Libs/type/type.h>
+#include <Kernel.h>
+
+
+
 
 /*
 *
@@ -528,7 +534,7 @@ void Get_row_byindex(int rid)
 
 char *get_row_type(struct ROW *row)
 {
-	if(row && &row->value) {
+	if(row && row->value.istype) {
 		if(row->on == 2 && row->value.number.rational || 
 			 row->on == 3 && row->value.hex.hex_32 /*|| row->value.hex.hex_16*/ || 
 			 row->on == 3 && row->value.hex.hex_8) return "NUMBER";
@@ -1136,7 +1142,7 @@ void Addrow_to_row_byindex(struct ROW *row, int wt, int wr)
 
 	DEBUG("Going Add(%d) new value on table[%d](%s) by index ", wr, wt, frtemp->fread->reading_for[frtemp->fread->rfor_id]);
 	if(wr == 0 || !frtemp->fread->worktables.focused_wt->focused_column){
-		Create_lastcolumn_byindex(wt);
+		Create_lastcolumn_byindex();
 		Create_newrow();
 	}
 	if(wr == 1 || wr == 1 && !frtemp->fread->worktables.focused_wt->focused_column->last_row->next_row)

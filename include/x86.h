@@ -1,9 +1,5 @@
-#include <Addis/Drivers/BIOSINFO/Multiboot.h>
-
 #ifndef __X86_H
 #define __X86_H
-
-
 
 #define asm __asm__
 #define volatile __volatile__

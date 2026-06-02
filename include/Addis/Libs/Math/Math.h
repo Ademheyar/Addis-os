@@ -7,6 +7,7 @@
 
 
 #include <Addis/Libs/INCLUDE/INCLUDE.h>
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
 
 struct ROW *Read_Math(list_t *read, struct ROW *frow, int isret);
 

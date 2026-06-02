@@ -1,4 +1,3 @@
-#include <Addis/Drivers/Filse_system/Ata/Ata.h>
 
 /*
 
@@ -113,6 +112,14 @@ extern int fsetpos(FILE *stream, const fpos_t *pos);
 */
 
 #pragma once
+
+#include <Libs/Stdint/Stdint.h>
+#include <Libs/Stddef/Stddef.h>
+#include <Libs/Stdarg/Stdarg.h>
+
+#include <Addis/Drivers/Filse_system/Ata/Ata.h>
+#include <Addis/Drivers/Filse_system/Dosfs/Dosfs.h>
+
 
 typedef struct {
   uint8_t scratch_sector[SECTOR_SIZE];

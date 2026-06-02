@@ -1,4 +1,10 @@
+#include <Addis/Tables/DefT.h>
 #include <Addis/Process.h>
+#include <Kernel.h>
+#include <Addis/Libs/String/Text.h>
+#include <Addis/Tables/WorkingT.h> // for defining struct READINGINFO and other table-related functions
+
+SYSTEMINFO sysinfo;
 
 void read_sub_def()
 {

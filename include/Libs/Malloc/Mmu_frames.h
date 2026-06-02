@@ -1,11 +1,11 @@
-#include <Libs/Malloc/Mmu_heap.h>
-
 #ifndef __MMU_FRAMES_H
 #define __MMU_FRAMES_H
 
 
 #define INDEX_FROM_BIT(a) (a/(8*4))
 #define OFFSET_FROM_BIT(a) (a%(8*4))
+
+#include <Libs/Stdint/Stdint.h>
 
 typedef struct {
   uint64_t used_frames;

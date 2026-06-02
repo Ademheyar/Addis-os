@@ -1,4 +1,12 @@
 #include <Shell.h>
+#include <Addis/Libs/String/String.h>
+#include <Libs/Stdint/Stdint.h> // for defining uint8, string and other types
+#include <Addis/Drivers/Screen/Vga/Vga.h> // for defining set_screen_color and other functions
+#include <Kernel.h>
+
+#include <Libs/Malloc/Mmu_frames.h>
+#include <Libs/Malloc/Mmu_heap.h>
+#include <Libs/Malloc/Mmu_paging.h>
 
 string readStr()
 {

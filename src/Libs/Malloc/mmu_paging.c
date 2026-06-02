@@ -1,15 +1,11 @@
-#include <Addis/Drivers/Screen/Vesa/Vesa.h>
-//#include <Libs/Malloc/Mmu_heap.h>
-//#include <Libs/Malloc/Mmu_frames.h>
-//#include <Libs/Malloc/Mmu_paging.h>
-#include <Libs/Addisos.h>
-#include <Kernel.h>
-#include <Memory.h>
-#include <Libs/Stdint/Stdint.h>
-#include <Libs/Stdbool/Stdbool.h>
-#include <Addis/Libs/String/String.h>
+#include <Libs/Malloc/Mmu_paging.h>
+#include <Libs/Malloc/Mmu_frames.h>
+#include <Libs/Malloc/Mmu_heap.h>
 #include <x86.h>
-#include <Addis/Interrupt/Isr.h>
+#include <Kernel.h>
+#include <Addis/Libs/String/String.h>
+
+
 
 pml4e_t pml4e[512] __attribute__((aligned(4096)));
 pdpe_t  pdpe[512] __attribute__((aligned(4096)));

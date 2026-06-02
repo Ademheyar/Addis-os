@@ -1,4 +1,14 @@
 #include <Addis/Readcode.h>
+#include <Addis/Process.h>
+#include <Addis/Libs/String/String.h>
+#include <Addis/Libs/List/List.h>
+#include <Addis/Tables/WorkingT.h>
+#include <Addis/Tables/DefT.h>
+#include <Addis/Libs/type/type.h>
+#include <Kernel.h>
+#include <Addis/Libs/String/Text.h>
+
+DRIVERS drivers[256];
 
 char *read_bodys(char text[]){
   // TODO: make the compilare know if gruop of code not closed
@@ -190,7 +200,7 @@ char *read_bodys(char text[]){
   return newtext;
 }
 
-splited_code *get_pathlists(char *paths) {
+void *get_pathlists(char *paths) {
 	splited_code *bootinfo =  malloc(sizeof(splited_code) + 520);;
 	bootinfo->lines = -1;
 	char *text0 = read_text(paths);
@@ -227,26 +237,26 @@ splited_code *get_pathlists(char *paths) {
 
 // this will get and remove comments and other useless wordes symboles
 char *get_code(char *filepath){
+	DEBUG("going to get code from file %s\n", filepath);
 	char *text1 = read_text(filepath);
 	if (text1 == NULL) return NULL;
-  DEBUG("gottext|%s|\n", text1);
 	int counttext = strlen(text1);
-  char out[counttext];
-  DEBUG("num %d|\n", counttext);
-  int i = 0, j = 0;
-  for (; *(text1 + i); i++){
-		if((*(text1 + i+1))=='\0')  out[j+1] = '\0'; 
-		if((*(text1 + i))=='\n') { out[j] = ' '; j++; continue; }
-		if (*(text1 + i) == '\t') continue;
-		if (isprint(*(text1 + i))) 
-		{
-			out[j] = *(text1 + i);
-			j++;
+	char out[counttext];
+	DEBUG("gottext|%s|%d|\n", text1, counttext);
+  	int i = 0, j = 0;
+	for (; *(text1 + i); i++){
+			if((*(text1 + i+1))=='\0')  out[j+1] = '\0'; 
+			if((*(text1 + i))=='\n') { out[j] = ' '; j++; continue; }
+			if (*(text1 + i) == '\t') continue;
+			if (isprint(*(text1 + i))) 
+			{
+				out[j] = *(text1 + i);
+				j++;
+			}
 		}
-	}
-	out[j] = '\0';
-  DEBUG("chacked coed = %s\n", out);
-  return strdup(out);
+		out[j] = '\0';
+	DEBUG("chacked coed = %s\n", out);
+	return strdup(out);
 }
 
 
@@ -330,7 +340,7 @@ void enable_driver(uint8_t pic_irq){
 }
 
 /*C program to split string by space into words.*/
-splited_code *split_code(char str1[], char split_by){
+void *split_code(char str1[], char split_by){
   //char code_splited[1000][100]; // TODO : can we use array to split
   //char *text="";
 	//DEBUG("going to split_code by(%c) %s\n", split_by, str1);

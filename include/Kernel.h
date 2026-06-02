@@ -1,4 +1,3 @@
-#include <x86.h>
 
 
 #define KERNEL_START_MEMORY 0xFFFF800000000000

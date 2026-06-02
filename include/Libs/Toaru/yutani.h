@@ -12,11 +12,6 @@
 #include <Libs/Stdint/Stdint.h>
 #include <Libs/Stdbool/Stdbool.h>
 
-#include <Libs/Toaru/hashmap.h>
-#include <Libs/Toaru/graphics.h>
-#include <Libs/Toaru/kbd.h>
-#include <Libs/Toaru/mouse.h>
-#include <Addis/Libs/List/List.h>
 
 typedef unsigned int yutani_wid_t;
 

@@ -1,4 +1,19 @@
 #include <Addis/Drivers/Screen/Vesa/Vesa.h>
+#include <Kernel.h>
+#include <Addis/Drivers/BIOSINFO/Multiboot.h>
+#include <Addis/Libs/String/String.h>
+#include <Addis/Tables/WorkingT.h> // for defining struct READINGINFO and other table-related functions
+#include <Addis/Libs/String/Text.h>
+
+
+pdpe_t  pdpe_video[512] __attribute__((aligned(4096)));
+pde_t   pde_video[512] __attribute__((aligned(4096)));
+to convertto;
+Screen_info_t screen_info;
+multiboot_info_t *multiboot_info;
+
+int get_takeinfo(struct USER_WDB *var, char *text, char *name);
+
 
 void get_value_info()
 {

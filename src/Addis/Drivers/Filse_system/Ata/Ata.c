@@ -1,11 +1,11 @@
 // Based on LevOS ata driver - https://github.com/levex/osdev/blob/master/Drivers/ata.c
 
 //#include <Addis/Drivers/Filse_system/Ata/Ata.h>
-//#include <Kernel.h>
 //#include <Addis/Libs/String/String.h>
-//#include <x86.h>
+#include <Kernel.h>
 #include <Addis/Interrupt/Isr.h>
-
+#include <Libs/Stdbool/Stdbool.h>
+#include <x86.h>
 
 uint8_t ata_pm = 0; /* Primary master exists? */
 uint8_t ide_buf[512];
@@ -23,12 +23,18 @@ void ide_select_drive(uint8_t bus, uint8_t i) {
     else outp(ATA_SECONDARY_IO + ATA_REG_HDDEVSEL, 0xB0);
 }
 
-void ide_primary_irq() {
+void ide_primary_irq(isr_ctx_t *ctx) {
+  ctx = ctx;
+  // YOU DONT HAVE TO USE CTX, IT'S JUST FOR DEBUGGING PURPOSES
+  // BUT THE FUNCTION MUST HAVE THIS PARAMETER TO MATCH THE ISR PROTOTYPE
 //  DEBUG("ATA: primary IRQ\n");
   pic_acknowledge(ATA_PRIMARY_IRQ);
 }
 
-void ide_secondary_irq() {
+void ide_secondary_irq(isr_ctx_t *ctx) {
+  ctx = ctx;
+  // YOU DONT HAVE TO USE CTX, IT'S JUST FOR DEBUGGING PURPOSES
+  // BUT THE FUNCTION MUST HAVE THIS PARAMETER TO MATCH THE ISR PROTOTYPE
 //  DEBUG("ATA: secondary IRQ\n");
   pic_acknowledge(ATA_SECONDARY_IRQ);
 }

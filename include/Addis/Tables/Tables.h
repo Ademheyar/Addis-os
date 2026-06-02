@@ -1,7 +1,17 @@
-#include <Addis/Tables/DefT.h>
-
 #ifndef TABLES_H
 #define TABLES_H
+
+
+
+#include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
+#include <Libs/Gui/Pictures/Bitmap/Bitmap.h>
+
+#include <Addis/Drivers/Filse_system/Ata/Ata.h>
+
+#include <Libs/Malloc/Mmu_frames.h>
+#include <Libs/Malloc/Mmu_heap.h>
+#include <Libs/Malloc/Mmu_paging.h>
+
 
 typedef struct {
 	char code_splited[10000][100];
@@ -23,27 +33,7 @@ typedef struct READINGINFO {
 
 } READINGINFO;
 
-typedef struct task_struct {
-  uint64_t rsp;
-  uint32_t id;
-  uint16_t attribute;
-  uint16_t state;
-	uint16_t isreloaded;
-  uint8_t *kstack;
-  // uint8_t kstack[KERNEL_STACK_SIZE];
-  // For now we are supporting only 2MB programs :) 
-  // We keep track of one entry in PDE that will be mapped to 0x0000000 (user program space)
-  pde_t *pde;
-  // pde_t pde[512]; 
-  // Win manager reference if any
-  void* window;
-	void* fac;
-	struct READINGINFO *holded_info;
 
-  struct task_struct* next;
-  struct task_struct* prev;
-  struct task_struct* parent;
-}  __attribute__((packed)) task_t;
 
 //
 struct ROW {
@@ -54,6 +44,9 @@ struct ROW {
 	int on;
 
 	union {
+		char *Buffer; // this will save string or path or any value that can be saved in char *
+		char *istype;
+
 		char charcter;
 
 		struct {
@@ -91,7 +84,7 @@ struct ROW {
 			char *prop;
 		}variable;
 		
-	}value;
+	} value;
 
 	struct ROW *prev_row;
 	struct ROW *next_row;
@@ -100,20 +93,38 @@ struct ROW {
 //
 struct COLUMN {
 	int columnid;
-	struct ROW *row; // value
-	struct ROW *last_row;
-	struct ROW *focused_row;
-	struct COLUMN *prev_column;
-	struct COLUMN *next_column;
+	struct ROW *row; // the first row of this column will be saved here to add new row after it
+	struct ROW *last_row; // The last row created in this column will be saved here to add new row after it
+	struct ROW *focused_row; // this will be used to save where it is reading or processing or where it will add new row or if it was processing var it will be pointed at focused row
+	struct COLUMN *prev_column; // chane to previuse column
+	struct COLUMN *next_column; // chane to next column
 };
 
 struct WORKTABLE {
 	struct COLUMN *column;
-	struct COLUMN *last_column;
 	struct COLUMN *focused_column;
-	struct WORKTABLE *prev_wt;
-	struct WORKTABLE *next_wt;
+	struct COLUMN *last_column;
+	struct WORKTABLE *prev_wt; // chane to previuse worktable
+	struct WORKTABLE *next_wt; // chane to next worktable
 };
+
+
+/*
+*	WORKTABLES
+* |--------------------------------------------_|
+* | ROW 0  |                                    | Cloumn 0
+* |--------------------------------------------_|
+* |        |                                    | Cloumn 1
+* |--------------------------------------------_|
+* |        |                                    | Cloumn 2
+* |--------------------------------------------_|
+* |        |                                    | Cloumn 3
+* |--------------------------------------------_|
+* |________|____________________________________| .......
+* |        |                                    |
+* Warktable 0 Column 0 Rows All was Woring Processing Arias
+* All Names Or Named Variable will be Stord In this Table
+*/
 
 typedef struct {
 	struct WORKTABLE *worktable;
@@ -185,8 +196,15 @@ struct event {
 // this is the main db contains
 //
 struct USER_WDB {
+	// this is the main table that will be used to save all data and code will reading and processing codes
+	
+	// Holding Variable that is on going to be used in code
+	WORKTABLES worktables;  
+
+	
+	
 	int id;
-  char *id_addrs;
+  	char *id_addrs;
 	char state;
 	char *name;
 	char *user_name, *user_password;	
@@ -202,7 +220,6 @@ struct USER_WDB {
 	char *main_readcode; // this will converted code if it is nessasery
 	list_t *reading_value; // this will holed reading code words
 	list_t *bodys; // this will hold grouped codes
-	WORKTABLES worktables; // contanse 
 	char *reading_for[10]; // this will tell reading for what
 	struct task_struct *reading_task;
 	char *getwhat, *getas;
@@ -263,8 +280,6 @@ typedef struct {
 	int uwdb_id, uedb_id, uidb_id;
 } Loged_user;
 
-Loged_user *loged_user[5];
-
 
 struct READINGINFO *get_reading_table(char c);;
 
@@ -289,7 +304,7 @@ typedef struct {
 	char list[10000][100], *prevtex[10];
 	int listline, linstcount, prevon;
 }to;
-to convertto;
+extern to convertto;
 
 typedef struct {
   char *driv_name, *main_name, *driv_handler, *irq_ack; // varabel main info
@@ -299,14 +314,13 @@ typedef struct {
 //	isr_t interrupt_handlers;
 }DRIVERS;
 // to reagistor drivers
-DRIVERS drivers[256];
+extern DRIVERS drivers[256];
 
 // main wordking aria for focesed code
 typedef struct {
 	// fmainpon:- talls where the sysrem on global local or TEMPRARE
 	char fgivenpon, fmainpon;
 } SYSVARS;
-SYSVARS sysvars[5];
 // in this tabel all sysrem setting will be saved
 //
 
@@ -358,7 +372,7 @@ typedef struct {
 	struct DEF_LIST *last_def;
 } SYSTEMINFO;
 
-SYSTEMINFO sysinfo;
+extern SYSTEMINFO sysinfo;
 
 
 extern void ReadDo();
@@ -393,4 +407,9 @@ struct ROW *get_vars(list_t *read, int isret);
 
 // resesive.h
 struct ROW *Resive(list_t *read, int isgroup, int isret);
+
+
+extern struct ROW *Get_VESA_DRIVER(list_t *read, int isret);
+extern struct ROW *VESA_DRIVER(list_t *read, int isret);
+
 #endif

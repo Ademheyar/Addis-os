@@ -1,2 +1,5 @@
-sudo apt install qemu-system-x86
 
+sudo apt install qemu-system-x86
+sudo apt-get install grub-pc-bin
+sudo apt udate && sudo apt install xorriso   
+sudo apt install mtools

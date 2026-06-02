@@ -1,4 +1,11 @@
-#include <Addis/Drivers/Filse_system/Fat/Fat.h>
+
+// for defining isr_ctx_t
+//#include <Addis/Interrupt/Isr.h>
+// or lets tall it isr_ctx_struct, but we need to use it in the function prototype, so we will typedef it here
+typedef struct isr_ctx_struct isr_ctx_t;
+
+
+
 
 #define ATA_SR_BSY     0x80
 #define ATA_SR_DRDY    0x40
@@ -96,8 +103,8 @@
 
 
 void ide_select_drive(uint8_t bus, uint8_t i);
-void ide_primary_irq();
-void ide_secondary_irq();
+void ide_primary_irq(isr_ctx_t *ctx);
+void ide_secondary_irq(isr_ctx_t *ctx);
 bool ide_identify(uint8_t bus, uint8_t drive);
 void ide_400ns_delay(uint16_t io);
 void ide_poll(uint16_t io);

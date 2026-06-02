@@ -1,10 +1,6 @@
 #ifndef __MESSAGING_H
 #define __MESSAGING_H
 
-//#include <Libs/Gui/windows/window.h>
-//#include <Libs/Stdint/Stdint.h>
-#include <Drivers/mouse/mouse.h>
-
 #define MESSAGE_MOUSE_MOVE 		1
 #define MESSAGE_MOUSE_PRESS 	2
 #define MESSAGE_MOUSE_RELEASE	3

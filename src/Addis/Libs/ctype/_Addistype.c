@@ -1,4 +1,11 @@
 #include <System.h>
+#include <Addis/Drivers/Keyboard/Keyboard.h>
+#include <Addis/Libs/String/String.h>
+#include <Libs/Stdint/Stdint.h>
+#include <Libs/Stdbool/Stdbool.h>
+#include <Addis/Libs/type/type.h>
+
+#include <Addis/Libs/String/Text.h>
 
 char *get_compar_type(char *value)
 {
