@@ -1,3 +1,10 @@
+CoMmAnD->Files->Load /Sys/Def/Include.odc
+CoMmAnD->As DefIncludeBuff
+CoMmAnD->Tasks->This->Know DefIncludeBuff
+
+
+INCLUDE /Sys/Def/Acodes/Loops/While.odc 
+
 While=/Sys/Def/Acodes/Loops/While.odc
 If=/Sys/Def/Acodes/Select/If.odc
 Elseif=/Sys/Def/Acodes/Select/Elseif.odc

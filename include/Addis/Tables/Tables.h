@@ -183,9 +183,9 @@ typedef struct {
 
 struct event {
 	char *by;
-  struct ROW *ishappen;
+    struct ROW *ishappen;
 	struct ROW *compare;
-  struct ROW *prop;
+    struct ROW *prop;
 	struct ROW *event_value;
 	struct ROW *do_value;
 	
@@ -198,8 +198,28 @@ struct event {
 struct USER_WDB {
 	// this is the main table that will be used to save all data and code will reading and processing codes
 	
-	// Holding Variable that is on going to be used in code
-	WORKTABLES worktables;  
+	// Holding Variable that is on going to be used in Tasks
+	// this is for reading code and processing code to save focused table and variable
+	// NOTE: this is not for saving var but for holding var that is on going to be used in reading or processing code
+	// Need to be Diclared in struct USER_WDB because it will be used in reading and processing code and it is nessasery to save it in main table to be able to use it in all code
+
+	/*
+	*	WORKTABLES
+	* |--------------------------------------------_|
+	* | ROW 0  |                                    | Cloumn 0
+	* |--------------------------------------------_|
+	* |        |                                    | Cloumn 1
+	* |--------------------------------------------_|
+	* |        |                                    | Cloumn 2
+	* |--------------------------------------------_|
+	* |        |                                    | Cloumn 3
+	* |--------------------------------------------_|
+	* |________|____________________________________| .......
+	* |        |                                    |
+	* Warktable 0 Column 0 Rows All was Woring Processing Arias
+	* All Names Or Named Variable will be Stord In this Table
+	*/
+	WORKTABLES worktables; 
 
 	
 	
@@ -375,7 +395,7 @@ typedef struct {
 extern SYSTEMINFO sysinfo;
 
 
-extern void ReadDo();
+extern struct WORKTABLE *ReadDo();
 void read_words();
 uint32_t get_color(char *colorname);
 void list_allin_table();
@@ -411,5 +431,10 @@ struct ROW *Resive(list_t *read, int isgroup, int isret);
 
 extern struct ROW *Get_VESA_DRIVER(list_t *read, int isret);
 extern struct ROW *VESA_DRIVER(list_t *read, int isret);
+
+
+struct WORKTABLE *Find_worktable_by_indexs(int table_id, int column_id, int row_id);
+struct WORKTABLE *Find_worktable_by_name(const char *name);
+
 
 #endif

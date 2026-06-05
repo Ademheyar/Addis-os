@@ -1,3 +1,5 @@
 CoMmAnD->Files->Load /Sys/Def/DefMain.oac 
-CoMmAnD->As DefMainBuff
-CoMmAnD->Tasks->Process DefMainBuff
+CoMmAnD->Variables->Focused->As DefMainBuff
+CoMmAnD->Tasks->This->Know CoMmAnD->Variables->Get DefMainBuff
+
+

@@ -1,5 +1,0 @@
-CoMmAnD->Files->Load /Sys/Def/Include.odc
-CoMmAnD->As DefIncludeBuff
-CoMmAnD->Tasks->Corront->Wordes->Add->Before DefIncludeBuff
-
-INCLUDE /Sys/Def/Acodes/Loops/While.odc

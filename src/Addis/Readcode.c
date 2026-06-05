@@ -245,18 +245,21 @@ char *get_code(char *filepath){
 	DEBUG("gottext|%s|%d|\n", text1, counttext);
   	int i = 0, j = 0;
 	for (; *(text1 + i); i++){
-			if((*(text1 + i+1))=='\0')  out[j+1] = '\0'; 
-			if((*(text1 + i))=='\n') { out[j] = ' '; j++; continue; }
-			if (*(text1 + i) == '\t') continue;
-			if (isprint(*(text1 + i))) 
-			{
-				out[j] = *(text1 + i);
-				j++;
-			}
+		if((*(text1 + i+1))=='\0')  out[j+1] = '\0'; 
+		if((*(text1 + i))=='\n') { out[j] = ' '; j++; continue; }
+		if (*(text1 + i) == '\t') continue;
+		if (isprint(*(text1 + i))) 
+		{
+			out[j] = *(text1 + i);
+			j++;
 		}
-		out[j] = '\0';
-	DEBUG("chacked coed = %s\n", out);
-	return strdup(out);
+	}
+	out[j] = '\0';
+	char *text2 = malloc(strlen(out) + 1);
+	strcpy(text2, out);
+	//DEBUG("out from get_code = %s\n", text2);
+	DEBUG("chacked coed = %s\n >>>>>>>out from get_code\n", text2);
+	return text2; // strdup(out);
 }
 
 

@@ -157,13 +157,13 @@ char* strncat(char* dest, const char* src, size_t n)
 char * strdup(char src[]) 
 { // this will create new place and copy give string and returns new place
 	int l = strlen(src), i = 0;
-  char out[l+1];
-  for (; (out[i]=*src); src++, i++);
-  out[i] = '\0';
-  //DEBUG("num l %d ~  i %d |  \n", l , i);//, (char *)out);
+	char out[l+1];
+	for (; (out[i]=*src); src++, i++);
+	out[i] = '\0';
+	//DEBUG("num l %d ~  i %d |  \n", l , i);//, (char *)out);
 	return memcpy(malloc(i+1), (char *)out, i+1);
 }
-
+	
 char *stradd(char dest[], char src[], char con) {
   int countdest = strlen(dest), countsrc = strlen(src);
   int num = countdest + countsrc+1;

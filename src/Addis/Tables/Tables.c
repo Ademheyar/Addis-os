@@ -948,3 +948,57 @@ void Remove_this_readtable() {
 	// first retearn all needed values
 }
 
+
+
+
+
+
+
+
+// To find Full working table Column and Row by given name
+struct WORKTABLE *Find_worktable_by_name(const char *name) {
+	struct WORKTABLE *wt = task_list_current->holded_info->read->fread->worktables.worktable;
+	for(int w = 0; wt; w++){
+		if(wt->column) {
+			struct COLUMN *col = wt->column;
+			for(int c = 0; col; c++){
+				if(col->row) {
+					struct ROW *row = col->row;
+					for(int r = 0; row; r++){
+						if(row->As && strcmp(row->As, name) == 0) return wt;
+						row = row->next_row;
+					}
+				}
+				else if(col->next_column) col = col->next_column;
+				else break;
+			}
+		}
+		else if(wt->next_wt) wt = wt->next_wt;
+		else break;
+	}
+	return wt;
+}
+
+// To find Full working table Column and Row by given Indexs
+struct WORKTABLE *Find_worktable_by_indexs(int table_id, int column_id, int row_id) {
+	struct WORKTABLE *wt = task_list_current->holded_info->read->fread->worktables.worktable;
+	for(int w = 0; wt; w++){
+		if(w == table_id) {
+			struct COLUMN *col = wt->column;
+			for(int c = 0; col; c++){
+				if(c == column_id) {
+					struct ROW *row = col->row;
+					for(int r = 0; row; r++){
+						if(r == row_id) return wt;
+						row = row->next_row;
+					}
+				}
+				else if(col->next_column) col = col->next_column;
+				else break;
+			}
+		}
+		else if(wt->next_wt) wt = wt->next_wt;
+		else break;
+	}
+	return wt;
+}
