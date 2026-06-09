@@ -220,8 +220,6 @@ struct USER_WDB {
 	* All Names Or Named Variable will be Stord In this Table
 	*/
 	WORKTABLES worktables; 
-
-	
 	
 	int id;
   	char *id_addrs;
@@ -345,8 +343,23 @@ typedef struct {
 //
 
 typedef struct {
-// until system is off or loged out	
-	// here will be stored informations
+	// this will be loaded with boot loder and it will be saved until system is off or loged out	
+	// here will be stored collective that and task or code need informations
+	
+
+	// defened 
+	// this is for defenition code and defenition Not Known Words that will be Explained by user in defenition code
+	// this will be used in defenition code to save defenition code and defenition Not Known Words that will be Explained by user in defenition code
+	// it can be local or global depanding on task and sub task reding or processing code
+	// Note: this is not for saving var but for holding var that is on going to be used in reading or processing code
+	// Not soure if hoding it here or in holded_info is better but for now we will hold it here because it is more easy to access it in reading and processing code and it is not nessasery to save it in main table to be able to use it in all code
+	struct DEF_LIST *main_def; // this will save main defenition list that is used in this task 
+	struct DEF_LIST *focused_def; // this will save focused defenition list that is used in this task 
+	struct DEF_LIST *last_def; // this will save last defenition list that is used in this task
+
+	
+
+	
 	// char
 	char *USER_NAME, *USER_PASSWORD, *userpath;
 	char *sys_mode, statce;
@@ -386,13 +399,12 @@ typedef struct {
 	int fsrid[10], fscid[10], fswid[10], fids;
 
 
-	// defened 
-	struct DEF_LIST *main_def;
-	struct DEF_LIST *focused_def;
-	struct DEF_LIST *last_def;
+	
 } SYSTEMINFO;
 
 extern SYSTEMINFO sysinfo;
+
+
 
 
 extern struct WORKTABLE *ReadDo();

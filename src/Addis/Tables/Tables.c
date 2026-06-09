@@ -460,11 +460,10 @@ void list_allin_table()
   else {
 		struct USER_WDB *c = sysinfo.first_Unversal;
 		while(1){
-			if(c->name)
-      DEBUG("%schaecking global_name(%s)\n", nodes, c->name);
-      nodes = "-";
-      listin(c);
-      nodes = "";
+			//if(c && c->name) DEBUG("%s chaecking global_name(%s)\n", nodes, c->name);
+			nodes = "-";
+			listin(c);
+			nodes = "";
 			if(c->next_table) c = c->next_table;
 			else break;
 		}
@@ -472,11 +471,11 @@ void list_allin_table()
 }
 struct USER_WDB *Get_list_by_names(struct USER_WDB *parent, char *name)
 {
-	DEBUG("Geting list by name\n");
+	DEBUG("Geting list by name (%s)\n", name);
 	struct USER_WDB *list = parent;
 	while(list)
 	{
-		DEBUG("list(%s) == name(%s)\n", list->name, name);
+		//DEBUG("list(%s) == name(%s)\n", list->name, name);
 		if (list->name && issame(list->name, name)) return list;
 		if(list->next_table) list = list->next_table;
 		else break;
@@ -546,7 +545,7 @@ struct USER_WDB *Get_main_dt(struct USER_WDB *g_main_dt, list_t *read)
 			if (st != 1 && g_main_dt->reading_task && g_main_dt->reading_task->holded_info && g_main_dt->reading_task->holded_info->fread)
 			{
 				DEBUG("getting local table\n");
-				if (g_main_dt->reading_task->holded_info->fread->name) DEBUG("name(%s)\n", g_main_dt->reading_task->holded_info->fread->name);
+				//if (g_main_dt->reading_task->holded_info->fread->name) DEBUG("name(%s)\n", g_main_dt->reading_task->holded_info->fread->name);
 				g_main_dt = g_main_dt->reading_task->holded_info->fread;
 				rb = 1;
 				st = 1;

@@ -945,13 +945,13 @@ struct ROW *ReadResivers(list_t *read, char *read_what, char *dowhat, char from,
 					struct ROW *ret = read_unknownvars(read, "ALL", 0);
 					readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
 					DEBUG("going to save unknown var 2 %s\n", readword->value);
-					if(!ret || ret->type == NULL && issame(ret->type, "NONE")){
+					if(!ret || ret->type && issame(ret->type, "NONE")){
 						//task_list_current->holded_info->read->fread->erorr_id++;
 						//DEBUG("gong to save var 3\n");
 						//if (task_list_current->holded_info->read->fread->erorr[task_list_current->holded_info->read->fread->erorr_id].erorr)
-        		//	task_list_current->holded_info->read->fread->erorr[task_list_current->holded_info->read->fread->erorr_id].erorr =  stradd(task_list_current->holded_info->read->fread->erorr[task_list_current->holded_info->read->fread->erorr_id].erorr, readword->value, ',');
-      			//else task_list_current->holded_info->read->fread->erorr[task_list_current->holded_info->read->fread->erorr_id].erorr =  stradd("", readword->value, ',');
-      			//task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
+						//	task_list_current->holded_info->read->fread->erorr[task_list_current->holded_info->read->fread->erorr_id].erorr =  stradd(task_list_current->holded_info->read->fread->erorr[task_list_current->holded_info->read->fread->erorr_id].erorr, readword->value, ',');
+						//else task_list_current->holded_info->read->fread->erorr[task_list_current->holded_info->read->fread->erorr_id].erorr =  stradd("", readword->value, ',');
+						//task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
 						//DEBUG(" The code or word[%d](%s) not knowen|%s|\n", task_list_current->holded_info->read->fread->reading_on, readword->value, task_list_current->holded_info->read->fread->erorr[task_list_current->holded_info->read->fread->erorr_id].erorr);
 						//readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
 						// TODO: show erorr as msg

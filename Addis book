@@ -1,14 +1,29 @@
+The Official Guide to Addis OS
+Chapter 1: Introduction to Addis OS
+
+Addis OS is a unique and powerful operating system designed to be controlled through script files written in a simplified, assembly-like language with custom keywords. These script files use the .oac extension (which stands for Operating Assembly Command). Addis OS will interpret and execute these scripts to perform various tasks.
+Key Features:
+
+    Works on all drives
+
+    Supports execution of high-level commands using custom keywords
+
+    Reads and executes .oac scripts
+
+    Expandable and customizable for developers
+
 Addis will start it code in Kernel.c main by lodaing the first kernel tasks
 the kernel allows will start by reading boot/start.oac file 
 the first task it will try to read the boot/start.oac file 
 the first code to read will be start.oac because it will prepare system to read other codes and it will be the main code for system
 
+Chapter 2: Syntax Basics
+
+All keywords in Addis OS are written in ALL CAPITAL LETTERS to distinguish them from regular text or parameters. Parameters such as strings, numbers, or paths are written in lowercase or inside quotes depending on their type.
+
+Example of a basic .oac script:
+
 .oac : standes for open addis cods it is open not scripted code andy one can see or edite this code file
-
-
-
-Task:
-
 
 
 WorkingTable:
@@ -47,27 +62,43 @@ WorkingTable:
 
 
 
+CoMmAnD->Variables->Get [3 number INDEX] [Varible Name]
+    : this will get the varibel Diclared befor by index or varible name
+
+CoMmAnD->Variables->Focused->As [Unic Name for Varible]
+    : It will set Focused Varible Name to be Called
+
+CoMmAnD->Files->Load [path string] [path Varible] 
+    : this will Load any file from given path and focese the loaded file 
+
+Task:
+    : it is a system pressesing parts 
+
+        CoMmAnD->Tasks->This->Know 
+            : this will add must now knowlege for code befor reading given code
 
 
-The Official Guide to Addis OS
-Chapter 1: Introduction to Addis OS
 
-Addis OS is a unique and powerful operating system designed to be controlled through script files written in a simplified, assembly-like language with custom keywords. These script files use the .oac extension (which stands for Operating Assembly Command). Addis OS will interpret and execute these scripts to perform various tasks.
-Key Features:
+type 1:
+        CoMmAnD->Tasks->This->Know CoMmAnD->Files->Load /Sys/Def/DefMain.oac
 
-    Works on all drives
+type 2:
+        CoMmAnD->Files->Load /Sys/Def/DefMain.oac 
+        CoMmAnD->Tasks->This->Know CoMmAnD->Variables->Focused
 
-    Supports execution of high-level commands using custom keywords
+type 3:
+        CoMmAnD->Files->Load /Sys/Def/DefMain.oac 
+        CoMmAnD->Variables->Focused->As DefMainBuff
+        CoMmAnD->Tasks->This->Know CoMmAnD->Variables->Get DefMainBuff
 
-    Reads and executes .oac scripts
+* loading File From file  :  CoMmAnD->Files->Load /Sys/Def/DefMain.oac
+        
+* assingin valrible Name : CoMmAnD->Variables->Focused->As DefMainBuff
 
-    Expandable and customizable for developers
+* Icluding code or knowlege Before reading code : CoMmAnD->Tasks->This->Know {CoMmAnD->Variables->Focused}
 
-Chapter 2: Syntax Basics
 
-All keywords in Addis OS are written in ALL CAPITAL LETTERS to distinguish them from regular text or parameters. Parameters such as strings, numbers, or paths are written in lowercase or inside quotes depending on their type.
 
-Example of a basic .oac script:
 
 INCLUDE "boot/startup.oac"
 SHOWMSG "Welcome to Addis OS"

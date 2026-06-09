@@ -42,6 +42,7 @@
   	// Win manager reference if any
   	void* window;
 	void* fac;
+
 	struct READINGINFO *holded_info;
 
   struct task_struct* next;

@@ -247,6 +247,7 @@ char *get_code(char *filepath){
 	for (; *(text1 + i); i++){
 		if((*(text1 + i+1))=='\0')  out[j+1] = '\0'; 
 		if((*(text1 + i))=='\n') { out[j] = ' '; j++; continue; }
+		if((*(text1 + i))=='\0') { out[j] = ' '; j++; continue; }
 		if (*(text1 + i) == '\t') continue;
 		if (isprint(*(text1 + i))) 
 		{

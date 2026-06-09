@@ -4,7 +4,6 @@
 #include <Addis/Libs/String/Text.h>
 #include <Addis/Tables/WorkingT.h> // for defining struct READINGINFO and other table-related functions
 
-SYSTEMINFO sysinfo;
 
 void read_sub_def()
 {
@@ -163,11 +162,12 @@ void find_defl(char *name) {
 
 _Bool get_defco(list_t *read, int isret)
 {
-	char *name = "", *values = "";
+	//char *name = "", *values = "";
 	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
 	DEBUG("Find(%s)isret[%d] \n", readword->value, isret);
 	sysinfo.focused_def = NULL;
-	find_defl(readword->value);
+	if (issame(readword->value, "")) return false;
+	/*find_defl(readword->value);
 	if (sysinfo.focused_def){
 		if(isret >= 1) return true;
 		task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
@@ -207,6 +207,6 @@ _Bool get_defco(list_t *read, int isret)
 			DEBUG(" stoped reading_for[0] = %s\n", task_list_current->holded_info->read->read_next->fread->reading_for[0]);
 			return true;
 		}
-	}
+	}*/
 	return false;
 }

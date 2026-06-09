@@ -1,22 +1,12 @@
-CoMmAnD->Define INCLUDE
-CoMmAnD->About INCLUDE: if it is used full capitaled it use to add or to combine things
-CoMmAnD->DO
+CoMmAnD->Define "INCLUDE"
+CoMmAnD->Define->Focused->DO "
+	CoMmAnD->If CoMmAnD->Parent->Scan CoMmAnD->Variable->Path
+	"
+		CoMmAnD->Files->Load CoMmAnD->Variables->Get CoMmAnD->Variable->Path
+		CoMmAnD->Parent->Tasks->Know CoMmAnD->Variables->Focused
+	"
+"
 
-	CoMmAnD->If CoMmAnD->Tasks->Read->word CoMmAnD->Equal CoMmAnD->To CoMmAnD->Variable->Path
-	CoMmAnD->DO
-		CoMmAnD->Get CoMmAnD->Variable->Path CoMmAnD->As incpath
-		CoMmAnD->Files->Load incpath
-		CoMmAnD->As IncBuff
-		CoMmAnD->Tasks->Caller->Wordes->Add->Before IncBuff
-	CoMmAnD->END DO
-	CoMmAnD->ElseIf
-	CoMmAnD->DO
-
-	
-	CoMmAnD->END DO
-	CoMmAnD->Else
-	CoMmAnD->DO
-
-	
-	CoMmAnD->END DO
-CoMmAnD->END DO
+CoMmAnD->Define->Focused->As "defIncludevar"
+CoMmAnD->Define->Focused->About "INCLUDE: if it is used full capitaled it use to add or to combine things"
+CoMmAnD->Define->Focused->Note "This definition may need adjustment for a new coding language (path handling and token parsing)."

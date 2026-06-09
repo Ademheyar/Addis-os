@@ -13,6 +13,7 @@
 #include <Shell.h>
 #include <x86.h>
 
+SYSTEMINFO sysinfo;
 
 // Entry point for the kernel
 void kmain()

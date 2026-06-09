@@ -5,8 +5,10 @@
 #define DEFT_H
 
 struct DEF_LIST {
+	
 	char *value, *non_def;
 	char *name[20];
+
 	int name_id;
 	struct DEF_LIST *main_chaild_def;
 	struct DEF_LIST *focused_chaild_def;

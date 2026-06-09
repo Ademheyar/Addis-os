@@ -48,16 +48,102 @@
 struct WORKTABLE *ReadDo(){
   //this will set reading to where it stoped
 	task_list_current->holded_info->read->fread->reading_on = task_list_current->holded_info->read->fread->reading_stoped;
-  // and we will read from there
   //DEBUG("reading on %d\n", task_list_current->holded_info->read->fread->reading_on);
 	listnode_t *readword = list_get_node_by_index(task_list_current->holded_info->read->fread->reading_value, task_list_current->holded_info->read->fread->reading_on); 
-	DEBUG("in ReadDo %d", task_list_current->holded_info->read->fread->reading_on);
-  
+	DEBUG("in ReadDo |%s|\n", readword->value);
+  if (strlen(readword->value) == 0 || issame(readword->value, "")){
+    DEBUG("Jumping keyword (%s)", readword->value);
+    task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
+    return NULL;
+  }
   // holde where it is reading 
+  if (!task_list_current->holded_info->read->fread->worktables.worktable) {
+      DEBUG("creating worktable for reading string\n");
+      task_list_current->holded_info->read->fread->worktables.worktable = malloc(sizeof(struct WORKTABLE));
+    }
+    
+    if (!task_list_current->holded_info->read->fread->worktables.worktable->focused_column && !task_list_current->holded_info->read->fread->worktables.worktable->column) {
+      DEBUG("creating column for reading string\n");
+      task_list_current->holded_info->read->fread->worktables.worktable->column = malloc(sizeof(struct COLUMN));  
+      task_list_current->holded_info->read->fread->worktables.worktable->column->row = NULL;
+    }
+    if (task_list_current->holded_info->read->fread->worktables.worktable->column && !task_list_current->holded_info->read->fread->worktables.worktable->focused_column) {
+      DEBUG("creating focused column for reading string\n");
+      task_list_current->holded_info->read->fread->worktables.worktable->focused_column = task_list_current->holded_info->read->fread->worktables.worktable->column;  
+    }
+    
+    if (!task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row) {
+      DEBUG("creating row for reading string\n");
+      task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row = malloc(sizeof(struct ROW));
+      task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row = task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row;
+      
+      task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->type = "String";
+      task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->on = 5;
+    }
+
   int hold_on = task_list_current->holded_info->read->fread->reading_on;
-  
   // Starting from here We will read keywords the semple ones will be diffined in this code
   // and the rest will be in the there respective files
+  //char *keyword = (char *)readword->value;
+  // If Keyword is "" if the word is starting with " or the word it self is " this will be used to handle the string and save it in the reading info to be used in the reading code
+  if(readword && readword->value && ((strstr(readword->value, "\"") != NULL || issame(readword->value, "\"")))){
+    char *str = malloc(sizeof(char *)+50);
+    listnode_t *temp_readword = readword; 
+    char *temp_keyword = temp_readword->value;
+    int keylen = strlen(temp_keyword);
+    task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
+    // this will be used to handle the string and save it in the reading info to be used in the reading code
+    if (temp_keyword[0] == '"')  {
+      char copy_r[keylen-1];
+      for(int i = 1; i < keylen; i++) {
+        if (i == keylen-1 && temp_keyword[i] == '"'){
+          str = strcat(str, (char *)copy_r);
+          DEBUG("going to save word on row\n");
+          task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->value.Buffer = strdup(str);
+          DEBUG("Successfully Done Reading word (%s)\n", task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->value.Buffer);
+          return task_list_current->holded_info->read->fread->worktables.worktable;
+
+        }
+        copy_r[i-1] = temp_keyword[i];
+      }
+      str = strcat(str, (char *)copy_r);
+    }
+    DEBUG(" first keyword (%s)\n", temp_readword->value);
+    
+    while (true) {
+      // this will be used to handle the string and save it in the reading info to be used in the reading code
+      // and we will save the string in the reading info to be used in the reading code 
+      
+      temp_readword =  list_get_node_by_index(task_list_current->holded_info->read->fread->reading_value, task_list_current->holded_info->read->fread->reading_on); 
+      temp_keyword = temp_readword? (char *)temp_readword->value : NULL;
+      keylen = strlen(temp_keyword);
+
+      str = strcat(str, temp_keyword);
+      DEBUG("Copying String (%s)\n", str);
+      DEBUG("Copying keylen (%i)\n", keylen);
+      DEBUG("Copying temp_keyword (%s)\n", temp_keyword);
+      
+      
+      task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
+      if (temp_readword && temp_readword->value && (( keylen == 0 || (temp_keyword && temp_keyword[keylen - 1] == '"') || issame(temp_readword->value, "\"")))) {
+        // this will be used to handle the string and save it in the reading info to be used in the reading code
+        // and we will save the string in the reading info to be used in the reading cod
+        
+        DEBUG("Got String (%s)\n", str);
+        
+        // this will be used to save the string in the reading info to be used in the reading code
+        //task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
+        
+        DEBUG("going to save string on row\n");
+        task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->value.Buffer = strdup(str);
+        DEBUG("Successfully Done Reading String (%s)\n", task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->value.Buffer);
+        return task_list_current->holded_info->read->fread->worktables.worktable;
+      }
+      
+      str = strcat(str, " ");
+    }
+    return NULL;
+  }
 
   
   // Check if it is CoMmAnD or NORMAL code
@@ -79,61 +165,74 @@ struct WORKTABLE *ReadDo(){
       // FILE LOADING WILL BE HANDLED BY THIS
       // this will be used to load the file that is found in path form or string
       if (split_list[2] && split_list[2] != NULL && issame(split_list[2], ">Load")){
-        // TODO: this will be used to load the file that is found in path form or string and read it
-        // TODO: What if it is ask to get the path from valurble or somthin else this will be used to handle it and get the path from it and then read the file
-
+        // We have to jump CoMmAnD->File->Load 
         task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-        readword = list_get_node_by_index(task_list_current->holded_info->read->fread->reading_value, task_list_current->holded_info->read->fread->reading_stoped); 
-        char *path = readword->value;
-        DEBUG("command(%s) value(Load) Path(%s)\n", command, path);
-        if (strchr(path, '\\') || strchr(path, '/')) {
-          // Here we will Load a File that is found in path form and read it
-          // TODO: this will be used the file that are found in path form and Holde it 
-          // TODO: It has to Read and File from here and holde the buffer and the info of the file in the reading info to be used in the
-          char *Buffer = get_code(path);
-          DEBUG("Done getting code from file\n");
-          if (Buffer) {
-            // if it get the path then we will jump the path text and continue readintg the rest of the code and then we will read the file and save it in the reading info to be used in the reading code
-            task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-            
-            
-            if (!task_list_current->holded_info->read->fread->worktables.worktable) {
-              DEBUG("creating worktable for reading file\n");
-              task_list_current->holded_info->read->fread->worktables.worktable = malloc(sizeof(struct WORKTABLE));
-            }
-            
-            if (!task_list_current->holded_info->read->fread->worktables.worktable->focused_column && !task_list_current->holded_info->read->fread->worktables.worktable->column) {
-              DEBUG("creating column for reading file\n");
-              task_list_current->holded_info->read->fread->worktables.worktable->column = malloc(sizeof(struct COLUMN));  
-              task_list_current->holded_info->read->fread->worktables.worktable->column->row = NULL;
-            }
-            if (task_list_current->holded_info->read->fread->worktables.worktable->column && !task_list_current->holded_info->read->fread->worktables.worktable->focused_column) {
-              DEBUG("creating focused column for reading file\n");
-              task_list_current->holded_info->read->fread->worktables.worktable->focused_column = task_list_current->holded_info->read->fread->worktables.worktable->column;
-            }
-
-            if (!task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row) {
-              DEBUG("creating row for reading file\n");
-              task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row = malloc(sizeof(struct ROW));
-              task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row = task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row;
-              
-              task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->type = "FILE";
-              task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->on = 5;
-            }
-            DEBUG("going to save file buffer on row\n");
-            task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->value.Buffer = Buffer;
-            
-            DEBUG("Successfully Done Reading File (%s)\n", task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->value.Buffer);
-            return NULL;
+        // then Get File To read
+        struct WORKTABLE *retworktable = ReadDo();
+        if(retworktable) {
+          char *path = NULL;
+          if(issame(retworktable->focused_column->focused_row->type, "String") ||
+             issame(retworktable->focused_column->focused_row->type, "PATH") ||
+             issame(retworktable->focused_column->focused_row->type, "FILE") ){
+            path = retworktable->focused_column->focused_row->value.Buffer;
           }
-          else {
-            DEBUG("Failed To Read File \n");
+          if(path){
+            DEBUG("command(%s) value(Load) Path(%s)\n", command, path);
+            if (strchr(path, '\\') || strchr(path, '/')) {
+              // chacking if it is path or string if it has \ or / it is path else it is string
+              // this will be used to load the file that is found in path form and read it
+              char *Buffer = get_code(path);
+              // make sure the space is cleard
+              free(retworktable->focused_column->row);
+
+              DEBUG("Done getting code from file\n");
+              if (Buffer) {
+                // if it get the path then we will jump the path text and continue readintg the rest of the code and then we will read the file and save it in the reading info to be used in the reading code
+                task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
+                
+                
+                if (!task_list_current->holded_info->read->fread->worktables.worktable) {
+                  DEBUG("creating worktable for reading file\n");
+                  task_list_current->holded_info->read->fread->worktables.worktable = malloc(sizeof(struct WORKTABLE));
+                }
+                
+                if (!task_list_current->holded_info->read->fread->worktables.worktable->focused_column && !task_list_current->holded_info->read->fread->worktables.worktable->column) {
+                  DEBUG("creating column for reading file\n");
+                  task_list_current->holded_info->read->fread->worktables.worktable->column = malloc(sizeof(struct COLUMN));  
+                  task_list_current->holded_info->read->fread->worktables.worktable->column->row = NULL;
+                }
+                if (task_list_current->holded_info->read->fread->worktables.worktable->column && !task_list_current->holded_info->read->fread->worktables.worktable->focused_column) {
+                  DEBUG("creating focused column for reading file\n");
+                  task_list_current->holded_info->read->fread->worktables.worktable->focused_column = task_list_current->holded_info->read->fread->worktables.worktable->column;
+                }
+
+                if (!task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row) {
+                  DEBUG("creating row for reading file\n");
+                  task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row = malloc(sizeof(struct ROW));
+                  task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row = task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row;
+                  
+                  task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->type = "FILE";
+                  task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->on = 5;
+                }
+                DEBUG("going to save file buffer on row\n");
+                task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->value.Buffer = Buffer;
+                
+                DEBUG("Successfully Done Reading File (%s)\n", task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->value.Buffer);
+                return task_list_current->holded_info->read->fread->worktables.worktable;
+              }
+              else {
+                DEBUG("Failed To Read File \n");
+              }
+            }
+            else {
+              // this will be used to include the file that are found in string form
+              // and read it
+              DEBUG(" include string c code(%s)\n", path);
+            }
           }
         }
         else {
-          // this will be used to include the file that are found in string form
-          // and read it
-          DEBUG(" include string c code(%s)\n", path);
+          DEBUG("Failed To Get File Path \n");
         }
       }
       
@@ -193,21 +292,37 @@ struct WORKTABLE *ReadDo(){
           DEBUG("command(%s) Variable Focused As (%s)\n", command, Asname);
           task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->As = Asname;
           DEBUG("Successfully Done Saving Asname (%s)\n", task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->As);
-          char *inctext = "";
-          if(issame(task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->type, "FILE")) {
-            // if the focused row is file then we will read the file and save it in the reading info to be used in the reading code
-            inctext = task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->value.Buffer;
-          }
-          
-          task_list_current->holded_info->fread->state = 'L';
-          char *incode = read_bodys(inctext);
-          task_list_current->holded_info->read->fread->reading_value = str_splitL(incode, " ", 0);
-          task_list_current->holded_info->read->fread->read_new = incode;
-          
           task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
           return NULL;
         } else {
           DEBUG("command(%s) value(Main Focused)\n", command);
+
+          if (!task_list_current->holded_info->read->fread->worktables.worktable) {
+            DEBUG("creating worktable for SENDING AS FOCUSED file\n");
+            task_list_current->holded_info->read->fread->worktables.worktable = malloc(sizeof(struct WORKTABLE));
+          }
+          
+          if (!task_list_current->holded_info->read->fread->worktables.worktable->focused_column && !task_list_current->holded_info->read->fread->worktables.worktable->column) {
+            DEBUG("creating column for SENDING AS FOCUSED file\n");
+            task_list_current->holded_info->read->fread->worktables.worktable->column = malloc(sizeof(struct COLUMN));  
+            task_list_current->holded_info->read->fread->worktables.worktable->column->row = NULL;
+          }
+          if (task_list_current->holded_info->read->fread->worktables.worktable->column && !task_list_current->holded_info->read->fread->worktables.worktable->focused_column) {
+            DEBUG("creating focused column for SENDING AS FOCUSED file\n");
+            task_list_current->holded_info->read->fread->worktables.worktable->focused_column = task_list_current->holded_info->read->fread->worktables.worktable->column;
+          }
+
+          if (!task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row) {
+            DEBUG("creating row for SENDING AS FOCUSED file\n");
+            task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row = malloc(sizeof(struct ROW));
+            task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row = task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row;
+            
+            task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->type = "";
+            task_list_current->holded_info->read->fread->worktables.worktable->focused_column->focused_row->on = 5;
+          }
+          struct WORKTABLE *found = task_list_current->holded_info->read->fread->worktables.worktable;
+          DEBUG("command(%s) value(Main Focused)\n", found->focused_column->focused_row->value.Buffer);
+          return found;
         }
 
       } else {
@@ -230,15 +345,33 @@ struct WORKTABLE *ReadDo(){
           DEBUG("going to get knowlege\n");
           struct WORKTABLE *getworingvar = ReadDo();
           DEBUG("Done getting knowlege\n");
-          DEBUG("Successfully Done GettingAsname (%s)\n", getworingvar->focused_column->focused_row->As);
-          task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
+          if (getworingvar) {
+            DEBUG("Successfully Done Getting Knowlege Now Loding To read it\n");
+            if (getworingvar->focused_column->focused_row->As ) DEBUG(" Asnamed (%s)\n", getworingvar->focused_column->focused_row->As);
+            char *inctext = "";
+            if(issame(getworingvar->focused_column->focused_row->type, "FILE") || 
+               issame(getworingvar->focused_column->focused_row->type, "String")) {
+              // if the focused row is file then we will read the file and save it in the reading info to be used in the reading code
+              inctext = getworingvar->focused_column->focused_row->value.Buffer;
+            }
+
+            task_list_current->holded_info->fread->state = 'L';
+            char *incode = read_bodys(inctext);
+            task_list_current->holded_info->read->fread->reading_value = str_splitL(incode, " ", 0);
+            task_list_current->holded_info->read->fread->read_new = incode;
+            
+            DEBUG("Successfully Loding Knowlege\n");
+            task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
+          } else {
+            DEBUG("Failed To Get Knowlege \n");
+          }
           return NULL;
         } else {
-          DEBUG("command(%s) value(Main Focused)\n", command);
+          DEBUG("command(%s) value(This Task)\n", command);
         }
 
       } else {
-        DEBUG("command(%s) value(Main Variables)\n", command);
+        DEBUG("command(%s) value(This)\n", command);
       }
 
     } else {
@@ -248,24 +381,7 @@ struct WORKTABLE *ReadDo(){
 
 
 
-  // If Keyword is "INCLUDE"
-  // this will be used to include the file that are found in path form or string and read it
-  if(issame(readword->value, "INCLUDE")) {
-    // Mark this INCLUDE keyword as readen and move to the next word that is the path or string of the file to include
-    task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-
-    // this command will be handeld by code found in Src/Addis/Libs/INCLUDE
-    // Going to include the file To Read that is found in path form or string and read it
-    // this will be used to include the file that are found in path form or string and
-    // and read it
-    struct ROW *isInclude_readed = READ_INCLUDE(task_list_current->holded_info->read->fread->reading_value);
-    
-    // If the INCLUDE keyword is successfully read and processed, we can proceed with the reading process
-    if (isInclude_readed){}
-    return NULL;
-
-  }
-
+  
   Resive(task_list_current->holded_info->read->fread->reading_value, 1, 0);
 
 	// chack if this word is KEYWORD or most be risive

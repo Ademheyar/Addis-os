@@ -93,21 +93,8 @@ void strcpy(void *dst, const void *src)
 
 
 /*
-void strcat(void *dest,const void *src)
-{
-    char * end = (char*)dest + strlen(dest);
-    memcpy((char*)end,(char*)src,strlen((char*)src));
-    end = end + strlen((char*)src);
-    *end = '\0';
-}
-*/
-char* strcat(char* dest, const char* src)
-{
-    strcpy(dest + strlen(dest), src);
-    return dest;
-}
 
-/*
+this is not good if the word dosnot have \0 it will include deffernt words
 char * strcat(char *dest, const char *src) {
 	char * end = dest;
 	while (*end != '\0') {
@@ -120,7 +107,16 @@ char * strcat(char *dest, const char *src) {
 	}
 	*end = '\0';
 	return dest;
-}*/
+}
+
+
+*/
+
+char* strcat(char* dest, const char* src)
+{
+    strcpy(dest + strlen(dest), src);
+    return dest;
+}
 
 /*
 char * strncat(char *dest, const char *src, size_t n) {
@@ -163,7 +159,7 @@ char * strdup(char src[])
 	//DEBUG("num l %d ~  i %d |  \n", l , i);//, (char *)out);
 	return memcpy(malloc(i+1), (char *)out, i+1);
 }
-	
+
 char *stradd(char dest[], char src[], char con) {
   int countdest = strlen(dest), countsrc = strlen(src);
   int num = countdest + countsrc+1;
