@@ -19,22 +19,6 @@ typedef struct {
 	int lines;
 }splited_code;
 
-typedef struct READINGINFO {
-	// bootinfo
-	splited_code *bootinfo;
-	char **hold_event;
-	int booton;
-
-	struct READINGINFO *read_prev; // previuse sube code
-	struct READINGINFO *read_next; // next sube code
-	struct READINGINFO *read; // main sube code
-
-	struct USER_WDB *fread; // reading sube code
-
-} READINGINFO;
-
-
-
 //
 struct ROW {
 	// commen
@@ -80,7 +64,7 @@ struct ROW {
 		}image;
 		
 		struct {
-			struct USER_WDB *fuwdb;
+			struct READINGINFO *fuwdb;
 			char *prop;
 		}variable;
 		
@@ -132,14 +116,152 @@ typedef struct {
 	struct WORKTABLE *last_wt;
 }WORKTABLES;
 
+
+
+
+
+//
+typedef struct {
+	char *id_addrs;
+	char *state;
+	char *state_name;
+	char *def;
+	char *erorr;
+} ERORR;
+
+
+
+struct event {
+	char *by;
+    struct ROW *ishappen;
+	struct ROW *compare;
+    struct ROW *prop;
+	struct ROW *event_value;
+	struct ROW *do_value;
+	
+	struct event *prev_event; // previuse
+	struct event *next_event; // Locale
+};
+
+
+
+
+typedef struct READINGINFO {
+	// this is the used to save all data and code will reading and processing codes
+	
+	// Holding Variable that is on going to be used in Tasks
+	// this is for reading code and processing code to save focused table and variable
+	// NOTE: this is not for saving var but for holding var that is on going to be used in reading or processing code
+	// Need to be Diclared in struct READINGINFO because it will be used in reading and processing code and it is nessasery to save it in main table to be able to use it in all code
+
+	/*
+	*	WORKTABLES
+	* |--------------------------------------------_|
+	* | ROW 0  |                                    | Cloumn 0
+	* |--------------------------------------------_|
+	* |        |                                    | Cloumn 1
+	* |--------------------------------------------_|
+	* |        |                                    | Cloumn 2
+	* |--------------------------------------------_|
+	* |        |                                    | Cloumn 3
+	* |--------------------------------------------_|
+	* |________|____________________________________| .......
+	* |        |                                    |
+	* Warktable 0 Column 0 Rows All was Woring Processing Arias
+	* All Names Or Named Variable will be Stord In this Table
+	*/
+	WORKTABLES worktables; 
+	
+	
+
+
+
+
+
+	int id;
+  	char *id_addrs;
+	char state;
+	char *name;
+	char *user_name, *user_password;	
+	
+	char *type; // table type
+
+	// for others value
+	char *withcodes; // fanction with
+	struct ROW value; // this will tall or give type and value  // DO or word Value
+
+	// reading code
+	char *read_new; // if new code added or moust be readen 
+	char *main_readcode; // this will converted code if it is nessasery
+	list_t *reading_value; // this will holed reading code words
+	char *reading_for[10]; // this will tell reading for what
+	struct task_struct *reading_task;
+	char *getwhat, *getas;
+
+	int rfor_id, reading_stoped, reading_on;
+
+
+	// If
+	_Bool ifon, ifren;
+	int rnextcode; // rnextcode(readnextcode) will tall if the next code will be readn or not
+
+	// LOOP
+	_Bool Break;
+	int read_loopoint;
+
+	char varon; // on visiblete
+  int tid;
+
+	_Bool Continue, loopon; // loops
+	int erorr_id;
+
+
+	struct event *main_event;
+	struct event *foucsed_event;
+	struct event *last_event;
+
+	//
+	struct READINGINFO *chileds[1]; // this is sub chiled
+	struct READINGINFO *first_chiled; 
+	struct READINGINFO *foucsed_chiled; 
+	struct READINGINFO *last_chiled;
+
+	struct READINGINFO *chiled_Parent; 
+
+	struct READINGINFO *variables[1]; // this is sub codes
+	
+	struct READINGINFO *Parent_table; // State
+	struct READINGINFO *Main_table; // Locale
+  int varsid, tvarsid, chiled_id;
+
+
+
+	
+	// bootinfo
+	splited_code *bootinfo;
+	char **hold_event;
+	int booton;
+	
+	// makeing list of chains
+	struct READINGINFO *read_prev; // previuse sube code
+	struct READINGINFO *read_next; // next sube code
+} READINGINFO;
+
+
+
+
+
+
 /*
 *
 *	WORKINGTABLE
 */
+void Create_working_place(char *newcode, char on);
 void Create_worktable(struct WORKTABLE *n);
 void Create_newworktable();
 void Get_worktable_byindex(int wid);
 void Return_lastworktable();
+
 
 /*
 *
@@ -169,149 +291,33 @@ void Addrow_to_row_byindex(struct ROW *row, int wt, int wr);
 void Clear_worktables(int which);
 void Create_workingtable();
 struct ROW *get_worktable(list_t *read, int isret);
-
-//
-typedef struct {
-	char *id_addrs;
-	char *state;
-	char *state_name;
-	char *def;
-	char *erorr;
-} ERORR;
-
-
-
-struct event {
-	char *by;
-    struct ROW *ishappen;
-	struct ROW *compare;
-    struct ROW *prop;
-	struct ROW *event_value;
-	struct ROW *do_value;
-	
-	struct event *prev_event; // previuse
-	struct event *next_event; // Locale
-};
-
-// this is the main db contains
-//
-struct USER_WDB {
-	// this is the main table that will be used to save all data and code will reading and processing codes
-	
-	// Holding Variable that is on going to be used in Tasks
-	// this is for reading code and processing code to save focused table and variable
-	// NOTE: this is not for saving var but for holding var that is on going to be used in reading or processing code
-	// Need to be Diclared in struct USER_WDB because it will be used in reading and processing code and it is nessasery to save it in main table to be able to use it in all code
-
-	/*
-	*	WORKTABLES
-	* |--------------------------------------------_|
-	* | ROW 0  |                                    | Cloumn 0
-	* |--------------------------------------------_|
-	* |        |                                    | Cloumn 1
-	* |--------------------------------------------_|
-	* |        |                                    | Cloumn 2
-	* |--------------------------------------------_|
-	* |        |                                    | Cloumn 3
-	* |--------------------------------------------_|
-	* |________|____________________________________| .......
-	* |        |                                    |
-	* Warktable 0 Column 0 Rows All was Woring Processing Arias
-	* All Names Or Named Variable will be Stord In this Table
-	*/
-	WORKTABLES worktables; 
-	
-	int id;
-  	char *id_addrs;
-	char state;
-	char *name;
-	char *user_name, *user_password;	
-	
-	char *type; // table type
-
-	// for others value
-	char *withcodes; // fanction with
-	struct ROW value; // this will tall or give type and value  // DO or word Value
-
-	// reading code
-	char *read_new; // if new code added or moust be readen 
-	char *main_readcode; // this will converted code if it is nessasery
-	list_t *reading_value; // this will holed reading code words
-	list_t *bodys; // this will hold grouped codes
-	char *reading_for[10]; // this will tell reading for what
-	struct task_struct *reading_task;
-	char *getwhat, *getas;
-
-	int rfor_id, reading_stoped, reading_on;
-
-
-	// If
-	_Bool ifon, ifren;
-	int rnextcode; // rnextcode(readnextcode) will tall if the next code will be readn or not
-
-	// LOOP
-	_Bool Break;
-	int read_loopoint;
-
-	char varon; // on visiblete
-  int tid;
-
-	_Bool Continue, loopon; // loops
-	ERORR erorr[100];
-	int erorr_id;
-
-
-	struct event *main_event;
-	struct event *foucsed_event;
-	struct event *last_event;
-
-	//
-	struct USER_WDB *chileds[1000]; // this is sub chiled
-	struct USER_WDB *first_chiled; 
-	struct USER_WDB *foucsed_chiled; 
-	struct USER_WDB *last_chiled;
-
-	struct USER_WDB *chiled_Parent; 
-
-	struct USER_WDB *prev_table; // previuse
-	struct USER_WDB *next_table;
-
-	struct USER_WDB *variables[1000]; // this is sub codes
-	
-	struct USER_WDB *Parent_table; // State
-	struct USER_WDB *Main_table; // Locale
-  int varsid, tvarsid, chiled_id;
-};
-
 //
 //
 typedef struct {
 	// user working variables saved there is
 	char *USER_NAME, *USER_PASSWORD;
-	// user_wdb : here is main application runs code will store
-	struct USER_WDB *user_wdb[100]; // use this for user codes
+	// READINGINFO : here is main application runs code will store
+	struct READINGINFO *READINGINFO[100]; // use this for user codes
 
 	// user_eventdb :  here will run event codes
-	struct USER_WDB *user_eventdb[100];
+	struct READINGINFO *user_eventdb[100];
 	// user_intdb :  here will run interapt codes
-	struct USER_WDB *user_intdb[100]; 
+	struct READINGINFO *user_intdb[100]; 
 	int uwdb_id, uedb_id, uidb_id;
 } Loged_user;
 
 
-struct READINGINFO *get_reading_table(char c);;
+struct ROW *Find_Variable_by(char *name); // for finding varible from local up to global by name, 
+
 
 void LogIn();
-void Create_working_place();
 void Remove_ALLF_READING();
-void Remove_READING();
-void Create_readinfo(char on);
 void Delete_lateworking_place();
 void Create_readtable_bn();
-struct USER_WDB *Create_vartable(list_t *read, struct USER_WDB *var, int isret);
+struct READINGINFO *Create_vartable(list_t *read, struct READINGINFO *var, int isret);
 void Remove_this_readtable();
 
-void Add_chiled_to_parent(struct USER_WDB *parent, struct USER_WDB *chiled);
+void Add_chiled_to_parent(struct READINGINFO *parent, struct READINGINFO *chiled);
 
 typedef struct {
 	char array[10000];
@@ -328,7 +334,7 @@ typedef struct {
   char *driv_name, *main_name, *driv_handler, *irq_ack; // varabel main info
   uint8_t driv_port, driv_id;
   _Bool driv_enabled, driv_registered;
-  struct USER_WDB *onwdb; 
+  struct READINGINFO *onwdb; 
 //	isr_t interrupt_handlers;
 }DRIVERS;
 // to reagistor drivers
@@ -345,7 +351,25 @@ typedef struct {
 typedef struct {
 	// this will be loaded with boot loder and it will be saved until system is off or loged out	
 	// here will be stored collective that and task or code need informations
+
+
 	
+	// Unversal Variables will be saved in those
+	// this will be called or setted by external varible  ->extern
+	struct ROW *first_extern_varible; // the first and main 
+	struct ROW *focused_extern_varible; // focused extrnal variable 
+	struct ROW *last_extern_varible; // the last setted varible
+	
+
+
+
+
+
+
+
+	struct READINGINFO *first_Unversal; // the first and main 
+	struct READINGINFO *focused_Unversal; // focused extrnal variable 
+	struct READINGINFO *last_Unversal; // the last setted varible
 
 	// defened 
 	// this is for defenition code and defenition Not Known Words that will be Explained by user in defenition code
@@ -353,13 +377,14 @@ typedef struct {
 	// it can be local or global depanding on task and sub task reding or processing code
 	// Note: this is not for saving var but for holding var that is on going to be used in reading or processing code
 	// Not soure if hoding it here or in holded_info is better but for now we will hold it here because it is more easy to access it in reading and processing code and it is not nessasery to save it in main table to be able to use it in all code
+	
 	struct DEF_LIST *main_def; // this will save main defenition list that is used in this task 
 	struct DEF_LIST *focused_def; // this will save focused defenition list that is used in this task 
 	struct DEF_LIST *last_def; // this will save last defenition list that is used in this task
 
 	
 
-	
+
 	// char
 	char *USER_NAME, *USER_PASSWORD, *userpath;
 	char *sys_mode, statce;
@@ -370,31 +395,27 @@ typedef struct {
 	
 	// here will be stored focesd places or tables 
 	struct Loged_user *loged_user; // this will hold focesd user
-
-	struct USER_WDB *wdb_R[1000]; // this will holed prossesing
-	struct USER_WDB *wdb_G[100]; // use this to save global vars
-
-	struct USER_WDB *first_Unversal;
-	struct USER_WDB *focused_Unversal;
-	struct USER_WDB *last_Unversal;
 	
-// until it is done reading or tamprarly
-	//
-	struct USER_WDB *fRwdb; // this will hold reading wdb until it is done reading
+	
 
-	struct USER_WDB *fSuser_wdb; // S this will hold reading user_wdb until it is done reading
-	struct USER_WDB *fTuser_wdb; // T this will hold reading user_wdb until it is done reading
+
+	// until it is done reading or tamprarly
+	//
+	struct READINGINFO *fRwdb; // this will hold reading wdb until it is done reading
+
+	struct READINGINFO *fSREADINGINFO; // S this will hold reading READINGINFO until it is done reading
+	struct READINGINFO *fTREADINGINFO; // T this will hold reading READINGINFO until it is done reading
 	struct Loged_user *floged_user; // this will hold focesd user
-	struct USER_WDB *ftgwdb; // this will hold found main(S) user_wdb for sometime
+	struct READINGINFO *ftgwdb; // this will hold found main(S) READINGINFO for sometime
 	
 	// here will be stored focesd places or tables
 
-	struct USER_WDB *ftm_uwdb; // this will hold found main(S) user_wdb for sometime
-	struct USER_WDB *ftv_uwdb; // this will hold found user_wdb for sometime
+	struct READINGINFO *ftm_uwdb; // this will hold found main(S) READINGINFO for sometime
+	struct READINGINFO *ftv_uwdb; // this will hold found READINGINFO for sometime
 
 	int state_count, sys_id, uwdb_id, uidb_id;
 	// wdb
-	struct USER_WDB *ftread[10];
+	struct READINGINFO *ftread[10];
 
 	int fsrid[10], fscid[10], fswid[10], fids;
 
@@ -406,17 +427,23 @@ extern SYSTEMINFO sysinfo;
 
 
 
+// for setting varible extern
+struct ROW *Set_varible_extern(struct ROW *var);
+
+struct ROW *read_unknownvars(list_t *read, char *forwhat, int ret_resualt);
+struct ROW *get_vars(list_t *read, int isret);
+
+
 
 extern struct WORKTABLE *ReadDo();
 void read_words();
 uint32_t get_color(char *colorname);
 void list_allin_table();
-struct ROW *read_unknownvars(list_t *read, char *forwhat, int ret_resualt);
 struct ROW *ReadResivers(list_t *read, char *read_what, char *dowhat, char from, int isret);
 struct ROW *get_table(list_t *read, int isret);
 
 // table.h
-struct USER_WDB *Get_main_dt(struct USER_WDB *g_main_dt, list_t *read);
+struct READINGINFO *Get_main_dt(struct READINGINFO *g_main_dt, list_t *read);
 
 // workingT.h
 char *get_row_type(struct ROW *row);
@@ -429,13 +456,12 @@ _Bool compar(char *comp, struct ROW *v1, struct ROW *v2);
 
 // event.h
 void _event(list_t *read);
-void Chack_all_events(struct USER_WDB *var, char *happend, struct ROW *value);
+void Chack_all_events(struct READINGINFO *var, char *happend, struct ROW *value);
 struct ROW *Convert_text(char *type, char *value);
 
 // Read_get.h
 char *get_value_type(char *value);
-struct USER_WDB *find_dt(struct USER_WDB *glist, char *USER_NAME, char *USER_PASSWORD, int id_db, char *Local_name, char *State_name, char *name, char *id_addrs);
-struct ROW *get_vars(list_t *read, int isret);
+struct READINGINFO *find_dt(struct READINGINFO *glist, char *USER_NAME, char *USER_PASSWORD, int id_db, char *Local_name, char *State_name, char *name, char *id_addrs);
 
 // resesive.h
 struct ROW *Resive(list_t *read, int isgroup, int isret);

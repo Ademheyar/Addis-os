@@ -5,11 +5,11 @@
 
 void hd_Driver(list_t *read)
 {
-  listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+  listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
   // other skiping continuing and returns file
   if(issame(readword->value, "OPEN")) {
-    task_list_current->holded_info->read->fread->reading_on =  ++task_list_current->holded_info->read->fread->reading_stoped;
-    readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+    task_list_current->holded_info->reading_on =  ++task_list_current->holded_info->reading_stoped;
+    readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
     
     char *name = "", *path = "";
     for(int z = 0; z<= 1;z++){
@@ -29,13 +29,13 @@ void hd_Driver(list_t *read)
         void *buffer = malloc(size + 512);
 
         fread(buffer, size, 1, file);
-        struct USER_WDB *ret = Create_vartable(read, NULL, 1);
+        struct READINGINFO *ret = Create_vartable(read, NULL, 1);
         if(ret){
           ret->name = strdup(name);
           ret->value.value.hex.hexs_8 = buffer;
           ret->value.type = "BUFFER";
           ret->type = "BUFFER";
-          DEBUG(" OPENED var id = %d name = %s \n", task_list_current->holded_info->read->fread->varsid, ret->name);
+          DEBUG(" OPENED var id = %d name = %s \n", task_list_current->holded_info->varsid, ret->name);
         }
         else DEBUG("worktablecr not OPENED\n");
       }

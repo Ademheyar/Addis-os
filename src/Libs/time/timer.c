@@ -5,10 +5,13 @@
 #include <Addis/Interrupt/Pic.h>
 #include <x86.h>
 
+#include <Kernel.h>
+
 volatile uint64_t __tick = 0;
 
 void timer_callback() {
 	__tick++;
+    DEBUG("Timer++\n");
 	// win manager will decide does it need to redraw or not
 	//window_m_manager_redraw();
 }

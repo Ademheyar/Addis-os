@@ -94,7 +94,7 @@ void strcpy(void *dst, const void *src)
 
 /*
 
-this is not good if the word dosnot have \0 it will include deffernt words
+this is not good if the word dosnot have \0 it will include deffernt
 char * strcat(char *dest, const char *src) {
 	char * end = dest;
 	while (*end != '\0') {

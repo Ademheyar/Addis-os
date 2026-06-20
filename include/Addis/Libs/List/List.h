@@ -30,7 +30,7 @@ typedef struct {
 	size_t length; // talls how many lists contans
 } __attribute__((packed)) list_t;
 
-
+void removestrlist_at_index(char **list, int index);
 extern void list_destroy(list_t * list);
 extern void list_free(list_t * list);
 extern void list_append(list_t * list,listnode_t* item);

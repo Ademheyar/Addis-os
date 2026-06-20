@@ -39,12 +39,18 @@
   	// We keep track of one entry in PDE that will be mapped to 0x0000000 (user program space)
   	pde_t *pde;
   	// pde_t pde[512]; 
-  	// Win manager reference if any
+
+	// this will keep track of main code and sub codes
+	struct READINGINFO *Mian_read; // main code Master Code
+	struct READINGINFO *Last_read; // Lasts code Master Code
+	struct READINGINFO *holded_info; // Working Code
+
+
+	// Win manager reference if any
   	void* window;
 	void* fac;
 
-	struct READINGINFO *holded_info;
-
+	
   struct task_struct* next;
   struct task_struct* prev;
   struct task_struct* parent;

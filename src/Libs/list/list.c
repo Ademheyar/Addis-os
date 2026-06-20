@@ -4,6 +4,33 @@
 #include <Libs/Malloc/Mmu_heap.h>
 #include <Libs/Malloc/Mmu_paging.h>
 
+
+/*
+*			FOR STRING LISTES
+* 
+*/
+
+// to remove given indexed list
+void removestrlist_at_index(char **list, int index) {
+
+    // 1. Calculate the current size of the list
+    int count = 0;
+    while (list[count] != NULL) {
+        count++;
+    }
+
+    // 2. Free the specific element
+    free(list[index]);
+
+    // 3. Shift the remaining items
+    for (int i = index; i < count - 1; i++) {
+        list[i] = list[i + 1];
+    }
+
+    // 4. Set the new end to NULL
+    list[count - 1] = NULL;
+}
+
 /*
  * An implementation for generic, doubly linked list, may be handy in the future when we do vfs, process manmagement, etc..
  * */

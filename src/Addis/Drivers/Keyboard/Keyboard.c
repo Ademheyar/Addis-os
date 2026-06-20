@@ -16,7 +16,7 @@
 
 
 // tabel that Enabeled Keybord will be pointed
-struct USER_WDB *Keyboard_Enebler_tabel;
+struct READINGINFO *Keyboard_Enebler_tabel;
 
 int keymap[][2] = {
 /* 0 */		{0, 0},      {ESC, ESC},
@@ -202,13 +202,13 @@ static int32_t kbconvert(uint32_t code) {
 void Keyboard_Driver(list_t *read)
 { 
   DEBUG("in keybord\n");
-	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on); 
+	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on); 
 	if(issame(readword->value, "ENABLE")){
-  	task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-		readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+  	task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+		readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 		register_interrupt_handler(ISR_IRQ1_Keyboard, keyboard_callback, "Keyboard");
 		irq_enable(PIC_IRQ1_Keyboard);
-		Keyboard_Enebler_tabel = task_list_current->holded_info->read->fread;
+		Keyboard_Enebler_tabel = task_list_current->holded_info;
   	DEBUG("Keybord ENABLED\n");
 	}
   DEBUG("out keybord\n");

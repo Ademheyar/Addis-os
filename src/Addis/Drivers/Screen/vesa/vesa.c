@@ -12,7 +12,7 @@ to convertto;
 Screen_info_t screen_info;
 multiboot_info_t *multiboot_info;
 
-int get_takeinfo(struct USER_WDB *var, char *text, char *name);
+int get_takeinfo(struct READINGINFO *var, char *text, char *name);
 
 
 void get_value_info()
@@ -21,7 +21,7 @@ void get_value_info()
 }
 
 
-int get_takeinfo(struct USER_WDB *var, char *text, char *main_name) 
+int get_takeinfo(struct READINGINFO *var, char *text, char *main_name) 
 {	
 	DEBUG("name %s code %s \n", var->name, text);
   //listnode_t *readword = list_get_node_by_index(r, r->on);
@@ -30,14 +30,14 @@ int get_takeinfo(struct USER_WDB *var, char *text, char *main_name)
 		DEBUG("going to read text %s as code\n", text);
 		list_t *r = str_splitL(stradd(text," ", 0), " ", 0);
     //readword = list_get_node_by_index(r, r->on);
-		int i = task_list_current->holded_info->read->fread->reading_on;
-		int j = task_list_current->holded_info->read->fread->reading_stoped;
-    task_list_current->holded_info->read->fread->reading_on = 0;
-		task_list_current->holded_info->read->fread->reading_stoped = 0;
+		int i = task_list_current->holded_info->reading_on;
+		int j = task_list_current->holded_info->reading_stoped;
+    task_list_current->holded_info->reading_on = 0;
+		task_list_current->holded_info->reading_stoped = 0;
 		struct ROW *row = Resive(r, 1, 1);
 		DEBUG("out from gatting fixing take info\n");
-    task_list_current->holded_info->read->fread->reading_on = i;
-		task_list_current->holded_info->read->fread->reading_stoped = j;
+    task_list_current->holded_info->reading_on = i;
+		task_list_current->holded_info->reading_stoped = j;
 		if (row->on == 3 || row->on >= 30 && row->on < 40)
 		{
 			if (row->on == 33) 
@@ -68,7 +68,7 @@ int get_takeinfo(struct USER_WDB *var, char *text, char *main_name)
 
 	/*convertto.integer = -1;
 	char *out = "";
-	struct USER_WDB *var0 = var;
+	struct READINGINFO *var0 = var;
 	char *cal(char *f, char op, char *s){
 		char t[100];
 		int fi = 0, si = 0;
@@ -158,7 +158,7 @@ int get_takeinfo(struct USER_WDB *var, char *text, char *main_name)
 				//DEBUG("out cl %d c %c\n", c1, *(code + c1));
 				
 				int found = 0;
-				struct USER_WDB *serchvar = var0;
+				struct READINGINFO *serchvar = var0;
 				DEBUG("got id %s or name %s\n", id, name);
 				if(f == 'P') {
 					DEBUG("going to get chiled parent by ");
@@ -306,11 +306,11 @@ int get_takeinfo(struct USER_WDB *var, char *text, char *main_name)
 struct ROW *Get_VESA_DRIVER(list_t *read, int isret)
 {
 	struct ROW *ret = NULL;
-	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 	if (issame(readword->value, "WIDTH")) {
 		DEBUG("%s ", readword->value);
-		task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-		readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+		task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+		readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 		ret = malloc(sizeof(struct ROW));
 		ret->type = "NUMBER";
 		ret->on = 33;
@@ -320,8 +320,8 @@ struct ROW *Get_VESA_DRIVER(list_t *read, int isret)
 	}
 	else if (issame(readword->value, "HEIGHT")) {
 		DEBUG("%s ", readword->value);
-		task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-		readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+		task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+		readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 		ret = malloc(sizeof(struct ROW));
 		ret->type = "NUMBER";
 		ret->on = 33;
@@ -334,23 +334,23 @@ struct ROW *Get_VESA_DRIVER(list_t *read, int isret)
 
 struct ROW *VESA_DRIVER(list_t *read, int isret) {
 	struct ROW *ret0 = NULL;
-	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 	DEBUG("IN VESA_DRIVER ");
 	ret0 = Get_VESA_DRIVER(read, isret);
 	if(ret0 || isret) return ret0;
 
 	if (issame(readword->value, "ENABLE")) {
 		DEBUG("%s ", readword->value);
-		task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-		readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+		task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+		readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 		Set_VESA_DRIVER();
 		DEBUG("Done ENABLEING\n");
 		return ret0;
 	}
 	else if (issame(readword->value, "CLEAR")) {
 		DEBUG("%s ", readword->value);
-		task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-		readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+		task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+		readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 		Set_VESA_DRIVER();
 		Draw_filled_rect(&screen_info, 0, 0, screen_info.width, screen_info.height, COLOR_BLACK);
 		DEBUG("Done\n");
@@ -359,7 +359,7 @@ struct ROW *VESA_DRIVER(list_t *read, int isret) {
 
 	char *fgc="", *bgc="", *x="", *y="", *w="", *h="", *pixel_w="", *pixel_h="";
 
-	struct USER_WDB *ft = NULL;
+	struct READINGINFO *ft = NULL;
 	struct ROW *ret = NULL;
 	//Clear_worktables(0);
 	ret = Resive(read, 1, 1);
@@ -387,7 +387,7 @@ struct ROW *VESA_DRIVER(list_t *read, int isret) {
 	DEBUG(" chaking new var x,y(%s, %s) w, h(%s, %s) with color(fgc(%s) bgc(%s))\n", x, y, w, h, fgc, bgc);
 	if (ret != NULL || ft != NULL) {
 		// to fill a box need starting point (x, y) box size (width, hight) and fgc/s
-		void draw_this(char *dx, char *dy, char *dw, char *dh, char *dpixelw_code, char *dpixelbmp_h, char *dfgc, char *dbgc, struct ROW *dret, struct USER_WDB *var){
+		void draw_this(char *dx, char *dy, char *dw, char *dh, char *dpixelw_code, char *dpixelbmp_h, char *dfgc, char *dbgc, struct ROW *dret, struct READINGINFO *var){
 			char *dpx = "", *dpy = "", *dpw = "", *dph = "";
 			if(dret == NULL && ft != NULL) dret = &var->value;
 			if(issame(dx, "") && dret->value.image.x_code && !issame(dret->value.image.x_code, "")) dx = dret->value.image.x_code;
@@ -752,13 +752,13 @@ struct ROW *VESA_DRIVER(list_t *read, int isret) {
 			}
 
 			if(var && var->first_chiled){
-				struct USER_WDB *chiled = var->first_chiled; 
+				struct READINGINFO *chiled = var->first_chiled; 
 				while(1)
 				{
 					if(chiled && chiled->value.on == 4){
 						draw_this("", "", "", "", "", "", "", "", &chiled->value, chiled);
 					}
-					if(chiled->next_table) chiled = chiled->next_table;
+					if(chiled->read_next) chiled = chiled->read_next;
 					else break;
 				}
 			}

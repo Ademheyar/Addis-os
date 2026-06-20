@@ -163,15 +163,15 @@ void find_defl(char *name) {
 _Bool get_defco(list_t *read, int isret)
 {
 	//char *name = "", *values = "";
-	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 	DEBUG("Find(%s)isret[%d] \n", readword->value, isret);
 	sysinfo.focused_def = NULL;
 	if (issame(readword->value, "")) return false;
 	/*find_defl(readword->value);
 	if (sysinfo.focused_def){
 		if(isret >= 1) return true;
-		task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-		readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+		task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+		readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 		name = strdup(sysinfo.focused_def->name[sysinfo.focused_def->name_id]);
 		if(sysinfo.focused_def->value) values = strdup(sysinfo.focused_def->value); 
 		DEBUG("main(%d) name(%s) found value (%s)\n", sysinfo.focused_def->name_id, name, values);
@@ -185,26 +185,26 @@ _Bool get_defco(list_t *read, int isret)
 			name = strdup(sysinfo.focused_def->focused_chaild_def->name[sysinfo.focused_def->focused_chaild_def->name_id]);
 			values = stradd(values, sysinfo.focused_def->focused_chaild_def->value, ' ');
 			DEBUG(" chaild(%d) name(%s) found value (%s)\n", sysinfo.focused_def->focused_chaild_def->name_id, name, values);	
-			task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-			readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+			task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+			readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 		}
 
 		if(values) {
 			// save this tabel as gatting mode
-			int rfid = ++task_list_current->holded_info->read->fread->rfor_id;
-			task_list_current->holded_info->read->fread->reading_for[rfid] = "WDEF";
+			int rfid = ++task_list_current->holded_info->rfor_id;
+			task_list_current->holded_info->reading_for[rfid] = "WDEF";
 			Create_readtable_bn(); // create new tabel next to this table
-			task_list_current->holded_info->read->read_next->fread->read_new = strdup(values);
-			task_list_current->holded_info->read->read_next->fread->name = strdup(name);
-			DEBUG("unknown var(%s)(%s)\n", task_list_current->holded_info->read->read_next->fread->name, 
-			task_list_current->holded_info->read->read_next->fread->read_new);
-			DEBUG("from(%s)(%s)\n", task_list_current->holded_info->read->read_next->read_prev->fread->name, 
-			task_list_current->holded_info->read->read_next->read_prev->fread->main_readcode);
+			task_list_current->holded_info->read_next->read_new = strdup(values);
+			task_list_current->holded_info->read_next->name = strdup(name);
+			DEBUG("unknown var(%s)(%s)\n", task_list_current->holded_info->read_next->name, 
+			task_list_current->holded_info->read_next->read_new);
+			DEBUG("from(%s)(%s)\n", task_list_current->holded_info->read_next->read_prev->name, 
+			task_list_current->holded_info->read_next->read_prev->main_readcode);
 
 			// make new table a giver
-			task_list_current->holded_info->read->read_next->fread->rfor_id = 0;
-			task_list_current->holded_info->read->read_next->fread->reading_for[0] = "DEFFING";
-			DEBUG(" stoped reading_for[0] = %s\n", task_list_current->holded_info->read->read_next->fread->reading_for[0]);
+			task_list_current->holded_info->read_next->rfor_id = 0;
+			task_list_current->holded_info->read_next->reading_for[0] = "DEFFING";
+			DEBUG(" stoped reading_for[0] = %s\n", task_list_current->holded_info->read_next->reading_for[0]);
 			return true;
 		}
 	}*/

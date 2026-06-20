@@ -1,12 +1,15 @@
-CoMmAnD->Define "INCLUDE"
-CoMmAnD->Define->Focused->DO "
-	CoMmAnD->If CoMmAnD->Parent->Scan CoMmAnD->Variable->Path
-	"
-		CoMmAnD->Files->Load CoMmAnD->Variables->Get CoMmAnD->Variable->Path
+CoMmAnD->Variables->New["INCLUDE"]->Extern
+INCLUDE->Do {
+	CoMmAnD->Variables->New["INCLUDEIF"]->Extern
+	INCLUDEIF->If["CoMmAnD->Parent->Scan CoMmAnD->Variables->Path"]
+	{
+		CoMmAnD->Files->Load CoMmAnD->Variables->Get CoMmAnD->Variables->Path
 		CoMmAnD->Parent->Tasks->Know CoMmAnD->Variables->Focused
-	"
-"
-
-CoMmAnD->Define->Focused->As "defIncludevar"
-CoMmAnD->Define->Focused->About "INCLUDE: if it is used full capitaled it use to add or to combine things"
-CoMmAnD->Define->Focused->Note "This definition may need adjustment for a new coding language (path handling and token parsing)."
+	}
+	INCLUDEIF->Else
+	{
+		CoMmAnD->Files->Load CoMmAnD->Variables->Get CoMmAnD->Variable->Path
+		CoMmAnD->Parent->Tasks->Know INCLUDEIF
+	}
+	INCLUDEIF->Execute
+}

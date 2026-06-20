@@ -43,7 +43,6 @@ irq0_first_jump:
     mov rdi, rax
     call __switch_to ; call switch task in process.c reppdly
 
-    call timer_callback ; gets time
 
     ; PIC : End of innterrupt
 	   mov al, 0x20
@@ -54,6 +53,8 @@ irq0_first_jump:
     ; mov es, ax
     ; mov fs, ax
     ; mov gs, ax
+
+    call timer_callback ; gets time
 
     pop r15
     pop r14
@@ -71,4 +72,5 @@ irq0_first_jump:
     pop rbx
     pop rax
     sti
-    iretq
+    iretq ; interrupt return
+    

@@ -26,7 +26,7 @@ char *read_bodys(char text[]){
   char *newtext = "";
   copylists[prevcid].copy = false;
   _Bool commenton=false;
-	task_list_current->holded_info->read->fread->bodys = list_create();
+	//task_list_current->holded_info->bodys = list_create();
 	list_t *ret_list = str_splitL(text, " ", iu);
   //DEBUG("\n\n");
 	for(countwords = 0; countwords < (int)ret_list->length; countwords++) {
@@ -153,10 +153,10 @@ char *read_bodys(char text[]){
 				countwords++; 
 				
 				char text[100];
-				list_insert_back(task_list_current->holded_info->read->fread->bodys, copylists[prevcid].vtype, copylists[prevcid].coped);
-				sprintf(text,"%d", (int)task_list_current->holded_info->read->fread->bodys->length-1);
-				//listnode_t *body = list_get_node_by_index(task_list_current->holded_info->read->fread->bodys, (int)task_list_current->holded_info->read->fread->bodys->length-1);
-				//if (body->value) DEBUG("coped on bodyemp %d(%s) = (%s)%s\n", (int)task_list_current->holded_info->read->fread->bodys->length, (char *)text, body->type, body->value);	
+				//list_insert_back(task_list_current->holded_info->bodys, copylists[prevcid].vtype, copylists[prevcid].coped);
+				//sprintf(text,"%d", (int)task_list_current->holded_info->bodys->length-1);
+				//listnode_t *body = list_get_node_by_index(task_list_current->holded_info->bodys, (int)task_list_current->holded_info->bodys->length-1);
+				//if (body->value) DEBUG("coped on bodyemp %d(%s) = (%s)%s\n", (int)task_list_current->holded_info->bodys->length, (char *)text, body->type, body->value);	
 				
 
 				
@@ -164,7 +164,7 @@ char *read_bodys(char text[]){
 					prevcid--;
 					copylists[prevcid].coped = stradd(copylists[prevcid].coped, copylists[prevcid+1].cwhat, ' ');
 					copylists[prevcid].coped = stradd(copylists[prevcid].coped, (char *)text, ' ');
-					//DEBUG("saving chiled(prevcid(%d)(%s on body(%s))) \nhas %s \nin parant %s\n", prevcid, copylists[prevcid+1].cwhat, (char *)text, task_list_current->holded_info->read->fread->bodys[bodysid].value, copylists[prevcid].coped);
+					//DEBUG("saving chiled(prevcid(%d)(%s on body(%s))) \nhas %s \nin parant %s\n", prevcid, copylists[prevcid+1].cwhat, (char *)text, task_list_current->holded_info->bodys[bodysid].value, copylists[prevcid].coped);
 				}
 				else{
 					newtext = stradd(newtext, copylists[prevcid].cwhat, ' ');
@@ -241,7 +241,7 @@ char *get_code(char *filepath){
 	char *text1 = read_text(filepath);
 	if (text1 == NULL) return NULL;
 	int counttext = strlen(text1);
-	char out[counttext];
+	char *out = (char *)malloc(counttext);
 	DEBUG("gottext|%s|%d|\n", text1, counttext);
   	int i = 0, j = 0;
 	for (; *(text1 + i); i++){
@@ -256,11 +256,11 @@ char *get_code(char *filepath){
 		}
 	}
 	out[j] = '\0';
-	char *text2 = malloc(strlen(out) + 1);
-	strcpy(text2, out);
-	//DEBUG("out from get_code = %s\n", text2);
-	DEBUG("chacked coed = %s\n >>>>>>>out from get_code\n", text2);
-	return text2; // strdup(out);
+	//char *text2 = malloc(strlen(out) + 1);
+	//strcpy(text2, out);
+	//DEBUG("out from get_code = %s\n", out);
+	DEBUG("chacked coed = %s\n >>>>>>>out from get_code\n", out);
+	return out; // strdup(out);
 }
 
 
@@ -309,10 +309,10 @@ char *onspace="";
 
 void READ_DATA_PORT(uint8_t pic_irq){
   pic_irq =pic_irq;
-	//task_list_current->holded_info->read->fread->ret.integer_8 = inp(pic_irq);
+	//task_list_current->holded_info->ret.integer_8 = inp(pic_irq);
   //char text[20];
-  //sprintf(text,"0x%x", task_list_current->holded_info->read->fread->ret.integer_8);
-  //task_list_current->holded_info->read->fread->ret.text = stradd("", (char *)text, 0);
+  //sprintf(text,"0x%x", task_list_current->holded_info->ret.integer_8);
+  //task_list_current->holded_info->ret.text = stradd("", (char *)text, 0);
 }
 
 void register_driver(uint8_t pic_irq, char *name, char *handler, char *retbin) {
@@ -329,7 +329,7 @@ void register_driver(uint8_t pic_irq, char *name, char *handler, char *retbin) {
   drivers[pic_irq].driv_enabled = false;
   drivers[pic_irq].driv_registered = true;
   drivers[pic_irq].driv_handler = handler;
-  drivers[pic_irq].onwdb = task_list_current->holded_info->fread;
+  drivers[pic_irq].onwdb = task_list_current->holded_info;
   DEBUG(" 1 register_driver = %s handler = %s id = %d port = %x\n", drivers[pic_irq].onwdb->name, drivers[pic_irq].driv_handler, drivers[pic_irq].driv_id, drivers[pic_irq].driv_port);
 }
 

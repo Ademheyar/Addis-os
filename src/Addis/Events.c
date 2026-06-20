@@ -5,7 +5,7 @@
 #include <Addis/Libs/String/Text.h>
 #include <Addis/Tables/WorkingT.h> // for defining struct READINGINFO and other table-related functions
 
-void Create_event_onvar(struct USER_WDB *var)
+void Create_event_onvar(struct READINGINFO *var)
 {
   struct event *new = malloc(sizeof(struct event));
   if(!var->main_event) var->main_event = new;
@@ -20,11 +20,11 @@ void Create_event_onvar(struct USER_WDB *var)
 }
 
 void _event(list_t *read) {
-	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on); 
+	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on); 
   if(issame(readword->value, "WHEN")) {
-    task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-    readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
-    struct USER_WDB *var = NULL;
+    task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+    readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
+    struct READINGINFO *var = NULL;
     struct ROW *gotas = NULL, *oprater = NULL, *dovalue = NULL, *value = NULL, *happe = NULL, *prop = NULL;
     while(1) {
       gotas = Resive(read, 1, 1);
@@ -53,12 +53,12 @@ void _event(list_t *read) {
         }
         DEBUG("\n");
         if(var && prop && oprater && dovalue && happe && value) break;
-        if((int)task_list_current->holded_info->read->fread->reading_value->length - task_list_current->holded_info->read->fread->reading_stoped <= 2) break;
+        if((int)task_list_current->holded_info->reading_value->length - task_list_current->holded_info->reading_stoped <= 2) break;
         continue;
       }
       break;
     }
-    if(!var) var = task_list_current->holded_info->read->fread;
+    if(!var) var = task_list_current->holded_info;
     // create event
     DEBUG("going to create event\n");
     Create_event_onvar(var);
@@ -73,7 +73,7 @@ void _event(list_t *read) {
   }
 }
 
-void Chack_all_events(struct USER_WDB *var, char *happend, struct ROW *value)
+void Chack_all_events(struct READINGINFO *var, char *happend, struct ROW *value)
 {
   if (var && var->name) DEBUG("\nname %s ", var->name);
   if (happend) DEBUG("happen %s ", happend);
@@ -113,13 +113,13 @@ void Chack_all_events(struct USER_WDB *var, char *happend, struct ROW *value)
         if(!var->reading_task) {
           DEBUG("gatting code\n");
           create_kernel_process_last((void*)Read_focused, 3);
-          Create_readinfo('L'); // TODO: if event is reading make this new event wit
+          //Create_readinfo('L'); // TODO: if event is reading make this new event wit
           DEBUG("out from text\n");
-          task_list_last->holded_info->fread = var;
-          task_list_last->holded_info->read->fread->reading_task = task_list_last;
-          task_list_last->holded_info->read->fread->rfor_id = 0;
-          task_list_last->holded_info->read->fread->reading_for[0] = "READING";
-          DEBUG(" done creating(task-id%d) and fixing new->do_value %s\n", task_list_last->id, task_list_last->holded_info->read->fread->read_new);
+          task_list_last->holded_info = var;
+          task_list_last->holded_info->reading_task = task_list_last;
+          task_list_last->holded_info->rfor_id = 0;
+          task_list_last->holded_info->reading_for[0] = "READING";
+          DEBUG(" done creating(task-id%d) and fixing new->do_value %s\n", task_list_last->id, task_list_last->holded_info->read_new);
         }
         //task_list_last = NULL;
       }

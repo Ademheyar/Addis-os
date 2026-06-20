@@ -1,5 +1,5 @@
 #include <Addis/Read_Gets.h>
-#include <Addis/Tables/WorkingT.h> // for defining struct USER_WDB and other table-related functions
+#include <Addis/Tables/WorkingT.h> // for defining struct READINGINFO and other table-related functions
 #include <Addis/Libs/List/List.h> // for defining list_t, listnode_t, and other list-related functions
 #include <Addis/Libs/String/String.h> // for defining string-related functions
 #include <Addis/Process.h>
@@ -163,8 +163,8 @@ struct ROW *get_varinfo(int id, char *id_addrs, char from, char *getwhat){
   switch (from) {
     case 'B':
 			DEBUG("id(%d) id_addrs(%s) name(-) ", id, id_addrs);
-			if (id <= (int)task_list_current->holded_info->read->fread->bodys->length){
-				listnode_t *body = list_get_node_by_index(task_list_current->holded_info->read->fread->bodys, id); 
+			/*if (id <= (int)task_list_current->holded_info->bodys->length){
+				listnode_t *body = list_get_node_by_index(task_list_current->holded_info->bodys, id); 
 				if(body->value && body->type){
 					out = Convert_text(body->type, body->value);
 					DEBUG("valusetype(%s)", out->type);
@@ -174,15 +174,16 @@ struct ROW *get_varinfo(int id, char *id_addrs, char from, char *getwhat){
 				}
 				else{
 					DEBUG("not found :(\n");
-					DEBUG("main_readcode\n{\n%s\n}\n", task_list_current->holded_info->read->fread->main_readcode);
-					char *rbcode = read_bodys(stradd(task_list_current->holded_info->read->fread->main_readcode, "", 0));//
-					task_list_current->holded_info->read->fread->main_readcode = stradd(rbcode," ", 0);
+					DEBUG("main_readcode\n{\n%s\n}\n", task_list_current->holded_info->main_readcode);
+					char *rbcode = NULL;// read_bodys(stradd(task_list_current->holded_info->main_readcode, "", 0));//
+					task_list_current->holded_info->main_readcode = stradd(rbcode," ", 0);
 					DEBUG("fixed Code(%s)....\n", rbcode);
 					// splitting will not be nessasery for now
-					//task_list_current->holded_info->read->fread->reading_value = str_splitL(stradd(rbcode," ", 0), " ", 0);
+					//task_list_current->holded_info->reading_value = str_splitL(stradd(rbcode," ", 0), " ", 0);
 				}
 			}
 			else DEBUG(" id is out reang :(\n");
+      */
     break;
   }
   DEBUG("End getting\n");
@@ -205,20 +206,20 @@ char *get_vartype(list_t *read){
   char *retype = "";
   DEBUG("getting var type ");
   while ((int)read->length){
-		listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on); 
-		DEBUG("%d|%s|\n", task_list_current->holded_info->read->fread->reading_on, readword->value);
+		listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on); 
+		DEBUG("%d|%s|\n", task_list_current->holded_info->reading_on, readword->value);
     // TODO: chack if it is type or NOT
     // TODO: if it't writen nearr find it
     gettype->word = strdup(readword->value);
     gettype->type = "STRING";
     //Add_Vale_TO_WTable(gettype); // adding found var type
-    task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-		readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on); // removeing found var type from reading text
+    task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+		readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on); // removeing found var type from reading text
     DEBUG("variables |%s| ", readword->value);
     // if there is other types spacified
     if (issame(readword->value, "AND")) {
-      task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-			readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+      task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+			readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
       DEBUG("geting other type\n");
       continue;
     }
@@ -233,16 +234,16 @@ char *get_vartype(list_t *read){
 
 char *get_witbmp_h(char *with0, char *with1) {
   char *out="", *retcreatecodes="", *retsetchacodes="", *rettakes="", *newtake="";
-  int j = 0, bupbodysid = task_list_current->holded_info->read->fread->bodys->length;
+  int j = 0; //, bupbodysid = task_list_current->holded_info->bodys->length;
   DEBUG(" get_witbmp_h\n", with1);
   if (with1!=NULL && strlen(with1) > 5) {
-    with1 = read_bodys(with1); // reading all with bodys ()
+    with1 = NULL;// read_bodys(with1); // reading all with bodys ()
     DEBUG("1 with1 body = %s\n", with1);
 		list_t *code = str_splitL(with1, " ", 0);
     char *gettake() {
       char *rettake="";
-      /*for (task_list_current->holded_info->read->fread->worktables.worktable[wtid].column.row = 0; task_list_current->holded_info->read->fread->worktables.worktable[wtid].column.rowtask_list_current->holded_info->read->fread->worktables.worktable[wtid].column[cm].row->value; task_list_current->holded_info->read->fread->worktables.worktable[wtid].column.row++) {
-				char *taketext = task_list_current->holded_info->read->fread->worktables.worktable[wtid].column.rowtask_list_current->holded_info->read->fread->worktables.worktable[wtid].column[cm].row->value;
+      /*for (task_list_current->holded_info->worktables.worktable[wtid].column.row = 0; task_list_current->holded_info->worktables.worktable[wtid].column.rowtask_list_current->holded_info->worktables.worktable[wtid].column[cm].row->value; task_list_current->holded_info->worktables.worktable[wtid].column.row++) {
+				char *taketext = task_list_current->holded_info->worktables.worktable[wtid].column.rowtask_list_current->holded_info->worktables.worktable[wtid].column[cm].row->value;
 				rettake = stradd(rettake, "TAKE", ' ');
 				rettake = stradd(rettake, typetext(taketext), ' ');
 				rettake = stradd(rettake, taketext, ' ');
@@ -261,13 +262,13 @@ char *get_witbmp_h(char *with0, char *with1) {
         DEBUG(" in conothers\n");
         if (iskeywordvartype(codeword->next->value)) {
           // Do we have to change main .ukvtid value ????
-          read_unknownvars(task_list_current->holded_info->read->fread->reading_value, "VARS", 0);
+          read_unknownvars(task_list_current->holded_info->reading_value, "VARS", 0);
           rettake = gettake();
           if(iskeywordvartype(codeword->next->value)) { i++; i++;}
           if(!issame(codeword->value, "AND")) break;
         }
         else {
-          read_unknownvars(task_list_current->holded_info->read->fread->reading_value, "", 0);
+          read_unknownvars(task_list_current->holded_info->reading_value, "", 0);
           rettake = gettake();
           break;
         }
@@ -289,9 +290,9 @@ char *get_witbmp_h(char *with0, char *with1) {
           }
 
           if (issame(codeword->value, "TAKE")) {
-            read_unknownvars(task_list_current->holded_info->read->fread->reading_value, "TAKE", 0);
+            read_unknownvars(task_list_current->holded_info->reading_value, "TAKE", 0);
             retcreatecodes = stradd(retcreatecodes, "TAKE NAME", ' ');
-          //  retcreatecodes = stradd(retcreatecodes, task_list_current->holded_info->read->fread->worktables.worktable[wtid].column.rowtask_list_current->holded_info->read->fread->worktables.worktable[wtid].column[cm].row->value, ' ');
+          //  retcreatecodes = stradd(retcreatecodes, task_list_current->holded_info->worktables.worktable[wtid].column.rowtask_list_current->holded_info->worktables.worktable[wtid].column[cm].row->value, ' ');
             retcreatecodes = stradd(retcreatecodes, "END TAKE", ' ');
           }
 
@@ -309,10 +310,10 @@ char *get_witbmp_h(char *with0, char *with1) {
         retsetchacodes = stradd(retsetchacodes, codeword->value, ' ');
         DEBUG("getting Set %s\n", retsetchacodes);
         i++;
-        read_unknownvars(task_list_current->holded_info->read->fread->reading_value, "TAKE", 0);
-        //DEBUG("get retsetchacodes %s\n", task_list_current->holded_info->read->fread->worktables.worktable[wtid].column.rowtask_list_current->holded_info->read->fread->worktables.worktable[wtid].column[cm].row->value);
+        read_unknownvars(task_list_current->holded_info->reading_value, "TAKE", 0);
+        //DEBUG("get retsetchacodes %s\n", task_list_current->holded_info->worktables.worktable[wtid].column.rowtask_list_current->holded_info->worktables.worktable[wtid].column[cm].row->value);
         retsetchacodes = stradd(retsetchacodes, "TAKE STRING", ' ');
-        //retsetchacodes = stradd(retsetchacodes, task_list_current->holded_info->read->fread->worktables.worktable[wtid].column.rowtask_list_current->holded_info->read->fread->worktables.worktable[wtid].column[cm].row->value, ' ');
+        //retsetchacodes = stradd(retsetchacodes, task_list_current->holded_info->worktables.worktable[wtid].column.rowtask_list_current->holded_info->worktables.worktable[wtid].column[cm].row->value, ' ');
         retsetchacodes = stradd(retsetchacodes, "END TAKE", ' ');
         while (1) {
           if(issame(codeword->value, "TO")) {
@@ -354,10 +355,10 @@ char *get_witbmp_h(char *with0, char *with1) {
           if(issame(codeword->value, "TO")) {
             retsetchacodes = stradd(retsetchacodes, codeword->value, ' ');
             i++;
-            read_unknownvars(task_list_current->holded_info->read->fread->reading_value, "TAKE", 0);
-            ///DEBUG("get retsetchacodes %s\n", task_list_current->holded_info->read->fread->worktables.worktable[wtid].column.rowtask_list_current->holded_info->read->fread->worktables.worktable[wtid].column[cm].row->value);
+            read_unknownvars(task_list_current->holded_info->reading_value, "TAKE", 0);
+            ///DEBUG("get retsetchacodes %s\n", task_list_current->holded_info->worktables.worktable[wtid].column.rowtask_list_current->holded_info->worktables.worktable[wtid].column[cm].row->value);
             retsetchacodes = stradd(retsetchacodes, "TAKE STRING", ' ');
-            //retsetchacodes = stradd(retsetchacodes, task_list_current->holded_info->read->fread->worktables.worktable[wtid].column.rowtask_list_current->holded_info->read->fread->worktables.worktable[wtid].column[cm].row->value, ' ');
+            //retsetchacodes = stradd(retsetchacodes, task_list_current->holded_info->worktables.worktable[wtid].column.rowtask_list_current->holded_info->worktables.worktable[wtid].column[cm].row->value, ' ');
             retsetchacodes = stradd(retsetchacodes, "END TAKE", ' ');
             break;
           }
@@ -368,16 +369,16 @@ char *get_witbmp_h(char *with0, char *with1) {
       else {
         if(issame(codeword->value, "TAKE"))
         {
-          read_unknownvars(task_list_current->holded_info->read->fread->reading_value, "TAKE", 0);
-          //DEBUG("get rettakes %s\n", task_list_current->holded_info->read->fread->worktables.worktable[wtid].column.rowtask_list_current->holded_info->read->fread->worktables.worktable[wtid].column[cm].row->value);
+          read_unknownvars(task_list_current->holded_info->reading_value, "TAKE", 0);
+          //DEBUG("get rettakes %s\n", task_list_current->holded_info->worktables.worktable[wtid].column.rowtask_list_current->holded_info->worktables.worktable[wtid].column[cm].row->value);
           rettakes = stradd(rettakes, "TAKE STRING", ' ');
-					//rettakes = stradd(rettakes, task_list_current->holded_info->read->fread->worktables.worktable[wtid].column.rowtask_list_current->holded_info->read->fread->worktables.worktable[wtid].column[cm].row->value, ' ');
+					//rettakes = stradd(rettakes, task_list_current->holded_info->worktables.worktable[wtid].column.rowtask_list_current->holded_info->worktables.worktable[wtid].column[cm].row->value, ' ');
           rettakes = stradd(rettakes, "END TAKE", ' ');
         }
 
         else if(issame(codeword->value, "GET")) {
           //task_list_current->holded_info->ukvtid = 1;
-          char *ret = read_unknownvars(task_list_current->holded_info->read->fread->reading_value, "", 0)->type;
+          char *ret = read_unknownvars(task_list_current->holded_info->reading_value, "", 0)->type;
           //task_list_current->holded_info->ukvtid = tid;
           DEBUG(" getting Get %s (+%s)\n", rettakes, ret);
           //retsetchacodes = stradd(retsetchacodes, codeword->value, ' ');
@@ -435,7 +436,7 @@ char *get_witbmp_h(char *with0, char *with1) {
   if((int)strlen(retsetchacodes) > 5) out = stradd(out, retsetchacodes, ' ');
   if((int)strlen(newtake) > 5) out = stradd(out, newtake, ' ');
   DEBUG("get with = %s\n", out);
-  task_list_current->holded_info->read->fread->bodys->length = bupbodysid;
+  //task_list_current->holded_info->bodys->length = bupbodysid;
   return out;
 }
 

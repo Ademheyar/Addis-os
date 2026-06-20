@@ -62,13 +62,12 @@ task_t* task_list_insert(task_t* new_task, char on) {
 
   if(task_list_is_empty()) {
     //make it the last new_task
-    task_list_last = new_task;
     task_list_head = new_task;
-    task_list_current = task_list_last;
-    if (task_list_current == NULL) task_list_current = new_task;
-    //point new_task to new list node    task_list_new = new_task;
+    task_list_last = new_task;
+    task_list_current = new_task;
   }
   else {
+    
     if(on == 'L')
     {
       //make new_task a new last new_task
@@ -139,7 +138,7 @@ void kill_process_no_schedule(task_t* task) {
   }
   DEBUG("PROC: KILL-PROCESS with id:%i\n", task->id);
   if (task->holded_info != NULL) {
-    task->holded_info->fread->reading_task = NULL; 
+    task->holded_info->reading_task = NULL; 
     free(task->holded_info);
   }
   // Close window if any
@@ -196,20 +195,6 @@ void task_list_dump() {
     DEBUG("Task: %i\n", current->id);
   }
 }
-
-void Create_readinfo(char on)
-{
-  //DEBUG("Create_readinfo:\n");
-	struct READINGINFO *new = malloc(sizeof(struct READINGINFO));
-	new->read_next = NULL;
-	new->read_prev = NULL;
-	new->bootinfo = NULL;
-	new->read = new;
-	if(on == 'C') task_list_current->holded_info = new; // if it is c(C..) 
-	else if (on == 'L') task_list_last->holded_info = new;
-	else if (on == 'N') task_list_new->holded_info = new;
-}
-
 
 
 // creates space for kernel
@@ -302,8 +287,17 @@ void reload_task_point(task_t* task)
 
 void reload_current_task()
 {
-  reload_task_point(task_list_current);
-  do_first_task_jump();
+  if(!task_list_current){
+    if(task_list_last) task_list_current = task_list_last;
+    else if(task_list_new) task_list_current = task_list_new;
+    else { DEBUG("No task_list_current TASK FOUND!!!!\n"); return;}
+  }
+  if(task_list_current){
+    //DEBUG("Reloading Current Task!\n"); 
+    reload_task_point(task_list_current);
+    //DEBUG("Calling First Function On The Task!\n"); 
+    do_first_task_jump();
+  }
 }
 
 // this fanction will be called by switch nasm file
@@ -314,13 +308,15 @@ void __switch_to(task_t* next) {
   // Change states. Is this best moment?
   // task_list_current->state = PROCESS_STATE_READY;
   // next->state = PROCESS_STATE_WAIT;
-  // DEBUG("current id %d state %d next id %d  state %d\n", task_list_current->id, task_list_current->state, next->id, next->state);
   if (next->attribute & PROCESS_ATTR_USER_SPACE) {
     // Copy user tables
     memcpy(pde_user, next->pde, sizeof(pde_t) * 512);
     x86_tlb_flush_all();
   }
-  // if (next->holded_info != NULL && next->holded_info->fread) DEBUG("here 4 name %s\n", next->holded_info->fread->name);
+  DEBUG("current id %d state %d ", task_list_current->id, task_list_current->state);
+  if(next->next) DEBUG(" next id %d  state %d", next->next->id, next->next->state);
+  DEBUG("\n");
+  // if (next->holded_info != NULL && next->holded_info) DEBUG("here 4 name %s\n", next->holded_info->name);
 }
 
 void do_first_task_jump() {
@@ -329,8 +325,8 @@ void do_first_task_jump() {
     // DEBUG("isnotreloded\n");
     //while(1);
   }
-  task_list_current->isreloaded = 0;
-  // DEBUG("jmp irq0_first_jump\n");
+  else task_list_current->isreloaded = 0;
+  DEBUG("jmp irq0_first_jump\n");
   // this will make rady the prosess to call the _switch_to function
   // it is inside switch.asm code
   __asm__ __volatile__ ("jmp irq0_first_jump"); 

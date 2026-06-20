@@ -33,7 +33,7 @@ WorkingTable:
 	// Holding Variable that is on going to be used in Tasks
 	// this is for reading code and processing code to save focused table and variable
 	// NOTE: this is not for saving var but for holding var that is on going to be used in reading or processing code
-	// Need to be Diclared in struct USER_WDB because it will be used in reading and processing code and it is nessasery to save it in main table to be able to use it in all code
+	// Need to be Diclared in struct READINGINFO because it will be used in reading and processing code and it is nessasery to save it in main table to be able to use it in all code
 
 	/*
 	*	WORKTABLES

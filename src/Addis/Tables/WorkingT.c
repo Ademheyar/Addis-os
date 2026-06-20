@@ -17,76 +17,104 @@ void Create_worktable(struct WORKTABLE *n)
 
 void Create_newworktable()
 { // this will create new main worktable
-	struct READINGINFO *frtemp = get_reading_table(0);
-	if(!frtemp->fread->worktables.worktable)
+	DEBUG("Create_newwork table\n");
+	if(!task_list_current->holded_info->worktables.worktable)
 	{
-		DEBUG("Create_newworktable\n");
-		frtemp->fread->worktables.worktable = malloc(sizeof(struct WORKTABLE));
-		frtemp->fread->worktables.last_wt = frtemp->fread->worktables.worktable;
-		frtemp->fread->worktables.last_wt->column = NULL;
-		frtemp->fread->worktables.last_wt->last_column = NULL;
-		frtemp->fread->worktables.last_wt->focused_column = NULL;
-		frtemp->fread->worktables.last_wt->next_wt = NULL;
-		frtemp->fread->worktables.last_wt->prev_wt = NULL;
-		frtemp->fread->worktables.focused_wt = frtemp->fread->worktables.worktable;
+		task_list_current->holded_info->worktables.worktable = malloc(sizeof(struct WORKTABLE));
+		task_list_current->holded_info->worktables.last_wt = task_list_current->holded_info->worktables.worktable;
+		task_list_current->holded_info->worktables.last_wt->column = NULL;
+		task_list_current->holded_info->worktables.last_wt->last_column = NULL;
+		task_list_current->holded_info->worktables.last_wt->focused_column = NULL;
+		task_list_current->holded_info->worktables.last_wt->next_wt = NULL;
+		task_list_current->holded_info->worktables.last_wt->prev_wt = NULL;
+		task_list_current->holded_info->worktables.focused_wt = task_list_current->holded_info->worktables.worktable;
+      	task_list_current->holded_info->worktables.worktable->column = NULL;
 	}
 	else {
-		task_list_current->holded_info->read->fread->worktables.worktable = malloc(sizeof(struct WORKTABLE));
-		frtemp->fread->worktables.last_wt = task_list_current->holded_info->read->fread->worktables.worktable;
-		frtemp->fread->worktables.last_wt->column = NULL;
-		frtemp->fread->worktables.last_wt->last_column = NULL;
-		frtemp->fread->worktables.last_wt->focused_column = NULL;
-		frtemp->fread->worktables.last_wt->next_wt = NULL;
-		frtemp->fread->worktables.last_wt->prev_wt = NULL;
-		frtemp->fread->worktables.focused_wt = task_list_current->holded_info->read->fread->worktables.worktable;
+		task_list_current->holded_info->worktables.worktable = malloc(sizeof(struct WORKTABLE));
+		task_list_current->holded_info->worktables.last_wt = task_list_current->holded_info->worktables.worktable;
+		task_list_current->holded_info->worktables.last_wt->column = NULL;
+		task_list_current->holded_info->worktables.last_wt->last_column = NULL;
+		task_list_current->holded_info->worktables.last_wt->focused_column = NULL;
+		task_list_current->holded_info->worktables.last_wt->next_wt = NULL;
+		task_list_current->holded_info->worktables.last_wt->prev_wt = NULL;
+		task_list_current->holded_info->worktables.focused_wt = task_list_current->holded_info->worktables.worktable;
 	}
+
+
+    if (!task_list_current->holded_info->worktables.worktable) {
+      DEBUG("creating worktable for reading string\n");
+      task_list_current->holded_info->worktables.worktable = malloc(sizeof(struct WORKTABLE));
+      task_list_current->holded_info->worktables.worktable->column = NULL;
+    }
+    
+    if (!task_list_current->holded_info->worktables.worktable->focused_column && !task_list_current->holded_info->worktables.worktable->column) {
+      DEBUG("creating column for reading string\n");
+      task_list_current->holded_info->worktables.worktable->column = malloc(sizeof(struct COLUMN));  
+      task_list_current->holded_info->worktables.worktable->column->row = NULL;
+	  task_list_current->holded_info->worktables.worktable->column->next_column = NULL;
+	  task_list_current->holded_info->worktables.worktable->column->prev_column = NULL;
+    }
+    if (task_list_current->holded_info->worktables.worktable->column && !task_list_current->holded_info->worktables.worktable->focused_column) {
+      DEBUG("creating focused column for reading string\n");
+      task_list_current->holded_info->worktables.worktable->focused_column = task_list_current->holded_info->worktables.worktable->column;  
+    }
+    
+    if (!task_list_current->holded_info->worktables.worktable->focused_column->row) {
+      DEBUG("creating row for reading string\n");
+      task_list_current->holded_info->worktables.worktable->focused_column->row = malloc(sizeof(struct ROW));
+      task_list_current->holded_info->worktables.worktable->focused_column->focused_row = task_list_current->holded_info->worktables.worktable->focused_column->row;
+	  task_list_current->holded_info->worktables.worktable->focused_column->row->next_row = NULL;
+	  task_list_current->holded_info->worktables.worktable->focused_column->row->prev_row = NULL;
+      
+      task_list_current->holded_info->worktables.worktable->focused_column->focused_row->type = "String";
+      task_list_current->holded_info->worktables.worktable->focused_column->focused_row->on = 5;
+      task_list_current->holded_info->worktables.worktable->focused_column->focused_row->As = "";
+    }
 }
 
 void Create_nextworktable()
 { // this will create new main worktable
 	DEBUG("Create_nextworktable\n");
-	struct READINGINFO *frtemp = get_reading_table(0);
-	frtemp->fread->worktables.focused_wt->next_wt = malloc(sizeof(struct WORKTABLE));
-	frtemp->fread->worktables.focused_wt->next_wt->prev_wt = frtemp->fread->worktables.focused_wt;
-	frtemp->fread->worktables.focused_wt->next_wt->next_wt = NULL;
-	frtemp->fread->worktables.focused_wt->next_wt = frtemp->fread->worktables.last_wt;
+	task_list_current->holded_info->worktables.focused_wt->next_wt = malloc(sizeof(struct WORKTABLE));
+	task_list_current->holded_info->worktables.focused_wt->next_wt->prev_wt = task_list_current->holded_info->worktables.focused_wt;
+	task_list_current->holded_info->worktables.focused_wt->next_wt->next_wt = NULL;
+	task_list_current->holded_info->worktables.focused_wt->next_wt = task_list_current->holded_info->worktables.last_wt;
 }
 
 void Create_lastworktable()
 { // this will create new main worktable
-	struct READINGINFO *frtemp = get_reading_table(0);
-	if(frtemp->fread->worktables.last_wt){
+	if(task_list_current->holded_info->worktables.last_wt){
 		DEBUG("Create_lastworktable\n");
-		frtemp->fread->worktables.last_wt->next_wt = malloc(sizeof(struct WORKTABLE));
-		frtemp->fread->worktables.last_wt->next_wt->prev_wt = frtemp->fread->worktables.last_wt;
-		frtemp->fread->worktables.last_wt->next_wt->next_wt = NULL;
-		frtemp->fread->worktables.last_wt = frtemp->fread->worktables.last_wt->next_wt;
-		frtemp->fread->worktables.focused_wt = frtemp->fread->worktables.last_wt;
+		task_list_current->holded_info->worktables.last_wt->next_wt = malloc(sizeof(struct WORKTABLE));
+		task_list_current->holded_info->worktables.last_wt->next_wt->prev_wt = task_list_current->holded_info->worktables.last_wt;
+		task_list_current->holded_info->worktables.last_wt->next_wt->next_wt = NULL;
+		task_list_current->holded_info->worktables.last_wt = task_list_current->holded_info->worktables.last_wt->next_wt;
+		task_list_current->holded_info->worktables.focused_wt = task_list_current->holded_info->worktables.last_wt;
 	}
 	else Create_newworktable();
 }
 
 void Get_worktable_byindex(int wid)
 { // this will get worktable by index given index wid
-	struct READINGINFO *frtemp = get_reading_table(0);
 	DEBUG("Get_worktable_byindex %d\n", wid);
 	if(wid < 0) { Create_lastworktable(); return; }
 	else Create_newworktable();
-	if(wid == 0) frtemp->fread->worktables.focused_wt = frtemp->fread->worktables.worktable;
+	if(wid == 0) task_list_current->holded_info->worktables.focused_wt = task_list_current->holded_info->worktables.worktable;
 	else {
 		int i = 0;
-		struct WORKTABLE *f = frtemp->fread->worktables.worktable;
+		struct WORKTABLE *f = task_list_current->holded_info->worktables.worktable;
 		for(; f && f->next_wt && wid != i; i++) f = f->next_wt;
 		if(i == 0 && wid >= 1) Create_lastworktable();
-		else frtemp->fread->worktables.focused_wt = f;
+		else task_list_current->holded_info->worktables.focused_wt = f;
 	}
 }
 
 void Return_lastworktable()
 { // this will returns last worktable to previose reading table
 	DEBUG("going to backup\n");
-	task_list_current->holded_info->read->fread->reading_for[task_list_current->holded_info->read->fread->rfor_id] = "RETURN";
-	struct USER_WDB *fread = task_list_current->holded_info->read->fread;
+	task_list_current->holded_info->reading_for[task_list_current->holded_info->rfor_id] = "RETURN";
+	struct READINGINFO *fread = task_list_current->holded_info;
 	if (fread->worktables.worktable) 
 	{
 		DEBUG("main worktable\n");
@@ -144,8 +172,7 @@ void Return_lastworktable()
 
 void Clear_worktables(int which) {
 	DEBUG("clearing Table");
-	//struct READINGINFO *frtemp = get_reading_table(0);
-	struct WORKTABLE *w = task_list_current->holded_info->read->fread->worktables.worktable, *non_delw = NULL;
+	struct WORKTABLE *w = task_list_current->holded_info->worktables.worktable, *non_delw = NULL;
 	int wn = 0;
 	for(;w && w->next_wt; wn++) w = w->next_wt;
 	if(which < 0) { DEBUG("s "); which = wn; }
@@ -374,7 +401,7 @@ void Clear_worktables(int which) {
 	}
 	DEBUG("\n");
 
-	struct WORKTABLE *w0 = task_list_current->holded_info->read->fread->worktables.worktable;
+	struct WORKTABLE *w0 = task_list_current->holded_info->worktables.worktable;
 	for(int wn = 0; w0; wn++) {
 		DEBUG("%d|", wn);
 		struct COLUMN *c0 = w0->column;
@@ -403,13 +430,13 @@ void Clear_worktables(int which) {
 
 	if(non_delw)
 	{
-		task_list_current->holded_info->read->fread->worktables.last_wt = non_delw;
-		task_list_current->holded_info->read->fread->worktables.focused_wt = non_delw;
+		task_list_current->holded_info->worktables.last_wt = non_delw;
+		task_list_current->holded_info->worktables.focused_wt = non_delw;
 	}
 	else if(!w)
 	{
-		task_list_current->holded_info->read->fread->worktables.last_wt = NULL;
-		task_list_current->holded_info->read->fread->worktables.focused_wt = NULL;
+		task_list_current->holded_info->worktables.last_wt = NULL;
+		task_list_current->holded_info->worktables.focused_wt = NULL;
 	}
 }
 
@@ -426,43 +453,40 @@ void Create_column(struct COLUMN *n)
 void Create_newcolumn()
 { // this will create new main column
 	DEBUG("Create_newcolumn\n");
-	struct READINGINFO *frtemp = get_reading_table(0);
-	frtemp->fread->worktables.focused_wt->column = malloc(sizeof(struct COLUMN));
-	frtemp->fread->worktables.focused_wt->last_column = frtemp->fread->worktables.focused_wt->column;
-	frtemp->fread->worktables.focused_wt->last_column->next_column = NULL;
-	frtemp->fread->worktables.focused_wt->last_column->prev_column = NULL;
-	frtemp->fread->worktables.focused_wt->focused_column = frtemp->fread->worktables.focused_wt->last_column;
+	task_list_current->holded_info->worktables.focused_wt->column = malloc(sizeof(struct COLUMN));
+	task_list_current->holded_info->worktables.focused_wt->last_column = task_list_current->holded_info->worktables.focused_wt->column;
+	task_list_current->holded_info->worktables.focused_wt->last_column->next_column = NULL;
+	task_list_current->holded_info->worktables.focused_wt->last_column->prev_column = NULL;
+	task_list_current->holded_info->worktables.focused_wt->focused_column = task_list_current->holded_info->worktables.focused_wt->last_column;
 }
 
 void Get_column_byindex(int cid)
 { // this will get column by index or the last column
 	DEBUG("getting focused column\n");
-	struct READINGINFO *frtemp = get_reading_table(0);
-	if(cid == 0) frtemp->fread->worktables.focused_wt->focused_column = frtemp->fread->worktables.focused_wt->column;
+	if(cid == 0) task_list_current->holded_info->worktables.focused_wt->focused_column = task_list_current->holded_info->worktables.focused_wt->column;
 	else {
 		DEBUG("getting columen ");
-		struct COLUMN *f = frtemp->fread->worktables.focused_wt->column;
+		struct COLUMN *f = task_list_current->holded_info->worktables.focused_wt->column;
 		for(int i = 0; f->next_column && f->row->type && cid != i; i++) f = f->next_column;
-		frtemp->fread->worktables.focused_wt->focused_column = f;
+		task_list_current->holded_info->worktables.focused_wt->focused_column = f;
 		DEBUG("\n");
 	}
 }
 
 void Create_lastcolumn_byindex() 
 { // this will create new last column in a given wtid indexs for table
-	struct READINGINFO *frtemp = get_reading_table(0);
 	DEBUG("Create_lastcolumn_byindex\n");
-	if(frtemp->fread->worktables.focused_wt)
+	if(task_list_current->holded_info->worktables.focused_wt)
 	{
 		DEBUG("have focused_wt\n");
-		if (frtemp->fread->worktables.focused_wt->column && frtemp->fread->worktables.focused_wt->last_column)
+		if (task_list_current->holded_info->worktables.focused_wt->column && task_list_current->holded_info->worktables.focused_wt->last_column)
 		{
 			DEBUG("have last_column\n");
-			frtemp->fread->worktables.focused_wt->last_column->next_column = malloc(sizeof(struct COLUMN));
-			frtemp->fread->worktables.focused_wt->last_column->next_column->next_column = NULL;
-			frtemp->fread->worktables.focused_wt->last_column->next_column->prev_column = frtemp->fread->worktables.focused_wt->last_column;
-			frtemp->fread->worktables.focused_wt->last_column = frtemp->fread->worktables.focused_wt->last_column->next_column;
-			frtemp->fread->worktables.focused_wt->focused_column = frtemp->fread->worktables.focused_wt->last_column;
+			task_list_current->holded_info->worktables.focused_wt->last_column->next_column = malloc(sizeof(struct COLUMN));
+			task_list_current->holded_info->worktables.focused_wt->last_column->next_column->next_column = NULL;
+			task_list_current->holded_info->worktables.focused_wt->last_column->next_column->prev_column = task_list_current->holded_info->worktables.focused_wt->last_column;
+			task_list_current->holded_info->worktables.focused_wt->last_column = task_list_current->holded_info->worktables.focused_wt->last_column->next_column;
+			task_list_current->holded_info->worktables.focused_wt->focused_column = task_list_current->holded_info->worktables.focused_wt->last_column;
 		}
 		else Create_newcolumn();
 	}
@@ -481,13 +505,12 @@ void Create_row(struct ROW *n)
 
 void Create_newrow()
 { // this will create new main row in a given pointed row
-	struct READINGINFO *frtemp = get_reading_table(0);
-	frtemp->fread->worktables.focused_wt->focused_column->row = malloc(sizeof(struct ROW));
-	frtemp->fread->worktables.focused_wt->focused_column->row->next_row = NULL;
-	frtemp->fread->worktables.focused_wt->focused_column->row->prev_row = NULL;
-	frtemp->fread->worktables.focused_wt->focused_column->row->on = 0;
-	frtemp->fread->worktables.focused_wt->focused_column->last_row = frtemp->fread->worktables.focused_wt->focused_column->row;
-	frtemp->fread->worktables.focused_wt->focused_column->focused_row = frtemp->fread->worktables.focused_wt->focused_column->row;
+	task_list_current->holded_info->worktables.focused_wt->focused_column->row = malloc(sizeof(struct ROW));
+	task_list_current->holded_info->worktables.focused_wt->focused_column->row->next_row = NULL;
+	task_list_current->holded_info->worktables.focused_wt->focused_column->row->prev_row = NULL;
+	task_list_current->holded_info->worktables.focused_wt->focused_column->row->on = 0;
+	task_list_current->holded_info->worktables.focused_wt->focused_column->last_row = task_list_current->holded_info->worktables.focused_wt->focused_column->row;
+	task_list_current->holded_info->worktables.focused_wt->focused_column->focused_row = task_list_current->holded_info->worktables.focused_wt->focused_column->row;
 }
 
 struct ROW *Create_nextrow(struct ROW *n) 
@@ -504,18 +527,17 @@ struct ROW *Create_nextrow(struct ROW *n)
 
 void Create_lastrow_byindex(int wtid, int wcid) 
 { // this will create new last row in a given indexs wtid for table and wcid for table column
-	struct READINGINFO *frtemp = get_reading_table(0);
 	if (wtid != -1) Get_worktable_byindex(wtid);
 	if (wcid != -1) Get_column_byindex(wcid);
-	if (frtemp->fread->worktables.focused_wt->focused_column->last_row)
+	if (task_list_current->holded_info->worktables.focused_wt->focused_column->last_row)
 	{
 		struct ROW *out = malloc(sizeof(struct ROW));
-		out->prev_row = frtemp->fread->worktables.focused_wt->focused_column->last_row;
+		out->prev_row = task_list_current->holded_info->worktables.focused_wt->focused_column->last_row;
 		out->next_row = NULL;
 		out->on = 0;
-		frtemp->fread->worktables.focused_wt->focused_column->last_row->next_row = out;
-		frtemp->fread->worktables.focused_wt->focused_column->last_row = out;
-		frtemp->fread->worktables.focused_wt->focused_column->focused_row = out;
+		task_list_current->holded_info->worktables.focused_wt->focused_column->last_row->next_row = out;
+		task_list_current->holded_info->worktables.focused_wt->focused_column->last_row = out;
+		task_list_current->holded_info->worktables.focused_wt->focused_column->focused_row = out;
 	}
 	else Create_newrow();
 }
@@ -523,12 +545,11 @@ void Create_lastrow_byindex(int wtid, int wcid)
 void Get_row_byindex(int rid)
 { // this will get worktable by index
 	//DEBUG("getting focused row\n");
-	struct READINGINFO *frtemp = get_reading_table(0);
-	if(rid == 0) frtemp->fread->worktables.focused_wt->focused_column->focused_row = frtemp->fread->worktables.focused_wt->focused_column->row;
+	if(rid == 0) task_list_current->holded_info->worktables.focused_wt->focused_column->focused_row = task_list_current->holded_info->worktables.focused_wt->focused_column->row;
 	else {
-		struct ROW *r = frtemp->fread->worktables.focused_wt->focused_column->row;
+		struct ROW *r = task_list_current->holded_info->worktables.focused_wt->focused_column->row;
 		for(int i = 0; r->next_row && rid != i; i++) r = r->next_row;
-		frtemp->fread->worktables.focused_wt->focused_column->focused_row = r;
+		task_list_current->holded_info->worktables.focused_wt->focused_column->focused_row = r;
 	}
 }
 
@@ -551,7 +572,7 @@ char *get_row_type(struct ROW *row)
 
 
 //void Add_rowvalue(struct ROW *n, char *type, void *value);
-_Bool fix_varprop(struct USER_WDB *var, char *dowhat, struct ROW *value)
+_Bool fix_varprop(struct READINGINFO *var, char *dowhat, struct ROW *value)
 {
 	DEBUG("\ngoing to %s with value(", dowhat);
 	if(value->type) DEBUG("value->type|%s| ", value->type);
@@ -1134,29 +1155,28 @@ void copy_row(struct ROW *dest, struct ROW *row)
 void Addrow_to_row_byindex(struct ROW *row, int wt, int wr)
 { // this will give value to a given indexs wtid for table and wcid for table column
 	// this will create next row on focesed column if wr is 1 or on new column of wr is 0
-	struct READINGINFO *frtemp = get_reading_table(0);
-	if(frtemp->fread->getas && !issame(frtemp->fread->getas, "")||
+	if(task_list_current->holded_info->getas && !issame(task_list_current->holded_info->getas, "")||
 		 row->As && !issame(row->As, "")) wt = wt ? wt : 1;
 
 	Get_worktable_byindex(wt);
 
-	DEBUG("Going Add(%d) new value on table[%d](%s) by index ", wr, wt, frtemp->fread->reading_for[frtemp->fread->rfor_id]);
-	if(wr == 0 || !frtemp->fread->worktables.focused_wt->focused_column){
+	DEBUG("Going Add(%d) new value on table[%d](%s) by index ", wr, wt, task_list_current->holded_info->reading_for[task_list_current->holded_info->rfor_id]);
+	if(wr == 0 || !task_list_current->holded_info->worktables.focused_wt->focused_column){
 		Create_lastcolumn_byindex();
 		Create_newrow();
 	}
-	if(wr == 1 || wr == 1 && !frtemp->fread->worktables.focused_wt->focused_column->last_row->next_row)
+	if(wr == 1 || wr == 1 && !task_list_current->holded_info->worktables.focused_wt->focused_column->last_row->next_row)
 	{
 		Create_lastrow_byindex(wt, -1);
 	}
 	DEBUG("t%dcr", wt);
-	copy_row(frtemp->fread->worktables.focused_wt->focused_column->focused_row, row);
-	if(row->type)	DEBUG("<%s>", frtemp->fread->worktables.focused_wt->focused_column->last_row->type);
-	/*if(frtemp->fread->getas && !issame(frtemp->fread->getas, "")){
-		frtemp->fread->worktables.focused_wt->focused_column->focused_row->As = strdup(frtemp->fread->getas);
-		frtemp->fread->getas = "";
+	copy_row(task_list_current->holded_info->worktables.focused_wt->focused_column->focused_row, row);
+	if(row->type)	DEBUG("<%s>", task_list_current->holded_info->worktables.focused_wt->focused_column->last_row->type);
+	/*if(task_list_current->holded_info->getas && !issame(task_list_current->holded_info->getas, "")){
+		task_list_current->holded_info->worktables.focused_wt->focused_column->focused_row->As = strdup(task_list_current->holded_info->getas);
+		task_list_current->holded_info->getas = "";
 	}*/
-	//if(frtemp->fread->worktables.focused_wt->focused_column->focused_row->As) DEBUG("And AS(%s) ", frtemp->fread->worktables.focused_wt->focused_column->focused_row->As);
+	//if(task_list_current->holded_info->worktables.focused_wt->focused_column->focused_row->As) DEBUG("And AS(%s) ", task_list_current->holded_info->worktables.focused_wt->focused_column->focused_row->As);
 	DEBUG("\n");
 }
 
@@ -1164,7 +1184,7 @@ struct ROW *get_as_row(char *name)
 {
 	DEBUG("Gatting As row %s \n", name);
 	int wid = 0;
-	struct WORKTABLE *w = task_list_current->holded_info->read->fread->worktables.worktable;
+	struct WORKTABLE *w = task_list_current->holded_info->worktables.worktable;
 	for(; wid < 1 && w && w->next_wt; wid++) w = w->next_wt;
 	while(wid >= 1){
 		if(w){
@@ -1210,19 +1230,19 @@ struct ROW *get_as_row(char *name)
 struct ROW *get_worktable(list_t *read, int isret){
   isret=isret;
   DEBUG("in get tabel");
-	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on); 
+	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on); 
   while(1){
   	DEBUG(" reading |%s|\n", readword->value);
     if (issame(readword->value, "TABLE")) {
-      task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-			readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+      task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+			readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
       DEBUG(" table{%s}", readword->value);
       if (issame(readword->value, "0")) {
-        task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
+        task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
 				int wtsid = -1, wtcid = -1, wtrid = -1;
         for(int w = 0; w < 3; w++)
         {
-          readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+          readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
           convertto.integer = -1;
           convert(readword->value);
           char *q = readword->value;
@@ -1230,11 +1250,11 @@ struct ROW *get_worktable(list_t *read, int isret){
           {
             DEBUG("\n");
             char *got = ReadResivers(read, "", "", 'R', 1)->word;
-            readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+            readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
             convert(got);
             DEBUG("in[%s] ", got);
           }
-          else task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
+          else task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
           DEBUG("[%s>>%d]", readword->value, convertto.integer);
           if (convertto.integer > -1){
             if(wtsid == -1) wtsid = convertto.integer;
@@ -1251,18 +1271,18 @@ struct ROW *get_worktable(list_t *read, int isret){
         }
       }
       else if (issame(readword->value, "1")) {
-        task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
+        task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
 				DEBUG("searching table 1\n");
         while (1){
-          readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+          readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
           if (issame(readword->value, "NEW")){
-            task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-            readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+            task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+            readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 						DEBUG("G createing new table 1 %s \n", readword->value);
 						Create_vartable(read, NULL, 0); 
             return NULL;
           }
-          //else task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
+          //else task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
         }
       }
       else // or if index was't given
@@ -1301,8 +1321,8 @@ struct ROW *get_worktable(list_t *read, int isret){
 
 
 void Create_workingtable() {
-	/*if (!task_list_current->holded_info->read->fread->worktables.worktable)
-	task_list_current->holded_info->read->fread->worktables.worktable = malloc(sizeof(struct WORKTABLE));
+	/*if (!task_list_current->holded_info->worktables.worktable)
+	task_list_current->holded_info->worktables.worktable = malloc(sizeof(struct WORKTABLE));
 	else{
 		//struct WORKTABLES *last_wts
 	}*/

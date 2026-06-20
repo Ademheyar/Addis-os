@@ -2,6 +2,7 @@
 #include <Addis/Libs/String/String.h>
 #include <Addis/Read_Resivers.h>
 #include <Addis/Read_Do.h>
+#include <Addis/Readcode.h>
 #include <Addis/Process.h>
 #include <Addis/Drivers/Screen/Vesa/Vesa.h>
 #include <Addis/Libs/type/type.h>
@@ -33,10 +34,10 @@ SYSVARS sysvars[5];
 void Create_new_Unversal()
 {
 	//DEBUG("Create_new_Unversal\n");
-	sysinfo.last_Unversal = sysinfo.first_Unversal = malloc(sizeof(struct USER_WDB));
+	sysinfo.last_Unversal = sysinfo.first_Unversal = malloc(sizeof(struct READINGINFO));
 	sysinfo.focused_Unversal = sysinfo.last_Unversal;
-	sysinfo.last_Unversal->prev_table = NULL;
-	sysinfo.last_Unversal->next_table = NULL;
+	sysinfo.last_Unversal->read_prev = NULL;
+	sysinfo.last_Unversal->read_next = NULL;
 	sysinfo.last_Unversal->last_chiled = sysinfo.last_Unversal->first_chiled = NULL;
 }
 
@@ -45,12 +46,12 @@ void Create_last_Unversal()
 	//DEBUG("Create_last_Unversal\n");
 	if(sysinfo.last_Unversal)
 	{
-		sysinfo.last_Unversal->next_table = malloc(sizeof(struct USER_WDB));
-		sysinfo.last_Unversal->next_table->prev_table = sysinfo.last_Unversal;
-		sysinfo.last_Unversal->next_table->next_table = NULL;
-		sysinfo.last_Unversal->next_table->first_chiled = NULL;
-		sysinfo.last_Unversal->next_table->last_chiled = NULL;
-		sysinfo.focused_Unversal = sysinfo.last_Unversal->next_table;
+		sysinfo.last_Unversal->read_next = malloc(sizeof(struct READINGINFO));
+		sysinfo.last_Unversal->read_next->read_prev = sysinfo.last_Unversal;
+		sysinfo.last_Unversal->read_next->read_next = NULL;
+		sysinfo.last_Unversal->read_next->first_chiled = NULL;
+		sysinfo.last_Unversal->read_next->last_chiled = NULL;
+		sysinfo.focused_Unversal = sysinfo.last_Unversal->read_next;
 		sysinfo.last_Unversal = sysinfo.focused_Unversal;
 	}
 	else Create_new_Unversal();
@@ -62,62 +63,128 @@ void Delete_late_Unversal()
 	//DEBUG("Delete_late_Unversal\n");
 	if(sysinfo.last_Unversal)
 	{
-		if(sysinfo.last_Unversal->prev_table) 
+		if(sysinfo.last_Unversal->read_prev) 
 		{
-			sysinfo.focused_Unversal = sysinfo.last_Unversal->prev_table;
-			free(sysinfo.focused_Unversal->next_table);
-			sysinfo.focused_Unversal->next_table = NULL;
+			sysinfo.focused_Unversal = sysinfo.last_Unversal->read_prev;
+			free(sysinfo.focused_Unversal->read_next);
+			sysinfo.focused_Unversal->read_next = NULL;
 			sysinfo.last_Unversal = sysinfo.focused_Unversal;
 		}
 		else 
 		{
 			free(sysinfo.last_Unversal);
 			sysinfo.last_Unversal = sysinfo.first_Unversal = NULL;
-			sysinfo.focused_Unversal->next_table = NULL;
+			sysinfo.focused_Unversal->read_next = NULL;
 		}
 	}
 }
 
 
-void Create_working_place() 
+void Create_working_place(char *newcode, char on) 
 {
 	DEBUG("Create_working_place\n");
-	if(task_list_last->Last_read){
+	int ns = 0; 
+	if (sizeof(struct READINGINFO) > 512) ns = 512;
+	else if (sizeof(struct READINGINFO) > 1024) ns = 1024;
+	struct READINGINFO *newread = malloc(sizeof(struct READINGINFO) + ns);
+	newread->read_next = NULL;
+	newread->chiled_id = -1;
 
+	            
+	DEBUG("Going to read Bodys (%s)\n", newcode);
+	// Read the body of the code
+	char *rbcode = read_bodys(newcode);
+	DEBUG("Done reding body\n");
+	// If the code is valid, process it further
+	if(rbcode && (!issame(rbcode, "") || !issame(rbcode, " ")))
+	{
+		DEBUG("Going to fixe Code(%s)....\n", rbcode);
+		// Update the task with the retrieved code
+		newread->reading_task = task_list_current;
+		
+		// Update the reading task with the processed code
+		newread->main_readcode = stradd(rbcode," ", 0);
+		newread->reading_value = str_splitL(stradd(rbcode," ", 0), " ", 0);
+		newread->read_new = 0;
+		newread->reading_on = 0;
+		newread->reading_stoped = 0;
+		DEBUG("Code Found\n");
+		//newread->name = strdup(task_list_current->holded_info->bootinfo->code_splited1[i-1]);
+		newread->getas = "";
+		newread->getwhat = "";
+		DEBUG("Setting code\n");
+		newread->rfor_id = 0;
+		newread->reading_for[0] = "READING";
+
+		// Log debug information about the completed code fixing
+		DEBUG(" done Pripering Working Table r %d %d  l %d v %s\n", newread->reading_on, newread->reading_stoped, (int)newread->reading_value->length, rbcode);
+		DEBUG(" done creating(");
+		if(task_list_current->state) DEBUG("Task-id[%d] ", task_list_current->id);
+		if(task_list_current->state) DEBUG(" state[%d]) \n", task_list_current->state);
+		DEBUG("And fixing code %s\n", newcode);
 	}
-	else{
-		int ns = 0; 
-		if (sizeof(struct USER_WDB) > 512) ns = 512;
-		else if (sizeof(struct USER_WDB) > 1024) ns = 1024;
-		task_list_last->Last_read = malloc(sizeof(struct USER_WDB) + ns);
-		task_list_last->Last_read->fread->chiled_id = -1;
-		task_list_last->Last_read->fread->state = 'L';
-	}
-	if(!sysinfo.USER_NAME || issame(sysinfo.USER_NAME, "")) {
-		//Create_last_Unversal();
-		task_list_last->holded_info->fread = malloc(sizeof(struct USER_WDB));
-    task_list_last->holded_info->fread->state = 'G';
-	}
+	// If no valid code is found, mark the reading as stopped
 	else {
+		newread->reading_stoped = (int)newread->reading_value->length;
+		// Log debug information about the absence of code
+		DEBUG("There is no code to fix\n");
+		DEBUG(" can't creating and fixing code else %s\n", newcode);
+		// Remove the reading task
+		Delete_lateworking_place();
+		DEBUG(" done deleting \n");
 	}
+
+	task_t *pointtask = NULL;
+	if(on == 'C') pointtask = task_list_current;
+	else if (on == 'L') pointtask = task_list_last;
+	else if (on == 'N') pointtask = task_list_new;
+
+	if (pointtask){
+		if(pointtask->Last_read){
+			pointtask->Last_read->read_next = newread;
+			newread->read_prev = pointtask->Last_read;
+			newread->id = pointtask->Last_read->id+1;
+		}
+		else{
+			newread->id = 0;
+			newread->read_prev = NULL;
+			pointtask->Mian_read = newread;
+			pointtask->Last_read = newread;
+			pointtask->holded_info = newread;
+		}
+		pointtask->Last_read = newread;	
+		if(!sysinfo.USER_NAME || issame(sysinfo.USER_NAME, "")) pointtask->Last_read->state = 'G';
+		else pointtask->Last_read->state = 'L';
+	}	
+	DEBUG("Aolmost Done newread->id %d \n", newread->id);
+
+	DEBUG(" done Createing Working place\n");
+	
+	/* TODO : CREARTE WORING PLACE ON WHICH TASK C:CORRONT L: LAST N: NEW
+	
+	
+	*/
 }
 
-void Delete_lateworking_place() {
-	int id;
-	if(!sysinfo.USER_NAME || issame(sysinfo.USER_NAME, "")) {
-		//Delete_late_Unversal();
-		task_list_last->holded_info->fread = malloc(sizeof(struct USER_WDB));
+/*
+*	removes the last reading envairomant
+*/
+
+void Delete_lateworking_place(){
+	DEBUG("deleting latest working place \n");
+	if(task_list_current->Last_read && task_list_current->Last_read->read_prev){
+		task_list_current->holded_info = task_list_current->Last_read->read_prev;
+		if(task_list_current->holded_info) {
+			task_list_current->holded_info->read_next = NULL;
+			//Current_task_delete();
+			free(task_list_current->Last_read);
+			// set the last read
+			task_list_current->Last_read = task_list_current->holded_info;
+		}
+		DEBUG("done setting reading one task\n");
 	}
-	else {
-		id = loged_user[sysinfo.user_id]->uwdb_id--;
-		free(loged_user[sysinfo.user_id]->user_wdb[id]);
-		task_list_last->holded_info->fread = loged_user[sysinfo.user_id]->user_wdb[id];
-	}
+	else DEBUG("can't find reading\n");
 }
-
-
-
-
 
 
 
@@ -165,9 +232,15 @@ struct ROW *Set_varible_extern(struct ROW *var)
 
 	DEBUG("Setting_new_extern_varible Unversal, Global or external Varible \n");
 	// Settig given item to extern value
+	struct ROW *new = malloc(sizeof(struct ROW));
+	new->As = var->As;
+	new->type = var->type;
+	if(new->value.Buffer) new->value.Buffer = var->value.Buffer;
+	if(new->value.charcter) new->value.charcter = var->value.charcter;
 
 	// NOte: if var parent in local is distroi is it going to distroy this function or not ?
-	sysinfo.focused_extern_varible = var; 
+	sysinfo.focused_extern_varible = new; 
+	
 	// there is no next value
 	sysinfo.focused_extern_varible->next_row = NULL;
 	// if there no var first or prev created befor
@@ -178,6 +251,10 @@ struct ROW *Set_varible_extern(struct ROW *var)
 	// will set it at the last for next time to find it
 	sysinfo.last_extern_varible = sysinfo.focused_extern_varible;
 	// we can return it
+	var->As=NULL;
+	var->type=NULL;
+	free(var);
+	var=NULL;
 	return sysinfo.focused_extern_varible;
 }
 
@@ -189,38 +266,61 @@ struct ROW *Find_Variable_by(char *name)
 {
 	struct ROW *retrow = NULL;
 	struct READINGINFO *rdinfo = task_list_current->holded_info;
+	DEBUG("going to find varible on local %s\n", name);
 	while (rdinfo)
 	{
+		DEBUG("rearing plcae id %d\n", rdinfo->id);
 		struct COLUMN *column = rdinfo->worktables.worktable->column;
+		int columnid = 0;
 		while (column)
 		{
-			struct ROW *row = column->row;
-			while (row)
-			{
-				if(name && issame(row->As, name)) {
-					retrow = row;
-					task_list_current->holded_info->worktables.worktable->focused_column->focused_row = row;
-					return retrow;
+			DEBUG("on column %d\n", columnid);
+			if(column && column->row){
+				struct ROW *row = column->row;
+				int rowid = 0;
+				while (row)
+				{
+					DEBUG("on row %d\n", rowid);
+					if(name && row->As && issame(row->As, name)) {
+						retrow = row;
+						task_list_current->holded_info->worktables.worktable->focused_column->focused_row = row;
+						return retrow;
+					}
+					// we can even conntinue chacking by vaule, vaible type, .... 
+					row = row->next_row; // got to next row 
+					rowid += 1;
+					DEBUG("next on row %d\n", rowid);
 				}
-				// we can even conntinue chacking by vaule, vaible type, .... 
-				row = row->next_row; // got to next row 
+				DEBUG("out on row %d\n", rowid);
 			}
-			column = rdinfo->worktables.worktable->column; // got to next columen 
+			//DEBUG("out column %d\n", columnid);
+			column = column->next_column; // got to next columen 
+			if(!column || (column && !column->row)) break;
+			//DEBUG("out column %d\n", columnid);
+			columnid += 1;
 		}
+		//DEBUG("out red column %d\n", columnid);
 		rdinfo = rdinfo->read_prev; // goback until master code varibles
 	}
+	
+	
 	if(retrow == NULL && sysinfo.first_extern_varible){
-		
+		DEBUG("going to find varible on global %s\n", name);
+		int countgv = 0;
 		struct ROW *globalrow = sysinfo.first_extern_varible;
 		while(globalrow){
 		
+			DEBUG("rearing plcae id %d ", countgv);
+			if(globalrow->As)  DEBUG("AS %s ", globalrow->As);
 			if(name && issame(globalrow->As, name)) {
 				retrow = globalrow;
 				task_list_current->holded_info->worktables.worktable->focused_column->focused_row = globalrow;
 				return retrow;
 			}
+			DEBUG("\n");
 			// we can even conntinue chacking by vaule, vaible type, .... 
 			globalrow = globalrow->next_row; // chacke next varible
+			countgv+=1;
 		}
 	}
 	return retrow;
@@ -243,38 +343,6 @@ struct ROW *Find_Variable_by(char *name)
 
 
 
-
-struct READINGINFO *get_reading_table(char c)
-{ // this will get where geted var will be saved and sand back rusoult
-	struct READINGINFO *frtemp = task_list_current->holded_info;
-	struct READINGINFO *fpread = task_list_current->holded_info->read_prev;
-	int rfid = task_list_current->holded_info->fread->rfor_id;
-	if(c == 0){
-		if (issame(frtemp->fread->reading_for[rfid], "RETURN")){
-			if (issame(fpread->fread->reading_for[fpread->fread->rfor_id-1], "GEVING")){
-				while (!issame(fpread->fread->reading_for[fpread->fread->rfor_id], "GETTING")) fpread = fpread->read_next;
-				frtemp = fpread;
-			}
-			else frtemp = task_list_current->holded_info->read_prev;
-		}
-		else if (issame(task_list_current->holded_info->fread->reading_for[rfid], "GEVING")){
-			while (!issame(frtemp->fread->reading_for[frtemp->fread->rfor_id], "GETTING") && frtemp->read_next) {
-				frtemp = frtemp->read_next;
-			}
-		}
-		else if((int)task_list_current->holded_info->fread->reading_value->length  == task_list_current->holded_info->fread->reading_stoped){
-			DEBUG("Getting reading for what and got %s ", task_list_current->holded_info->fread->reading_for[rfid]);
-			if(!task_list_current->holded_info->read_next && !task_list_current->holded_info->read_prev) { DEBUG("no prev no next "); frtemp = NULL; }
-			else if(task_list_current->holded_info->read_next) frtemp = task_list_current->holded_info->read_next;
-			else if(task_list_current->holded_info->read_prev) frtemp = task_list_current->holded_info->read_prev;
-			DEBUG("\n");
-		}
-	}
-	else if (c == 'L'){
-		while (frtemp->read_prev) frtemp = frtemp->read_prev;
-	}
-	return frtemp;
-}
 
 /*
 *
@@ -300,46 +368,46 @@ struct READINGINFO *get_reading_table(char c)
 *	CHILED TABLES
 */
 
-void create_newchiled(struct USER_WDB *parent)
+void create_newchiled(struct READINGINFO *parent)
 {
 	DEBUG("create_newchiled\n");
-	parent->last_chiled = parent->first_chiled = malloc(sizeof(struct USER_WDB));
+	parent->last_chiled = parent->first_chiled = malloc(sizeof(struct READINGINFO));
 	parent->last_chiled->chiled_Parent = parent;
 	parent->foucsed_chiled = parent->last_chiled;
-	parent->last_chiled->prev_table = NULL;
-	parent->last_chiled->next_table = NULL;
+	parent->last_chiled->read_prev = NULL;
+	parent->last_chiled->read_next = NULL;
 	parent->last_chiled->last_chiled = parent->last_chiled->first_chiled = NULL;
 }
 
-void create_lastchiled(struct USER_WDB *parent)
+void create_lastchiled(struct READINGINFO *parent)
 {
 	if(parent->last_chiled)
 	{
 		DEBUG("parent->last_chiled\n");
 		if(parent->first_chiled->name) DEBUG("parent->first_chiled name %s\n", parent->first_chiled->name);
-		parent->last_chiled->next_table = malloc(sizeof(struct USER_WDB));
-		parent->last_chiled->next_table->chiled_Parent = parent;
-		parent->last_chiled->next_table->prev_table = parent->last_chiled;
-		parent->last_chiled->next_table->next_table = NULL;
-		parent->last_chiled->next_table->first_chiled = NULL;
-		parent->last_chiled->next_table->last_chiled = NULL;
-		parent->last_chiled = parent->last_chiled->next_table;
+		parent->last_chiled->read_next = malloc(sizeof(struct READINGINFO));
+		parent->last_chiled->read_next->chiled_Parent = parent;
+		parent->last_chiled->read_next->read_prev = parent->last_chiled;
+		parent->last_chiled->read_next->read_next = NULL;
+		parent->last_chiled->read_next->first_chiled = NULL;
+		parent->last_chiled->read_next->last_chiled = NULL;
+		parent->last_chiled = parent->last_chiled->read_next;
 		parent->foucsed_chiled = parent->last_chiled;
 	}
 	else create_newchiled(parent);
 }
 
-void Add_chiled_to_lastparent(struct USER_WDB *parent, struct USER_WDB *chiled)
+void Add_chiled_to_lastparent(struct READINGINFO *parent, struct READINGINFO *chiled)
 {
 	DEBUG("Add_chiled_to_lastparent\n");
 	if(parent->last_chiled)
 	{
 		DEBUG("parent->last_chiled\n");
 		chiled->chiled_Parent = parent;
-		parent->last_chiled->next_table = chiled;
-		parent->last_chiled->next_table->prev_table = parent->last_chiled;
-		parent->last_chiled->next_table->next_table = NULL;
-		parent->last_chiled = parent->last_chiled->next_table;
+		parent->last_chiled->read_next = chiled;
+		parent->last_chiled->read_next->read_prev = parent->last_chiled;
+		parent->last_chiled->read_next->read_next = NULL;
+		parent->last_chiled = parent->last_chiled->read_next;
 		parent->foucsed_chiled = parent->last_chiled;
 	}
 	else {
@@ -347,41 +415,41 @@ void Add_chiled_to_lastparent(struct USER_WDB *parent, struct USER_WDB *chiled)
 		chiled->chiled_Parent = parent;
 		parent->last_chiled = parent->first_chiled = chiled;
 		parent->foucsed_chiled = parent->last_chiled;
-		parent->last_chiled->prev_table = NULL;
-		parent->last_chiled->next_table = NULL;
+		parent->last_chiled->read_prev = NULL;
+		parent->last_chiled->read_next = NULL;
 	}
 }
 
-void Add_chiled_to_parent(struct USER_WDB *parent, struct USER_WDB *chiled)
+void Add_chiled_to_parent(struct READINGINFO *parent, struct READINGINFO *chiled)
 {
 	DEBUG("Add_chiled_to_parent\n");
 	if(chiled && parent){
 		if (chiled->name) DEBUG("name (%s) && ", chiled->name);
 		if (parent->name) DEBUG("name (%s) ", parent->name);
 		DEBUG("chiled && parent\n");
-		if(chiled->prev_table)
+		if(chiled->read_prev)
 		{
-			DEBUG("chiled->prev_table\n");
-			if(chiled->next_table)
+			DEBUG("chiled->read_prev\n");
+			if(chiled->read_next)
 			{
-				DEBUG("chiled->next_table\n");
-				chiled->prev_table->next_table = chiled->next_table;
-				chiled->next_table->prev_table = chiled->prev_table;
+				DEBUG("chiled->read_next\n");
+				chiled->read_prev->read_next = chiled->read_next;
+				chiled->read_next->read_prev = chiled->read_prev;
 			}
 			else 
 			{
-				chiled->prev_table->next_table = NULL;
-				chiled->prev_table->chiled_Parent->last_chiled = chiled->prev_table;
+				chiled->read_prev->read_next = NULL;
+				chiled->read_prev->chiled_Parent->last_chiled = chiled->read_prev;
 			}
 		}
-		else if(chiled->next_table)
+		else if(chiled->read_next)
 		{
-			DEBUG("chiled->next_table\n");
+			DEBUG("chiled->read_next\n");
 			if(chiled->chiled_Parent)
 			{
 				DEBUG("chiled->chiled_Parent\n");
-				chiled->chiled_Parent->first_chiled = chiled->next_table;
-				if(!chiled->next_table->next_table) chiled->chiled_Parent->last_chiled = chiled->next_table;
+				chiled->chiled_Parent->first_chiled = chiled->read_next;
+				if(!chiled->read_next->read_next) chiled->chiled_Parent->last_chiled = chiled->read_next;
 			}
 		}
 		DEBUG("DONE GETTING\n");
@@ -397,23 +465,23 @@ void Add_chiled_to_parent(struct USER_WDB *parent, struct USER_WDB *chiled)
 *	commen
 */
 
-struct USER_WDB *Create_vartable(list_t *read, struct USER_WDB *var, int isret) 
+struct READINGINFO *Create_vartable(list_t *read, struct READINGINFO *var, int isret) 
 { // TO read command that will ask to create table vars or chiled 
-	struct USER_WDB *ret = NULL;
+	struct READINGINFO *ret = NULL;
 	char *main_state = "", *state = "";
 	char *as_name[10];
 	int as_id = -1;
-	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->fread->reading_on); 
+	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on); 
 	for (int i = 0; ; i++)
 	{
 		if (issame(readword->value, "GLOBAL") || issame(readword->value, "STATE") || issame(readword->value, "LOCALE") || issame(readword->value, "TEMP")){
 			if(i == 0) main_state = readword->value;
 			state = readword->value;
-			task_list_current->holded_info->fread->reading_on = ++task_list_current->holded_info->fread->reading_stoped;
-			readword = list_get_node_by_index(read, task_list_current->holded_info->fread->reading_on);
+			task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+			readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 			if (issame(readword->value, "OR")) {
-				task_list_current->holded_info->fread->reading_on = ++task_list_current->holded_info->fread->reading_stoped;
-				readword = list_get_node_by_index(read, task_list_current->holded_info->fread->reading_on);
+				task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+				readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 				continue;
 			}
 		}
@@ -422,8 +490,8 @@ struct USER_WDB *Create_vartable(list_t *read, struct USER_WDB *var, int isret)
 			while(1)
 			{
 				if (issame(readword->value, "AS")) {
-					task_list_current->holded_info->fread->reading_on = ++task_list_current->holded_info->fread->reading_stoped;
-					readword = list_get_node_by_index(read, task_list_current->holded_info->fread->reading_on);
+					task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+					readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 				}
 
 				struct ROW *ret = Resive(read, 0, 1);
@@ -433,8 +501,8 @@ struct USER_WDB *Create_vartable(list_t *read, struct USER_WDB *var, int isret)
 				}
 
 				if (issame(readword->value, "AND")) {
-					task_list_current->holded_info->fread->reading_on = ++task_list_current->holded_info->fread->reading_stoped;
-					readword = list_get_node_by_index(read, task_list_current->holded_info->fread->reading_on);
+					task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+					readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 					continue;
 				}
 				break;
@@ -443,22 +511,21 @@ struct USER_WDB *Create_vartable(list_t *read, struct USER_WDB *var, int isret)
 		}
 		if (issame(state, "")) state = main_state;
 		DEBUG("Going to Create %s in ", state);
-		int frid = task_list_current->holded_info->fread->rfor_id;	
-		struct USER_WDB *parent_var = NULL;
+		int frid = task_list_current->holded_info->rfor_id;	
+		struct READINGINFO *parent_var = NULL;
 		if (issame(state, "LOCALE") ){
 			DEBUG("LOCALE var table\n");
-			struct READINGINFO *fLrtemp = get_reading_table('L');
-			parent_var = fLrtemp->fread;
+			parent_var = task_list_current->holded_info;
 		}
 		else if (issame(state, "GLOBAL")){
 			DEBUG("GLOBAL Var\n");
 			//Create_last_Unversal();
 			parent_var = sysinfo.last_Unversal;
 		}
-		else if (issame(state, "STATE") || issame(state, "") && issame(task_list_current->holded_info->fread->reading_for[frid], "GEVING"))
+		else if (issame(state, "STATE") || issame(state, "") && issame(task_list_current->holded_info->reading_for[frid], "GEVING"))
 		{
 			DEBUG("STATE var table\n");
-			parent_var = task_list_current->holded_info->fread;
+			parent_var = task_list_current->holded_info;
 		}
 		else if (var != NULL) 
 		{
@@ -468,8 +535,7 @@ struct USER_WDB *Create_vartable(list_t *read, struct USER_WDB *var, int isret)
 		else 
 		{
 			DEBUG("TEMP var table\n");
-			struct READINGINFO *frtemp = get_reading_table(0);
-			parent_var = frtemp->fread;
+			parent_var = task_list_current->holded_info;
 		}
 		
 		if (parent_var != NULL){
@@ -487,7 +553,7 @@ struct USER_WDB *Create_vartable(list_t *read, struct USER_WDB *var, int isret)
 			parent_var->last_chiled->type = "";
 			if (isret) ret = parent_var->last_chiled;
 			
-			if (issame(task_list_current->holded_info->fread->reading_for[frid], "GEVING")){
+			if (issame(task_list_current->holded_info->reading_for[frid], "GEVING")){
 				struct ROW *row = malloc(sizeof(struct ROW));
 				row->value.variable.fuwdb = parent_var->last_chiled;
 				row->type = "VARIABLE";
@@ -496,8 +562,8 @@ struct USER_WDB *Create_vartable(list_t *read, struct USER_WDB *var, int isret)
 			}
 
 			if(as_id >= 0){
-				char *c = task_list_current->holded_info->fread->reading_for[frid];
-				task_list_current->holded_info->fread->reading_for[frid] = "";
+				char *c = task_list_current->holded_info->reading_for[frid];
+				task_list_current->holded_info->reading_for[frid] = "";
 				struct ROW *row = malloc(sizeof(struct ROW));
 				row->value.variable.fuwdb = parent_var->last_chiled;
 				row->type = "VARIABLE";
@@ -505,11 +571,11 @@ struct USER_WDB *Create_vartable(list_t *read, struct USER_WDB *var, int isret)
 				row->on = 6;
 				DEBUG("going to create as\n");
 				Addrow_to_row_byindex(row, 1, 0);
-				task_list_current->holded_info->fread->reading_for[frid] = c;
+				task_list_current->holded_info->reading_for[frid] = c;
 				as_id--;
 			}
 
-			DEBUG("saved var on %s\n", task_list_current->holded_info->fread->reading_for[frid]);
+			DEBUG("saved var on %s\n", task_list_current->holded_info->reading_for[frid]);
 			if(as_id < 0) break;
 			else continue;
 		}
@@ -532,18 +598,18 @@ struct ROW *get_table(list_t *read, int isret)
 	DEBUG("searching table 1\n");
   DEBUG("in get tabel");
   isret=isret;
-	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->fread->reading_on); 
+	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on); 
   while(1){
   	DEBUG(" reading |%s|\n", readword->value);
 		if (issame(readword->value, "NEW")){
-			task_list_current->holded_info->fread->reading_on = ++task_list_current->holded_info->fread->reading_stoped;
-			readword = list_get_node_by_index(read, task_list_current->holded_info->fread->reading_on);
-			DEBUG("G createing new table 1 [%d]%s \n", task_list_current->holded_info->fread->reading_on, readword->value);
-			Create_vartable(read, task_list_current->holded_info->fread, 0); 
+			task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+			readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
+			DEBUG("G createing new table 1 [%d]%s \n", task_list_current->holded_info->reading_on, readword->value);
+			Create_vartable(read, task_list_current->holded_info, 0); 
 			return NULL;
 		}
 		else {
-			task_list_current->holded_info->fread->reading_on = ++task_list_current->holded_info->fread->reading_stoped;
+			task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
 		}
   }
   DEBUG(" got focsed vars\n");
@@ -564,9 +630,10 @@ struct ROW *get_table(list_t *read, int isret)
 void list_allin_table()
 { // this will list all table items and there chileds
   char *nodes = "";
-  void listin(struct USER_WDB *chack) {
+  void listin(struct READINGINFO *chack) 
+  {
 		if(chack && !chack->first_chiled) return;
-    struct USER_WDB *c = chack->first_chiled;
+    	struct READINGINFO *c = chack->first_chiled;
 		char *oldnodes = strdup(nodes);
 		while(1){
 			if(c->name)
@@ -574,81 +641,81 @@ void list_allin_table()
       nodes = stradd(nodes, "-", 0);
       listin(c);
       nodes = oldnodes;
-			if(c->next_table) c = c->next_table;
+			if(c->read_next) c = c->read_next;
 			else break;
 		}
   }
 
   if(sysinfo.user_id >= 0 && (sysinfo.USER_NAME || !issame(sysinfo.USER_NAME, ""))) {
-    for (int j = 0; loged_user[sysinfo.user_id]->user_wdb[j]; j++) {
-      if(loged_user[sysinfo.user_id]->user_wdb[j]->name)
-      DEBUG("%schaecking Local_name(%s)\n", nodes, loged_user[sysinfo.user_id]->user_wdb[j]->name);
+    for (int j = 0; loged_user[sysinfo.user_id]->READINGINFO[j]; j++) {
+      if(loged_user[sysinfo.user_id]->READINGINFO[j]->name)
+      DEBUG("%schaecking Local_name(%s)\n", nodes, loged_user[sysinfo.user_id]->READINGINFO[j]->name);
       nodes = "-";
-      listin(loged_user[sysinfo.user_id]->user_wdb[j]);
+      listin(loged_user[sysinfo.user_id]->READINGINFO[j]);
       nodes = "";
     }
   }
   else {
-		struct USER_WDB *c = sysinfo.first_Unversal;
+		struct READINGINFO *c = sysinfo.first_Unversal;
 		while(1){
 			//if(c && c->name) DEBUG("%s chaecking global_name(%s)\n", nodes, c->name);
 			nodes = "-";
 			listin(c);
 			nodes = "";
-			if(c->next_table) c = c->next_table;
+			if(c->read_next) c = c->read_next;
 			else break;
 		}
   }
 }
-struct USER_WDB *Get_list_by_names(struct USER_WDB *parent, char *name)
+struct READINGINFO *Get_list_by_names(struct READINGINFO *parent, char *name)
 {
 	DEBUG("Geting list by name (%s)\n", name);
-	struct USER_WDB *list = parent;
+	struct READINGINFO *list = parent;
 	while(list)
 	{
 		//DEBUG("list(%s) == name(%s)\n", list->name, name);
 		if (list->name && issame(list->name, name)) return list;
-		if(list->next_table) list = list->next_table;
+		if(list->read_next) list = list->read_next;
 		else break;
 	}
 	return NULL;
 }
 
-struct USER_WDB *Get_chiled_by_names(struct USER_WDB *list, char *name)
+struct READINGINFO *Get_chiled_by_names(struct READINGINFO *list, char *name)
 {
 	DEBUG("Geting Chiled by name\n");
-	struct USER_WDB *chiled = list->first_chiled;
+	struct READINGINFO *chiled = list->first_chiled;
 	while(chiled)
 	{
 		DEBUG("Chiled(%s) == name(%s)\n", chiled->name, name);
 		if (chiled->name && issame(chiled->name, name)) return chiled;
-		if(chiled->next_table) chiled = chiled->next_table;
+		if(chiled->read_next) chiled = chiled->read_next;
 		else break;
 	}
 	return NULL;
 }
 
-struct USER_WDB *Get_main_dt(struct USER_WDB *g_main_dt, list_t *read)
+struct READINGINFO *Get_main_dt(struct READINGINFO *g_main_dt, list_t *read)
 {
  	// list all vars
-	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->fread->reading_on); 
+	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on); 
   list_allin_table();
 	char *main_name = "";
 	int st = 0, rb = 1;
 	if(g_main_dt) main_name = g_main_dt->name;
 	else { st = 1; g_main_dt = sysinfo.first_Unversal; }
 	main_name=main_name;
-	for(;task_list_current->holded_info->fread->reading_on <= (int)read->length;)
+	for(;task_list_current->holded_info->reading_on <= (int)read->length;)
 	{
 		DEBUG("find[%d](%s)dt\n", st, readword->value);
 		if (rb){
-			struct USER_WDB *glist = Get_chiled_by_names(g_main_dt, readword->value);
+			struct READINGINFO *glist = Get_chiled_by_names(g_main_dt, readword->value);
 			if(glist)
 			{
 				DEBUG("found(%s)dt\n", readword->value);
-				task_list_current->holded_info->fread->reading_on++;
+				task_list_current->holded_info->reading_on++;
 				g_main_dt = glist;
-				readword = list_get_node_by_index(read, task_list_current->holded_info->fread->reading_on);
+				readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 				DEBUG("going to find(%s)dt\n", readword->value);
 				st = 4;
 				continue;
@@ -657,14 +724,14 @@ struct USER_WDB *Get_main_dt(struct USER_WDB *g_main_dt, list_t *read)
 		}
 		else
 		{
-			while(g_main_dt->prev_table) g_main_dt = g_main_dt->prev_table;
-			struct USER_WDB *glist = Get_list_by_names(g_main_dt, readword->value);
+			while(g_main_dt->read_prev) g_main_dt = g_main_dt->read_prev;
+			struct READINGINFO *glist = Get_list_by_names(g_main_dt, readword->value);
 			if(glist)
 			{
 				DEBUG("found(%s)dt\n", readword->value);
-				task_list_current->holded_info->fread->reading_on++;
+				task_list_current->holded_info->reading_on++;
 				g_main_dt = glist;
-				readword = list_get_node_by_index(read, task_list_current->holded_info->fread->reading_on);
+				readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 				DEBUG("going to find(%s)dt\n", readword->value);
 				st = 4;
 				continue;
@@ -673,18 +740,18 @@ struct USER_WDB *Get_main_dt(struct USER_WDB *g_main_dt, list_t *read)
 
 		if (st == 0 || st == 1) {
 			DEBUG("going back word\n");
-			if (st != 1 && g_main_dt->reading_task && g_main_dt->reading_task->holded_info && g_main_dt->reading_task->holded_info->fread)
+			if (st != 1 && g_main_dt->reading_task && g_main_dt->reading_task->holded_info && g_main_dt->reading_task->holded_info)
 			{
 				DEBUG("getting local table\n");
-				//if (g_main_dt->reading_task->holded_info->fread->name) DEBUG("name(%s)\n", g_main_dt->reading_task->holded_info->fread->name);
-				g_main_dt = g_main_dt->reading_task->holded_info->fread;
+				//if (g_main_dt->reading_task->holded_info->name) DEBUG("name(%s)\n", g_main_dt->reading_task->holded_info->name);
+				g_main_dt = g_main_dt->reading_task->holded_info;
 				rb = 1;
 				st = 1;
 			}
-			else if (g_main_dt->prev_table) 
+			else if (g_main_dt->read_prev) 
 			{
 				DEBUG("given var not found going to prev table\n");
-				g_main_dt = g_main_dt->prev_table;
+				g_main_dt = g_main_dt->read_prev;
 			}
 			else 
 			{
@@ -701,22 +768,22 @@ struct USER_WDB *Get_main_dt(struct USER_WDB *g_main_dt, list_t *read)
 		}
 		else break;
 	}
-	DEBUG("don gatting name id %d var \n", task_list_current->holded_info->fread->reading_on);
+	DEBUG("don gatting name id %d var \n", task_list_current->holded_info->reading_on);
 	if(st == 4) return g_main_dt;
 	else return NULL;
 }
 
 
-struct USER_WDB *find_dt(struct USER_WDB *glist, char *USER_NAME, char *USER_PASSWORD, int id_db, char *Local_name, char *State_name, char *name, char *id_addrs)
+struct READINGINFO *find_dt(struct READINGINFO *glist, char *USER_NAME, char *USER_PASSWORD, int id_db, char *Local_name, char *State_name, char *name, char *id_addrs)
 {
  	// list all vars
   list_allin_table();
 
-  struct USER_WDB *fuwdb;
+  struct READINGINFO *fuwdb;
   glist=glist;
   _Bool found=false;
   
-  struct USER_WDB *search_allin(struct USER_WDB *chack) {
+  struct READINGINFO *search_allin(struct READINGINFO *chack) {
     DEBUG("search_allin .....................\n");
     for (int i = 0; chack->variables[i]; i++) {
       if (!(issame(State_name, " ") || issame(State_name, ""))) {
@@ -790,16 +857,16 @@ struct USER_WDB *find_dt(struct USER_WDB *glist, char *USER_NAME, char *USER_PAS
     if(iddb == 0){ // working data base lists
       DEBUG(" chack ");
       if(sysinfo.user_id >= 0 && (sysinfo.USER_NAME || !issame(sysinfo.USER_NAME, ""))) {
-        for (int j = 0; loged_user[sysinfo.user_id]->user_wdb[j]; j++) {
+        for (int j = 0; loged_user[sysinfo.user_id]->READINGINFO[j]; j++) {
           //DEBUG(" Local_name in local db lists\n");
-          fuwdb = loged_user[sysinfo.user_id]->user_wdb[j];
+          fuwdb = loged_user[sysinfo.user_id]->READINGINFO[j];
           if (!(issame(Local_name, " "))) { // if main name is given
-            DEBUG(" chaecking Local_name(%s) with id(%d) main_name(%s)\n", Local_name, j, loged_user[sysinfo.user_id]->user_wdb[j]->name);
+            DEBUG(" chaecking Local_name(%s) with id(%d) main_name(%s)\n", Local_name, j, loged_user[sysinfo.user_id]->READINGINFO[j]->name);
             if (issame(fuwdb->name, Local_name)) { // if Local_name is found
-              sysinfo.ftm_uwdb = fuwdb = loged_user[sysinfo.user_id]->user_wdb[j];
+              sysinfo.ftm_uwdb = fuwdb = loged_user[sysinfo.user_id]->READINGINFO[j];
               fuwdb = search_allin(fuwdb);
               if (found) break;
-              else fuwdb = loged_user[sysinfo.user_id]->user_wdb[j];
+              else fuwdb = loged_user[sysinfo.user_id]->READINGINFO[j];
               break;
             }
             else continue; // if Local_name is not found
@@ -867,15 +934,15 @@ struct ROW *get_vars(list_t *read, int isret)
   while(1){
     fuwdb_inrow_id++;
     fuwdb_in_row[fuwdb_inrow_id] = NULL;
-    readword = list_get_node_by_index(read, task_list_current->holded_info->fread->reading_on);
-		struct USER_WDB *fuwdb = Get_main_dt(task_list_current->holded_info->fread, read);
-		//task_list_current->holded_info->fread->reading_stoped = task_list_current->holded_info->fread->reading_on;
-		DEBUG("don gatting name id %d var \n", task_list_current->holded_info->fread->reading_on);	
-		readword = list_get_node_by_index(read, task_list_current->holded_info->fread->reading_on);
+    readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
+		struct READINGINFO *fuwdb = Get_main_dt(task_list_current->holded_info, read);
+		//task_list_current->holded_info->reading_stoped = task_list_current->holded_info->reading_on;
+		DEBUG("don gatting name id %d var \n", task_list_current->holded_info->reading_on);	
+		readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 
     if(fuwdb){
-      task_list_current->holded_info->fread->reading_stoped = task_list_current->holded_info->fread->reading_on;
-      readword = list_get_node_by_index(read, task_list_current->holded_info->fread->reading_on);
+      task_list_current->holded_info->reading_stoped = task_list_current->holded_info->reading_on;
+      readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
       DEBUG("Going to save variable %d\n", fuwdb_inrow_id);
       fuwdb_in_row[fuwdb_inrow_id] = malloc(sizeof(struct ROW));
       fuwdb_in_row[fuwdb_inrow_id]->type = "VARIABLE";
@@ -888,8 +955,8 @@ struct ROW *get_vars(list_t *read, int isret)
       while(issame(readword->value, "AS")) 
       {
         DEBUG("getting variable AS\n");
-        task_list_current->holded_info->fread->reading_on = ++task_list_current->holded_info->fread->reading_stoped;
-        readword = list_get_node_by_index(read, task_list_current->holded_info->fread->reading_on);
+        task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+        readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
         struct ROW *row = Resive(read, 1, 1);
         if(row)
         {
@@ -909,8 +976,8 @@ struct ROW *get_vars(list_t *read, int isret)
           }
           if (issame(readword->value, "AND")) 
           {
-            task_list_current->holded_info->fread->reading_on = ++task_list_current->holded_info->fread->reading_stoped;
-            readword = list_get_node_by_index(read, task_list_current->holded_info->fread->reading_on);
+            task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+            readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
             continue;
           }
           else break;
@@ -927,11 +994,11 @@ struct ROW *get_vars(list_t *read, int isret)
         // TODO : GET MORE PROP IN ONE VARS
 				//if (issame(prop, "")) 
         //else prop = stradd(prop, readword->value, ' ');
-        task_list_current->holded_info->fread->reading_on = ++task_list_current->holded_info->fread->reading_stoped;
-        readword = list_get_node_by_index(read, task_list_current->holded_info->fread->reading_on);
+        task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+        readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
         if (issame(readword->value, "AND")) 
         {
-          task_list_current->holded_info->fread->reading_on = ++task_list_current->holded_info->fread->reading_stoped;
+          task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
           continue;
         }
       }
@@ -949,7 +1016,7 @@ struct ROW *get_vars(list_t *read, int isret)
       if (issame(readword->value, "AND")) 
       {
         DEBUG("will get anther variable\n");
-        task_list_current->holded_info->fread->reading_on = ++task_list_current->holded_info->fread->reading_stoped;
+        task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
         fuwdb_inrow_id++;
         continue;
       }
@@ -1020,22 +1087,6 @@ void LogIn() {
 	loged_user[sysinfo.user_id] = (Loged_user *)malloc(sizeof(Loged_user) + ns);
 }
 
-/*
-*	
-*/
-
-void Remove_READING(){
-	struct READINGINFO *frtemp = get_reading_table(0);
-	if(!frtemp){
-		DEBUG(" done deleting \n");
-		Current_task_delete();
-	}
-	else {
-		DEBUG("done reading one task\n");
-		task_list_current->holded_info = frtemp;
-	}
-}
-
 void Remove_ALLF_READING() 
 { // this will reamove all focused reading table
 	struct READINGINFO *r = task_list_current->holded_info;
@@ -1056,12 +1107,12 @@ void Remove_ALLF_READING()
 // this will create new table b\n this table and next table
 void Create_readtable_bn() {
 	int ns = 0; 
-	if (sizeof(struct USER_WDB) > 512) ns = 512;
-	else if (sizeof(struct USER_WDB) > 1024) ns = 1024;
+	if (sizeof(struct READINGINFO) > 512) ns = 512;
+	else if (sizeof(struct READINGINFO) > 1024) ns = 1024;
 	struct READINGINFO *new = malloc(sizeof(struct READINGINFO));
-	new->fread = malloc(sizeof(struct USER_WDB)+ns); // create new table
+	new = malloc(sizeof(struct READINGINFO)+ns); // create new table
 	new->read_prev = task_list_current->holded_info;
-	new->fread->reading_task = task_list_current;
+	new->reading_task = task_list_current;
 	if(task_list_current->holded_info->read_next) {
 		task_list_current->holded_info->read_next->read_prev = new;
 		new->read_next = task_list_current->holded_info->read_next;

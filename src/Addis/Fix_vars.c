@@ -21,7 +21,7 @@ void oprate_value() {
 	comteam first[50], second[50]; //, oldtvalue[100];
 	int onto = 1, onor1 = -1, onor2 = -1;//, otv = -1; 
 	DEBUG("\n\n\n");
-	struct COLUMN *c = task_list_current->holded_info->read->fread->worktables.worktable->column;
+	struct COLUMN *c = task_list_current->holded_info->worktables.worktable->column;
 	for (int cid = 0; c; cid++) {
 		struct ROW *r = c->row;
 		if(r && r->type){
@@ -153,13 +153,13 @@ void oprate_value() {
 	else {
 		/////////////////////////////////////////////////////////////////////////////////////
 		// this code will chack where will be the result saved
-		/*struct READINGINFO *frtemp = task_list_current->holded_info->read->fread;
-		int rfid = task_list_current->holded_info->read->fread->rfor_id;
-		if (issame(task_list_current->holded_info->read->fread->reading_for[rfid], "DEFFING")){
-			frtemp = task_list_current->holded_info->read->read_prev;
+		/*struct READINGINFO *frtemp = task_list_current->holded_info;
+		int rfid = task_list_current->holded_info->rfor_id;
+		if (issame(task_list_current->holded_info->reading_for[rfid], "DEFFING")){
+			frtemp = task_list_current->holded_info->read_prev;
 		}
 		else {
-			DEBUG(" HOHOHOHOHOHOOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHO\n%s", task_list_current->holded_info->read->fread->reading_for[rfid]);	
+			DEBUG(" HOHOHOHOHOHOOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHOHO\n%s", task_list_current->holded_info->reading_for[rfid]);	
 		}
 		/////////////////////////////////////////////////////////////////////////////////////
 		if (otv > -1 && onor1 == -1) {
@@ -169,35 +169,35 @@ void oprate_value() {
 					if(!(oldtvalue[c].row->word && oldtvalue[c].row->type)) continue;
 					DEBUG(" found var so old value with var will be oprated\n");
 					// cheack if there is any value pointed
-					//int wc = task_list_current->holded_info->read->fread->worktables.worktable->countcolumn;
-					//int wr = task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row;
+					//int wc = task_list_current->holded_info->worktables.worktable->countcolumn;
+					//int wr = task_list_current->holded_info->worktables.worktable->focused_column->row;
 					DEBUG("fp table1[%d][%d<%d]<%s>(%s) %s pointer\n",
 					c,r, oldtvalue[c].rowid, oldtvalue[c].row->type,  oldtvalue[c].row->value, opretors);
 					DEBUG(" GOING TO %s table->%s = ", opretors, oldtvalue[c].row->type);
 					if(issame(opretors, "ADD")) {
 						if(issame(oldtvalue[c].row->type, "NAME")) {
-							DEBUG(" %s ADD %s = ", task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->value.variable.fuwdb->name, oldtvalue[c].row->value);
-							task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->value.variable.fuwdb->name = stradd(task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->value.variable.fuwdb->name, oldtvalue[c].row->word, 0);
-							DEBUG("%s", task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->value.variable.fuwdb->name);
+							DEBUG(" %s ADD %s = ", task_list_current->holded_info->worktables.worktable->focused_column->row->value.variable.fuwdb->name, oldtvalue[c].row->value);
+							task_list_current->holded_info->worktables.worktable->focused_column->row->value.variable.fuwdb->name = stradd(task_list_current->holded_info->worktables.worktable->focused_column->row->value.variable.fuwdb->name, oldtvalue[c].row->word, 0);
+							DEBUG("%s", task_list_current->holded_info->worktables.worktable->focused_column->row->value.variable.fuwdb->name);
 						}
 						if(issame(oldtvalue[c].row->type, "WITH")) {
-							DEBUG(" %s ADD %s = ", task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->value.variable.fuwdb->withcodes, oldtvalue[c].row->value);
-							task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->value.variable.fuwdb->withcodes = stradd(task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->value.variable.fuwdb->withcodes, oldtvalue[c].row->word, 0);
-							DEBUG("%s", task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->value.variable.fuwdb->withcodes);
+							DEBUG(" %s ADD %s = ", task_list_current->holded_info->worktables.worktable->focused_column->row->value.variable.fuwdb->withcodes, oldtvalue[c].row->value);
+							task_list_current->holded_info->worktables.worktable->focused_column->row->value.variable.fuwdb->withcodes = stradd(task_list_current->holded_info->worktables.worktable->focused_column->row->value.variable.fuwdb->withcodes, oldtvalue[c].row->word, 0);
+							DEBUG("%s", task_list_current->holded_info->worktables.worktable->focused_column->row->value.variable.fuwdb->withcodes);
 						}
 						if(issame(oldtvalue[c].row->type, "VALUE") || issame(oldtvalue[c].row->type, "DO") || issame(oldtvalue[c].row->type, "SHAPE")) {
-							DEBUG(" %s ADD %s = ", task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->value.variable.fuwdb->value.word, oldtvalue[c].row->word);
-							task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->value.variable.fuwdb->value.word = stradd(task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->value.variable.fuwdb->value.word, oldtvalue[c].row->word, 0);
-							task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->value.variable.fuwdb->value.type = strdup(oldtvalue[c].row->type);
-							DEBUG("%s", task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->value.variable.fuwdb->value.word);
+							DEBUG(" %s ADD %s = ", task_list_current->holded_info->worktables.worktable->focused_column->row->value.variable.fuwdb->value.word, oldtvalue[c].row->word);
+							task_list_current->holded_info->worktables.worktable->focused_column->row->value.variable.fuwdb->value.word = stradd(task_list_current->holded_info->worktables.worktable->focused_column->row->value.variable.fuwdb->value.word, oldtvalue[c].row->word, 0);
+							task_list_current->holded_info->worktables.worktable->focused_column->row->value.variable.fuwdb->value.type = strdup(oldtvalue[c].row->type);
+							DEBUG("%s", task_list_current->holded_info->worktables.worktable->focused_column->row->value.variable.fuwdb->value.word);
 						}
 						DEBUG("\n");		
 					}
 				}
 			}
-			//task_list_current->holded_info->read->fread = task_list_current->holded_info->read->read_prev;
+			//task_list_current->holded_info = task_list_current->holded_info->read_prev;
 			//Clear_worktables(0);
-			//task_list_current->holded_info->read->fread = task_list_current->holded_info->read->read_next;
+			//task_list_current->holded_info = task_list_current->holded_info->read_next;
 		}*/
 	}
 	DEBUG("out\n");
@@ -222,38 +222,38 @@ void oprate_value() {
 
 
 void read_fanctions(list_t *read) { // working on this
-	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+	listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
 	readword = readword;
 	DEBUG("in read_fanction\n");\
 	int wc = 0, wr = 0;
 	for (int nc = 0;; nc++) {
-		if(!(task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->word)) break;
-		if (issame(task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->word, "NAME")){
+		if(!(task_list_current->holded_info->worktables.worktable->focused_column->row->word)) break;
+		if (issame(task_list_current->holded_info->worktables.worktable->focused_column->row->word, "NAME")){
 			for(int nr = 1;; nr++){
-				if (task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->word){
+				if (task_list_current->holded_info->worktables.worktable->focused_column->row->word){
 					char *calledfancwith = "", *calledfancname = "";
-					calledfancname = task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->word;
+					calledfancname = task_list_current->holded_info->worktables.worktable->focused_column->row->word;
 					DEBUG(" getting on table wtid(0) countcolumn(%d) countrow(%d) fancname(%s) \n", nc, nr, calledfancname);
 					// get calledfanc with if there is
 					for (;; wc++) {
-						if (task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->type && 
-							  issame(task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->type, "WITH")){
-							if(task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->word && wr > 0){
-							calledfancwith = task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->word;
+						if (task_list_current->holded_info->worktables.worktable->focused_column->row->type && 
+							  issame(task_list_current->holded_info->worktables.worktable->focused_column->row->type, "WITH")){
+							if(task_list_current->holded_info->worktables.worktable->focused_column->row->word && wr > 0){
+							calledfancwith = task_list_current->holded_info->worktables.worktable->focused_column->row->word;
 							break;
 							}
-							if (task_list_current->holded_info->read->fread->worktables.worktable->focused_column->row->value.istype) wr++;
+							if (task_list_current->holded_info->worktables.worktable->focused_column->row->value.istype) wr++;
 							else wr = 1;
 						}
 					}
 					
 					DEBUG(" going to find fanction\n");
-					//int wc = task_list_current->holded_info->read->fread->worktables.worktable->countcolumn++;
-					struct USER_WDB *found = find_dt(task_list_current->holded_info->read->fread, "", "", -1, task_list_current->holded_info->fread->name, "", calledfancname, "");
+					//int wc = task_list_current->holded_info->worktables.worktable->countcolumn++;
+					struct READINGINFO *found = find_dt(task_list_current->holded_info, "", "", -1, task_list_current->holded_info->name, "", calledfancname, "");
 					if (found) {
 						//DEBUG(" ukvtid %d got(wdbc%dr%d)", wtid, wc, wr);
 						// this will make all var will be created in this new code will be stord in it caller
-						task_list_current->holded_info->read->fread = found;
+						task_list_current->holded_info = found;
 						char *retfancvalue = stradd("", get_varinfo(0, "", 'D', "VALUE")->word, 0);
 						char *with0 = stradd("", get_varinfo(0, "", 'D', "WITH")->word, 0);
 						// VVVVVVVVVVVV to tall what info do we want TODO: find other way
@@ -264,31 +264,31 @@ void read_fanctions(list_t *read) { // working on this
 						// done getting code info for reading fanction save the reast code
 						char *readcode = "";
 						DEBUG("got reading info fancname = %s\n", calledfancname);
-						int bupbodysid = task_list_current->holded_info->read->fread->bodys->length;
-						retfancvalue = read_bodys(retfancvalue);
+						//int bupbodysid = task_list_current->holded_info->bodys->length;
+						retfancvalue = NULL;//read_bodys(retfancvalue);
 						if(retwith && (int)strlen(retwith) > 5) 
-						retwith = read_bodys(retwith); // reading all bodys () inside with
+						retwith = NULL;// read_bodys(retwith); // reading all bodys () inside with
 						DEBUG("fancwith = %s\n", retwith);
 						DEBUG("fancvalue = %s\n", retfancvalue);
 						DEBUG("going to read with and fanction code \n");
 						readcode = stradd(retwith, retfancvalue, ' ');
-						int rfid = ++task_list_current->holded_info->read->fread->rfor_id;
-						task_list_current->holded_info->read->fread->reading_for[rfid] = "WDEF";
+						int rfid = ++task_list_current->holded_info->rfor_id;
+						task_list_current->holded_info->reading_for[rfid] = "WDEF";
 						// create new tabel next to this table 
 						Create_readtable_bn();
-						task_list_current->holded_info->read->read_next->fread->read_new = strdup(readcode);
-						DEBUG(" unknown (%s)\n", task_list_current->holded_info->read->read_next->fread->read_new);
+						task_list_current->holded_info->read_next->read_new = strdup(readcode);
+						DEBUG(" unknown (%s)\n", task_list_current->holded_info->read_next->read_new);
 						// make new looping table
-						task_list_current->holded_info->read->read_next->fread->rfor_id = 0;
-						task_list_current->holded_info->read->read_next->fread->reading_for[0] = "DEFFING";
-						if (!((int)task_list_current->holded_info->read->fread->bodys->length >= bupbodysid)) task_list_current->holded_info->read->fread->bodys->length = bupbodysid;
-						//DEBUG("new code = %s \n", task_list_current->holded_info->read->freading[task_list_current->holded_info->read->fread_id]);
+						task_list_current->holded_info->read_next->rfor_id = 0;
+						task_list_current->holded_info->read_next->reading_for[0] = "DEFFING";
+						//if (!((int)task_list_current->holded_info->bodys->length >= bupbodysid)) task_list_current->holded_info->bodys->length = bupbodysid;
+						//DEBUG("new code = %s \n", task_list_current->holded_infoing[task_list_current->holded_info_id]);
 					}
 					else {// TODO: if fanc NAme not fount ?
 						DEBUG(" function Not found...\n");
-						//task_list_current->holded_info->read->fread->worktables.worktable->countcolumn = wc;
-						//task_list_current->holded_info->read->fread->reading_value = str_splitL(code, " ", 0);
-						//task_list_current->holded_info->read->freading[task_list_current->holded_info->read->fread_id] = 0;
+						//task_list_current->holded_info->worktables.worktable->countcolumn = wc;
+						//task_list_current->holded_info->reading_value = str_splitL(code, " ", 0);
+						//task_list_current->holded_infoing[task_list_current->holded_info_id] = 0;
 					}
 
 				}

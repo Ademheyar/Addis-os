@@ -7,16 +7,16 @@ struct ROW *Read_Math(list_t *read, struct ROW *frow, int isret)
   int found = 0;
   if (!frow) return NULL;
   isret=isret;
-  listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+  listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
   while(1)
   {
-    readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+    readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
     DEBUG("Read_Math %s\n", readword->value);
     //DEBUG("issigne %s \n", readword->value);
     if (issame(readword->value, "+")) 
     {
-      task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-			readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+      task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+			readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
       DEBUG("ADD\n");
       struct ROW *srow = Resive(read, 0, 1);
       found = 1;
@@ -27,8 +27,8 @@ struct ROW *Read_Math(list_t *read, struct ROW *frow, int isret)
     }
     else if (issame(readword->value, "-")) 
     {
-      task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-			readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+      task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+			readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
       DEBUG("Mines\n");
       struct ROW *srow = Resive(read, 0, 1);
       found = 1;
@@ -44,15 +44,15 @@ struct ROW *Read_Math(list_t *read, struct ROW *frow, int isret)
     }
     else if (issame(readword->value, "/")) 
     {
-      task_list_current->holded_info->read->fread->reading_on = ++task_list_current->holded_info->read->fread->reading_stoped;
-			readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+      task_list_current->holded_info->reading_on = ++task_list_current->holded_info->reading_stoped;
+			readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
       struct ROW *srow = Resive(read, 0, 1);
-			readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+			readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
       found = 1;
       //DEBUG("Mines f%d  s%d\n", frow->value.number.rational, srow->value.number.rational);
       frow = marge_rows("/", frow, srow);
       //DEBUG("Mines f%d  s%d\n", frow->value.number.rational, srow->value.number.rational);
-      readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+      readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
       continue;
     }
     else

@@ -52,7 +52,7 @@ struct ROW *READ_INCLUDE(list_t *read)
   DEBUG(" In Addis Code To ADDIS/Libs/INCLUDE File Reading Key Word Starting ... INCLUED [PATHE]\n");
 
   // Get the next word After the INCLUED Key Word
-  listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->read->fread->reading_on);
+  listnode_t *readword = list_get_node_by_index(read, task_list_current->holded_info->reading_on);
   
   // chack if the next word is given and is not empty
   if(!readword || !readword->value || !issame(readword->value, "")) {
@@ -70,10 +70,10 @@ struct ROW *READ_INCLUDE(list_t *read)
       char *inctext = get_code(path);
       if (strlen(inctext) > 0) {
         DEBUG(" old codecode(%s)\n", inctext);
-        task_list_current->holded_info->fread->state = 'L';
+        task_list_current->holded_info->state = 'L';
         char *incode = read_bodys(inctext);
-        task_list_current->holded_info->read->fread->reading_value = str_splitL(incode, " ", 0);
-        task_list_current->holded_info->read->fread->read_new = incode;
+        task_list_current->holded_info->reading_value = str_splitL(incode, " ", 0);
+        task_list_current->holded_info->read_new = incode;
         //
         DEBUG(" done INCLUDing code(%s)\n", incode);
       }
